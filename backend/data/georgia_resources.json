@@ -1,0 +1,136 @@
+[
+    {
+      "id": "ascend-ksu-001",
+      "name": "KSU ASCEND Program",
+      "category": "education",
+      "county": "Cobb",
+      "audience": ["former foster youth", "students", "homeless youth"],
+      "summary": "ASCEND supports KSU students who have experienced foster care or homelessness with retention and transition support.",
+      "eligibility": "KSU students with foster care or homelessness experience.",
+      "services": [
+        "case management",
+        "FAFSA navigation",
+        "scholarship access",
+        "peer mentoring",
+        "on-campus support"
+      ],
+      "contact_phone": "470-578-5260",
+      "contact_url": "https://embarkgeorgia.org/campus-programs/kennesaw-state-university/",
+      "address": "Kennesaw State University, Marietta/Kennesaw, Georgia",
+      "source_name": "KSU ASCEND",
+      "last_verified": "2026-04-18"
+    },
+    {
+      "id": "embark-etv-001",
+      "name": "Embark Georgia - Chafee ETV",
+      "category": "education",
+      "county": "statewide",
+      "audience": ["former foster youth", "students"],
+      "summary": "Embark Georgia administers the Chafee Education and Training Voucher for eligible Georgia youth with foster care experience.",
+      "eligibility": "Youth ages 18 to 25 with qualifying foster care history.",
+      "services": [
+        "up to 5000 dollars per year for educational expenses",
+        "application guidance",
+        "education funding support"
+      ],
+      "contact_phone": "",
+      "contact_url": "https://embarkgeorgia.org/about-etv/",
+      "address": "",
+      "source_name": "Embark Georgia",
+      "last_verified": "2026-04-18"
+    },
+    {
+      "id": "wellroot-001",
+      "name": "Wellroot Family Services",
+      "category": "housing",
+      "county": "DeKalb",
+      "audience": ["transition-age youth", "former foster youth"],
+      "summary": "Wellroot expanded housing support for youth transitioning out of Georgia foster care.",
+      "eligibility": "Transition-age youth needing housing support.",
+      "services": [
+        "transitional living support",
+        "housing assistance",
+        "youth support services"
+      ],
+      "contact_phone": "",
+      "contact_url": "https://www.wabe.org/wellroot-expands-housing-for-youth-transitioning-out-of-georgia-foster-care-system/",
+      "address": "Decatur, Georgia",
+      "source_name": "Wellroot Family Services",
+      "last_verified": "2026-04-18"
+    },
+    {
+      "id": "211-ga-001",
+      "name": "211 Georgia",
+      "category": "crisis",
+      "county": "statewide",
+      "audience": ["anyone in need"],
+      "summary": "211 Georgia connects people to food, housing, crisis, and community support resources.",
+      "eligibility": "Anyone in Georgia needing help finding services.",
+      "services": [
+        "resource navigation",
+        "housing referrals",
+        "food assistance referrals",
+        "crisis support referrals"
+      ],
+      "contact_phone": "211",
+      "contact_url": "https://211online.unitedwayatlanta.org/",
+      "address": "",
+      "source_name": "211 Georgia",
+      "last_verified": "2026-04-18"
+    },
+    {
+      "id": "medicaid-extension-001",
+      "name": "Georgia Medicaid Extension for Former Foster Youth",
+      "category": "healthcare",
+      "county": "statewide",
+      "audience": ["former foster youth"],
+      "summary": "Georgia extends Medicaid coverage for eligible youth who were in foster care at age 18.",
+      "eligibility": "Youth who were in foster care at age 18 may qualify for coverage through age 26.",
+      "services": [
+        "health insurance coverage",
+        "medical care access"
+      ],
+      "contact_phone": "",
+      "contact_url": "https://www.childwelfare.gov/resources/extension-foster-care-beyond-age-18-georgia/",
+      "address": "",
+      "source_name": "Child Welfare Information Gateway",
+      "last_verified": "2026-04-18"
+    },
+    {
+      "id": "eyss-001",
+      "name": "Extended Youth Support Services (EYSS)",
+      "category": "housing",
+      "county": "statewide",
+      "audience": ["former foster youth"],
+      "summary": "Extended support may be available for youth who aged out at 18 and voluntarily re-enroll for services.",
+      "eligibility": "Youth who aged out at 18 and meet Georgia extended foster care conditions.",
+      "services": [
+        "housing support",
+        "life skills support",
+        "financial assistance"
+      ],
+      "contact_phone": "",
+      "contact_url": "https://www.childwelfare.gov/resources/extension-foster-care-beyond-age-18-georgia/",
+      "address": "",
+      "source_name": "Child Welfare Information Gateway",
+      "last_verified": "2026-04-18"
+    },
+    {
+      "id": "dfcs-emergency-001",
+      "name": "Georgia DFCS Emergency Support",
+      "category": "crisis",
+      "county": "statewide",
+      "audience": ["foster youth", "families"],
+      "summary": "DFCS provides emergency child welfare and foster care support pathways.",
+      "eligibility": "Georgia residents needing foster care or child welfare emergency assistance.",
+      "services": [
+        "emergency support",
+        "child welfare contact pathways"
+      ],
+      "contact_phone": "",
+      "contact_url": "https://dfcs.georgia.gov/",
+      "address": "",
+      "source_name": "Georgia DFCS",
+      "last_verified": "2026-04-18"
+    }
+  ]
