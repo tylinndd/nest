@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Plus, Send } from "lucide-react";
 import { toast } from "sonner";
 import { buildChatSeed } from "@/data/placeholder";
@@ -59,19 +59,57 @@ const matchCanned = (input: string): CannedReply => {
   };
 };
 
+const TypingDots = () => (
+  <motion.div
+    layout
+    initial={{ opacity: 0, y: 6 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -4 }}
+    transition={{ duration: 0.18 }}
+    className="flex justify-start"
+  >
+    <div className="flex items-center gap-1 rounded-3xl rounded-bl-md bg-card border border-border px-4 py-3">
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60"
+          animate={{ y: [0, -3, 0] }}
+          transition={{
+            duration: 0.9,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: i * 0.12,
+          }}
+        />
+      ))}
+      <span className="sr-only">Navigator is typing</span>
+    </div>
+  </motion.div>
+);
+
 const Navigator = () => {
   const profileName = useProfile((s) => s.name);
   const [messages, setMessages] = useState<Msg[]>(() =>
     buildChatSeed(profileName).map((m) => ({ ...m, id: crypto.randomUUID() })),
   );
   const [input, setInput] = useState("");
+  const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const typingTimer = useRef<number | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, typing]);
+
+  useEffect(() => {
+    return () => {
+      if (typingTimer.current !== null) {
+        window.clearTimeout(typingTimer.current);
+      }
+    };
+  }, []);
 
   const send = (override?: string) => {
     const text = (override ?? input).trim();
@@ -84,8 +122,17 @@ const Navigator = () => {
       text: canned.text,
       source: canned.source,
     };
-    setMessages((m) => [...m, userMsg, reply]);
+    setMessages((m) => [...m, userMsg]);
     setInput("");
+    setTyping(true);
+    if (typingTimer.current !== null) {
+      window.clearTimeout(typingTimer.current);
+    }
+    typingTimer.current = window.setTimeout(() => {
+      setMessages((m) => [...m, reply]);
+      setTyping(false);
+      typingTimer.current = null;
+    }, 750);
   };
 
   return (
@@ -99,34 +146,39 @@ const Navigator = () => {
         ref={scrollRef}
         className="flex-1 overflow-y-auto px-5 py-4 space-y-3 no-scrollbar"
       >
-        {messages.map((m) => {
-          const isUser = m.role === "user";
-          return (
-            <motion.div
-              key={m.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className={isUser ? "flex justify-end" : "flex justify-start"}
-            >
-              <div
-                className={cn(
-                  "max-w-[85%] rounded-3xl px-4 py-3 text-sm",
-                  isUser
-                    ? "bg-primary text-primary-foreground rounded-br-md"
-                    : "bg-card border border-border text-foreground rounded-bl-md",
-                )}
+        <AnimatePresence initial={false}>
+          {messages.map((m) => {
+            const isUser = m.role === "user";
+            return (
+              <motion.div
+                key={m.id}
+                layout
+                initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                className={isUser ? "flex justify-end" : "flex justify-start"}
               >
-                <p className="leading-relaxed">{m.text}</p>
-                {m.source && (
-                  <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-                    Source · {m.source}
-                  </span>
-                )}
-              </div>
-            </motion.div>
-          );
-        })}
+                <div
+                  className={cn(
+                    "max-w-[85%] rounded-3xl px-4 py-3 text-sm",
+                    isUser
+                      ? "bg-primary text-primary-foreground rounded-br-md"
+                      : "bg-card border border-border text-foreground rounded-bl-md",
+                  )}
+                >
+                  <p className="leading-relaxed">{m.text}</p>
+                  {m.source && (
+                    <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                      Source · {m.source}
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+          {typing && <TypingDots key="typing" />}
+        </AnimatePresence>
       </div>
 
       {messages.length <= 1 && (
