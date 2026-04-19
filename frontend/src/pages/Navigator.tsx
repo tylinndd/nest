@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -44,7 +44,13 @@ const linkify = (text: string): ReactNode[] => {
   return nodes;
 };
 
-type Msg = { id: string; role: "user" | "assistant"; text: string; source?: string };
+type Msg = {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  source?: string;
+  followUps?: string[];
+};
 
 const suggestionChips = [
   "I might be couch-surfing this weekend",
@@ -52,7 +58,7 @@ const suggestionChips = [
   "Can I keep Medicaid after I turn 18?",
 ];
 
-type CannedReply = { text: string; source?: string };
+type CannedReply = { text: string; source?: string; followUps?: string[] };
 
 const matchCanned = (input: string): CannedReply => {
   const q = input.toLowerCase();
@@ -61,6 +67,10 @@ const matchCanned = (input: string): CannedReply => {
       text:
         "211 Georgia can find you a bed tonight — call or text 211 for shelter, food, or utilities. For a longer stay, Wellroot Family Services at (404) 876-6878 runs transitional housing for Georgia youth aging out.",
       source: "211 Georgia · Wellroot Family Services",
+      followUps: [
+        "How do I apply to Wellroot?",
+        "What if I just need one night?",
+      ],
     };
   }
   if (/(ascend|kennesaw|ksu)/.test(q)) {
@@ -68,6 +78,10 @@ const matchCanned = (input: string): CannedReply => {
       text:
         "KSU ASCEND supports foster, former foster, and unstably housed students with housing, books, and a coach. Email ascend@kennesaw.edu or call 470-578-5260 to schedule an intake. Bring any foster-care documentation you have.",
       source: "Kennesaw State University · ASCEND",
+      followUps: [
+        "What documents will ASCEND need?",
+        "Does ASCEND cover housing year-round?",
+      ],
     };
   }
   if (/(chafee|etv|tuition|scholarship|hb\s*136|college)/.test(q)) {
@@ -75,6 +89,10 @@ const matchCanned = (input: string): CannedReply => {
       text:
         "Chafee ETV covers up to $5,000 a year through age 26 for tuition, books, housing, or transportation. Your DFCS worker or ILP coordinator submits it for you with proof of enrollment. HB 136 also waives tuition at Georgia public colleges.",
       source: "Georgia DFCS · Chafee ETV · HB 136",
+      followUps: [
+        "How do I prove enrollment?",
+        "Can I use Chafee for a trade school?",
+      ],
     };
   }
   if (/(medicaid|health|insurance|doctor|therapist|medical)/.test(q)) {
@@ -82,6 +100,10 @@ const matchCanned = (input: string): CannedReply => {
       text:
         "You're still covered — Georgia automatically keeps former foster youth on Medicaid until age 26 with no income test. If your card hasn't arrived, call the Georgia Gateway helpline at 877-423-4746 and ask for your Former Foster Care member ID.",
       source: "Georgia DFCS · Former Foster Care Medicaid",
+      followUps: [
+        "Find me a Medicaid doctor",
+        "What if I move out of Georgia?",
+      ],
     };
   }
   if (/(birth certificate|\bid\b|ssn|social security|document|docs|vital records)/.test(q)) {
@@ -89,11 +111,20 @@ const matchCanned = (input: string): CannedReply => {
       text:
         "For a Georgia birth certificate, ask your DFCS caseworker for the foster-care fee-waiver letter, then apply through Vital Records with your photo ID. Social Security cards are free — your caseworker can start that request with you.",
       source: "Georgia DPH · Vital Records",
+      followUps: [
+        "I don't have a caseworker anymore",
+        "How long does Vital Records take?",
+      ],
     };
   }
   return {
     text:
       "I can help with housing, benefits, school, health, or documents. Tell me what's most urgent.",
+    followUps: [
+      "I might be couch-surfing this weekend",
+      "Can I keep Medicaid after I turn 18?",
+      "What docs do I need for KSU ASCEND?",
+    ],
   };
 };
 
@@ -135,6 +166,13 @@ const Navigator = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const pendingTimers = useRef<Set<number>>(new Set());
 
+  const lastAssistantId = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].role === "assistant") return messages[i].id;
+    }
+    return null;
+  }, [messages]);
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -159,6 +197,7 @@ const Navigator = () => {
       role: "assistant",
       text: canned.text,
       source: canned.source,
+      followUps: canned.followUps,
     };
     setMessages((m) => [...m, userMsg]);
     setInput("");
@@ -185,6 +224,11 @@ const Navigator = () => {
         <AnimatePresence initial={false}>
           {messages.map((m) => {
             const isUser = m.role === "user";
+            const showFollowUps =
+              !isUser &&
+              m.id === lastAssistantId &&
+              !typing &&
+              !!m.followUps?.length;
             return (
               <motion.div
                 key={m.id}
@@ -193,7 +237,11 @@ const Navigator = () => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.22, ease: "easeOut" }}
-                className={isUser ? "flex justify-end" : "flex justify-start"}
+                className={
+                  isUser
+                    ? "flex justify-end"
+                    : "flex flex-col items-start gap-2"
+                }
               >
                 <div
                   className={cn(
@@ -210,6 +258,19 @@ const Navigator = () => {
                     </span>
                   )}
                 </div>
+                {showFollowUps && (
+                  <div className="flex max-w-[85%] gap-2 overflow-x-auto no-scrollbar">
+                    {m.followUps!.map((f) => (
+                      <button
+                        key={f}
+                        onClick={() => send(f)}
+                        className="shrink-0 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition hover:border-primary/40"
+                      >
+                        {f}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             );
           })}
