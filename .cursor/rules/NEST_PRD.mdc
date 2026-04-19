@@ -1,30 +1,6 @@
-# Nest — Product Requirements Document
-> Version 1.0 | April 18, 2026 | KSU C-Day Spring 2026
-
 ---
-
-## 1. Overview
-
-**Product Name:** Nest  
-**Tagline:** *The caring adult in your pocket.*  
-**Type:** Mobile-first web application (PWA-ready)  
-**Demo Date:** April 29, 2026 — KSU CCSE Computing Showcase (C-Day)  
-**Poster Deadline:** April 20, 2026 @ 5:00 PM  
-
-### One-Sentence Pitch
-Nest is an AI-powered transition navigator that takes a Georgia foster youth's personal profile and generates a personalized 90-day action plan, benefit eligibility results, and local resource map — in under 10 seconds.
-
-### Problem Statement
-Every year, approximately 600–700 young people age out of the Georgia foster care system with no permanent family, no housing plan, and no guide beyond a 250-page government PDF. The outcomes are severe: ~20% become homeless immediately upon aging out, fewer than 10% earn a college degree, and 46.9% are unemployed by age 24. No Georgia-specific, AI-personalized, youth-facing transition navigator currently exists.
-
-### Institutional Context
-- **KSU ASCEND Program** (CARE Services) — direct campus partner; crisis escalation design validated by Lauren Padgett, ASCEND Director
-- **Embark Georgia** — administers the Chafee ETV program (UGA/DFCS partnership)
-- **Wellroot Family Services** — emergency housing partner (expanded Decatur TLP, Feb 2026)
-- **BestFit** — Atlanta-based free public benefits screener; integrated as handoff for SNAP/general benefits
-
+alwaysApply: false
 ---
-
 ## 2. Goals & Success Criteria
 
 | Goal | Success Metric |
