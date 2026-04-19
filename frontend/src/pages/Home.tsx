@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
 import {
   CheckCircle2,
   Clock,
@@ -148,6 +148,18 @@ const Home = () => {
 
   const progress = Math.round((done.length / taskList.length) * 100);
 
+  const reduceMotion = useReducedMotion();
+  const daysCount = useMotionValue(reduceMotion ? user.daysUntilExit : 0);
+  const daysRounded = useTransform(daysCount, (v) => Math.round(v));
+  useEffect(() => {
+    if (reduceMotion) return;
+    const controls = animate(daysCount, user.daysUntilExit, {
+      duration: 1.1,
+      ease: "easeOut",
+    });
+    return () => controls.stop();
+  }, [daysCount, reduceMotion]);
+
   const openTask = (task: Task) => setActiveTask(task);
 
   const handleMarkDone = () => {
@@ -202,9 +214,9 @@ const Home = () => {
             Your 90-day plan
           </p>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="font-display text-[5rem] leading-none">
-              {user.daysUntilExit}
-            </span>
+            <motion.span className="font-display text-[5rem] leading-none tabular-nums">
+              {daysRounded}
+            </motion.span>
             <span className="text-base opacity-90">days until you age out</span>
           </div>
           <div
@@ -218,7 +230,7 @@ const Home = () => {
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.9, ease: "easeOut", delay: 0.25 }}
               className="h-full bg-nest-sage"
             />
           </div>
