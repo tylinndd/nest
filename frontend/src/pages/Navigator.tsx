@@ -423,7 +423,7 @@ const Navigator = () => {
             onKeyDown={(e) => e.key === "Enter" && send()}
             aria-label="Ask Nest anything"
             placeholder={listening ? "Listening…" : "Ask Nest anything…"}
-            className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent outline-none text-base placeholder:text-muted-foreground"
           />
           {voiceSupported && (
             <button
