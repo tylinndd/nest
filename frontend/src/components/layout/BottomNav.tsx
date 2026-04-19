@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import {
   Home as HomeIcon,
   Compass,
-  Sparkles,
+  Coins,
   MessageCircle,
   LifeBuoy,
 } from "lucide-react";
@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const tabs = [
   { to: "/", label: "Home", icon: HomeIcon, end: true, tone: "primary" as const },
   { to: "/path", label: "Path", icon: Compass, tone: "primary" as const },
-  { to: "/benefits", label: "Benefits", icon: Sparkles, tone: "primary" as const },
+  { to: "/benefits", label: "Benefits", icon: Coins, tone: "primary" as const },
   { to: "/navigator", label: "Navigator", icon: MessageCircle, tone: "primary" as const },
   { to: "/emergency", label: "Emergency", icon: LifeBuoy, tone: "coral" as const },
 ];

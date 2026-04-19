@@ -1,5 +1,9 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import {
+  persist,
+  createJSONStorage,
+  type StateStorage,
+} from "zustand/middleware";
 
 export type EducationPlan = "college" | "trade" | "working";
 
@@ -36,6 +40,34 @@ const emptyProfile: Profile = {
   health: [],
 };
 
+const safeStorage: StateStorage = {
+  getItem: (key) => {
+    try {
+      return localStorage.getItem(key);
+    } catch (err) {
+      console.warn("[nest.profile] read failed:", err);
+      return null;
+    }
+  },
+  setItem: (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch (err) {
+      console.warn(
+        "[nest.profile] write failed — answers will not persist this session:",
+        err,
+      );
+    }
+  },
+  removeItem: (key) => {
+    try {
+      localStorage.removeItem(key);
+    } catch (err) {
+      console.warn("[nest.profile] remove failed:", err);
+    }
+  },
+};
+
 export const useProfile = create<Profile & ProfileActions>()(
   persist(
     (set) => ({
@@ -61,7 +93,19 @@ export const useProfile = create<Profile & ProfileActions>()(
         })),
       reset: () => set({ ...emptyProfile }),
     }),
-    { name: "nest.profile" },
+    {
+      name: "nest.profile",
+      version: 1,
+      storage: createJSONStorage(() => safeStorage),
+      onRehydrateStorage: () => (_state, error) => {
+        if (error) {
+          console.warn(
+            "[nest.profile] rehydrate failed, starting fresh:",
+            error,
+          );
+        }
+      },
+    },
   ),
 );
 

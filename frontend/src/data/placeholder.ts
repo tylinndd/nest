@@ -91,12 +91,16 @@ export const benefits: Benefit[] = [
   },
 ];
 
-export const chatSeed = [
-  {
-    role: "assistant" as const,
-    text: "Hey Maria. I can help with housing, benefits, school, or your next step.",
-  },
-];
+export const buildChatSeed = (name: string) => {
+  const first = name.trim().split(/\s+/)[0];
+  const greeting = first ? `Hey ${first}.` : "Hey.";
+  return [
+    {
+      role: "assistant" as const,
+      text: `${greeting} I can help with housing, benefits, school, or your next step.`,
+    },
+  ];
+};
 
 export const hotlines = [
   {

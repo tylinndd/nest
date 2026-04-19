@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck } from "lucide-react";
 import { benefits, type Benefit, type BenefitStatus } from "@/data/placeholder";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,7 @@ const statusBadge: Record<BenefitStatus, { label: string; className: string; Ico
   auto: {
     label: "Auto-enrolled",
     className: "bg-primary/10 text-primary",
-    Icon: Sparkles,
+    Icon: BadgeCheck,
   },
 };
 

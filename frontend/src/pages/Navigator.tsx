@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Plus, Send } from "lucide-react";
-import { chatSeed } from "@/data/placeholder";
+import { buildChatSeed } from "@/data/placeholder";
+import { useProfile } from "@/store/profile";
 import { cn } from "@/lib/utils";
 
 type Msg = { id: string; role: "user" | "assistant"; text: string; source?: string };
@@ -13,8 +14,9 @@ const suggestionChips = [
 ];
 
 const Navigator = () => {
+  const profileName = useProfile((s) => s.name);
   const [messages, setMessages] = useState<Msg[]>(() =>
-    chatSeed.map((m) => ({ ...m, id: crypto.randomUUID() })),
+    buildChatSeed(profileName).map((m) => ({ ...m, id: crypto.randomUUID() })),
   );
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);

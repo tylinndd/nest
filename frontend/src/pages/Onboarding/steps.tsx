@@ -145,16 +145,17 @@ export const StepAge = () => {
       setAge(null);
       return;
     }
-    const n = Number(value);
-    if (!Number.isNaN(n)) setAge(n);
+    const n = parseInt(value, 10);
+    if (!Number.isNaN(n) && n > 0) setAge(n);
   };
+  const valid = age !== null && age >= 14 && age <= 26;
   return (
     <StepShell
       stepIndex={2}
       title="How old are you?"
       subtitle="Your age unlocks the right benefits and programs."
       next="/onboarding/county"
-      disabled={age === null}
+      disabled={!valid}
     >
       <Label htmlFor="age" className="text-sm font-medium text-foreground">
         Age
@@ -163,6 +164,9 @@ export const StepAge = () => {
         id="age"
         type="number"
         inputMode="numeric"
+        min={14}
+        max={26}
+        step={1}
         value={raw}
         onChange={(e) => handleChange(e.target.value)}
         className="mt-2 h-14 rounded-2xl text-lg"
