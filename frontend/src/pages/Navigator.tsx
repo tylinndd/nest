@@ -146,7 +146,7 @@ const Navigator = () => {
       )}
 
       <div className="px-4 pb-4">
-        <div className="flex items-center gap-2 rounded-full bg-nest-cream border border-border px-2 py-2 transition focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+        <div className="flex items-center gap-2 rounded-full bg-nest-cream border border-border px-2 py-2 transition focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background">
           <button
             type="button"
             aria-label="Attach a document"
