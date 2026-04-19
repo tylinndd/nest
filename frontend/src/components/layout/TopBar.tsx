@@ -67,7 +67,7 @@ export const TopBar = ({ showSaveExit, right }: Props) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-background/90 backdrop-blur border-b border-border/60">
+    <header className="sticky top-0 z-30 bg-background/90 backdrop-blur border-b border-border/60 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto max-w-md flex items-center justify-between px-5 py-4">
         <Link
           to="/"
