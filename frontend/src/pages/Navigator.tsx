@@ -14,6 +14,51 @@ const suggestionChips = [
   "Can I keep Medicaid after I turn 18?",
 ];
 
+type CannedReply = { text: string; source?: string };
+
+const matchCanned = (input: string): CannedReply => {
+  const q = input.toLowerCase();
+  if (/(couch|shelter|homeless|housing|bed tonight|211|wellroot)/.test(q)) {
+    return {
+      text:
+        "211 Georgia can find you a bed tonight — call or text 211 for shelter, food, or utilities. For a longer stay, Wellroot Family Services at (404) 876-6878 runs transitional housing for Georgia youth aging out.",
+      source: "211 Georgia · Wellroot Family Services",
+    };
+  }
+  if (/(ascend|kennesaw|ksu)/.test(q)) {
+    return {
+      text:
+        "KSU ASCEND supports foster, former foster, and unstably housed students with housing, books, and a coach. Email ascend@kennesaw.edu or call 470-578-5260 to schedule an intake. Bring any foster-care documentation you have.",
+      source: "Kennesaw State University · ASCEND",
+    };
+  }
+  if (/(chafee|etv|tuition|scholarship|hb\s*136|college)/.test(q)) {
+    return {
+      text:
+        "Chafee ETV covers up to $5,000 a year through age 26 for tuition, books, housing, or transportation. Your DFCS worker or ILP coordinator submits it for you with proof of enrollment. HB 136 also waives tuition at Georgia public colleges.",
+      source: "Georgia DFCS · Chafee ETV · HB 136",
+    };
+  }
+  if (/(medicaid|health|insurance|doctor|therapist|medical)/.test(q)) {
+    return {
+      text:
+        "You're still covered — Georgia automatically keeps former foster youth on Medicaid until age 26 with no income test. If your card hasn't arrived, call the Georgia Gateway helpline at 877-423-4746 and ask for your Former Foster Care member ID.",
+      source: "Georgia DFCS · Former Foster Care Medicaid",
+    };
+  }
+  if (/(birth certificate|\bid\b|ssn|social security|document|vital records)/.test(q)) {
+    return {
+      text:
+        "For a Georgia birth certificate, ask your DFCS caseworker for the foster-care fee-waiver letter, then apply through Vital Records with your photo ID. Social Security cards are free — your caseworker can start that request with you.",
+      source: "Georgia DPH · Vital Records",
+    };
+  }
+  return {
+    text:
+      "I can help with housing, benefits, school, health, or documents. Try one of the suggestions above, or tell me what's most urgent.",
+  };
+};
+
 const Navigator = () => {
   const profileName = useProfile((s) => s.name);
   const [messages, setMessages] = useState<Msg[]>(() =>
@@ -32,12 +77,12 @@ const Navigator = () => {
     const text = (override ?? input).trim();
     if (!text) return;
     const userMsg: Msg = { id: crypto.randomUUID(), role: "user", text };
+    const canned = matchCanned(text);
     const reply: Msg = {
       id: crypto.randomUUID(),
       role: "assistant",
-      text:
-        "You're still covered — Georgia automatically keeps former foster youth on Medicaid until age 26 with no income test. I can pull up the exact member ID lookup if you want.",
-      source: "Georgia DFCS · Former Foster Care Medicaid",
+      text: canned.text,
+      source: canned.source,
     };
     setMessages((m) => [...m, userMsg, reply]);
     setInput("");
