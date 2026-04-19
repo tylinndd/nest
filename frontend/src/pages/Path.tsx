@@ -134,13 +134,28 @@ const Path = () => (
             transition={{ duration: 0.28, delay: i * 0.06, ease: "easeOut" }}
             className="relative mb-4 flex gap-4"
           >
-            <span
-              className={cn(
-                "relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full ring-4 ring-background",
-                s.icon,
+            <span className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center">
+              {z.state === "active" && (
+                <motion.span
+                  aria-hidden
+                  initial={{ scale: 1, opacity: 0.5 }}
+                  animate={{ scale: 1.9, opacity: 0 }}
+                  transition={{
+                    duration: 2.2,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                  }}
+                  className="absolute inset-0 rounded-full bg-nest-amber"
+                />
               )}
-            >
-              <z.Icon className="h-5 w-5" />
+              <span
+                className={cn(
+                  "relative flex h-11 w-11 items-center justify-center rounded-full ring-4 ring-background",
+                  s.icon,
+                )}
+              >
+                <z.Icon className="h-5 w-5" />
+              </span>
             </span>
             <div className={cn("flex-1 rounded-3xl border p-5 transition", s.ring)}>
               <div className="flex items-start justify-between gap-3">
