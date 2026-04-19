@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck } from "lucide-react";
+import { toast } from "sonner";
 import { benefits, type Benefit, type BenefitStatus } from "@/data/placeholder";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +25,7 @@ const statusBadge: Record<BenefitStatus, { label: string; className: string; Ico
 const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
   const badge = statusBadge[b.status];
   const Icon = badge.Icon;
+  const cta = b.cta;
   return (
     <motion.article
       initial={{ opacity: 0, y: 10 }}
@@ -45,9 +47,16 @@ const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
       </h2>
       <p className="mt-1 text-xs font-medium text-primary/80">{b.eligibility}</p>
       <p className="mt-3 text-sm text-muted-foreground">{b.summary}</p>
-      {b.cta && (
+      {cta && (
         <div className="mt-4">
           <button
+            type="button"
+            onClick={() =>
+              toast.info(cta, {
+                id: "benefit-cta",
+                description: `${b.title} flow lands in the next build.`,
+              })
+            }
             className={cn(
               "nest-pill min-h-[2.75rem] font-semibold",
               b.status === "auto"
@@ -55,7 +64,7 @@ const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
                 : "bg-primary text-primary-foreground hover:bg-primary/90",
             )}
           >
-            {b.cta}
+            {cta}
             <ArrowRight className="ml-1 h-4 w-4" />
           </button>
         </div>
