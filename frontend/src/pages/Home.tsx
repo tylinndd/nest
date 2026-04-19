@@ -415,7 +415,7 @@ const Home = () => {
           <Link
             to="/onboarding"
             aria-label="Edit your profile"
-            className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-primary transition hover:bg-secondary/80"
+            className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary text-primary transition hover:bg-secondary/80"
           >
             <Pencil className="h-4 w-4" />
           </Link>
