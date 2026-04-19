@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# CLI helper for PLAN.md — avoids manual table editing errors.
+# Usage: ./scripts/plan <command> <task#> [options]
+
+PLAN="PLAN.md"
+[ ! -f "$PLAN" ] && echo "No PLAN.md found." && exit 1
+
+COMMITTER=$(git config user.name)
+TIMESTAMP=$(date "+%b %d %-I%p" | sed 's/AM/am/;s/PM/pm/')
+
+cmd="$1"
+task="$2"
+
+case "$cmd" in
+  claim)
+    sed -i '' "s/| $task |\\(.*\\)| ⬜ |/| $task |\\1| 🟡 |/" "$PLAN"
+    sed -i '' "/| $task /s/| *|$/| $TIMESTAMP |/" "$PLAN"
+    git add "$PLAN" && git commit -m "status: $task 🟡 claimed by $COMMITTER"
+    echo "✅ Claimed task $task"
+    ;;
+  done)
+    sed -i '' "s/| $task |\\(.*\\)| 🟡 |/| $task |\\1| ✅ |/" "$PLAN"
+    git add "$PLAN" && git commit -m "status: $task ✅ completed by $COMMITTER"
+    echo "✅ Completed task $task"
+    ;;
+  block)
+    note="$3"
+    sed -i '' "s/| $task |\\(.*\\)| 🟡 |/| $task |\\1| ⛔ |/" "$PLAN"
+    [ -n "$note" ] && sed -i '' "/| $task /s/| *|$/| ⛔ $note |/" "$PLAN"
+    git add "$PLAN" && git commit -m "status: $task ⛔ blocked — $note"
+    echo "⛔ Blocked task $task: $note"
+    ;;
+  handoff)
+    target="$3"
+    sed -i '' "/| $task /s/| *|$/| → $target $TIMESTAMP |/" "$PLAN"
+    git add "$PLAN" && git commit -m "status: $task → $target"
+    echo "➡️  Handed off task $task to $target"
+    ;;
+  ls)
+    filter="$2"
+    case "$filter" in
+      --active) grep '🟡' "$PLAN" ;;
+      --mine)   grep '🟡' "$PLAN" | grep -i "$COMMITTER" ;;
+      --stale)  grep '🟡' "$PLAN" ;;
+      --blocked) grep '⛔' "$PLAN" ;;
+      *)        grep -E '⬜|🟡|⛔' "$PLAN" ;;
+    esac
+    ;;
+  *)
+    echo "Usage: plan <claim|done|block|handoff|ls> <task#> [note/name]"
+    echo ""
+    echo "Commands:"
+    echo "  claim  2.1          — mark task as in-progress (🟡) + commit"
+    echo "  done   2.1          — mark task as complete (✅) + commit"
+    echo "  block  2.1 \"reason\" — mark task as blocked (⛔) + commit"
+    echo "  handoff 2.1 Name   — hand off to teammate + commit"
+    echo "  ls [--active|--mine|--blocked] — list tasks"
+    ;;
+esac

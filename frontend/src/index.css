@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Nest palette — hex anchors
+       green #1B4332, amber #D97706, cream #FAF7F2,
+       sage  #52B788, coral #E07B6A, card  #FFFFFF */
+    --background: 38 44% 97%;          /* cream #FAF7F2 */
+    --foreground: 155 52% 10%;         /* deep ink */
+
+    --card: 0 0% 100%;                 /* #FFFFFF */
+    --card-foreground: 155 52% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 155 52% 10%;
+
+    --primary: 155 43% 18%;            /* nest green #1B4332 */
+    --primary-foreground: 38 44% 97%;
+
+    --secondary: 148 38% 90%;          /* mint wash */
+    --secondary-foreground: 155 43% 18%;
+
+    --muted: 38 24% 92%;
+    --muted-foreground: 155 10% 38%;
+
+    --accent: 148 38% 90%;
+    --accent-foreground: 155 43% 18%;
+
+    --destructive: 9 66% 65%;          /* nest coral #E07B6A */
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 32 95% 44%;             /* nest amber #D97706 */
+    --warning-foreground: 0 0% 100%;
+
+    --success: 152 49% 52%;            /* nest sage #52B788 */
+    --success-foreground: 0 0% 100%;
+
+    --border: 38 28% 88%;
+    --input: 38 28% 88%;
+    --ring: 155 43% 18%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 155 40% 8%;
+    --foreground: 38 44% 96%;
+    --card: 155 40% 10%;
+    --card-foreground: 38 44% 96%;
+    --popover: 155 40% 10%;
+    --popover-foreground: 38 44% 96%;
+    --primary: 38 44% 96%;
+    --primary-foreground: 155 43% 18%;
+    --secondary: 155 30% 18%;
+    --secondary-foreground: 38 44% 96%;
+    --muted: 155 30% 18%;
+    --muted-foreground: 38 15% 72%;
+    --accent: 155 30% 18%;
+    --accent-foreground: 38 44% 96%;
+    --destructive: 9 66% 65%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 155 30% 18%;
+    --input: 155 30% 18%;
+    --ring: 38 44% 96%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html, body, #root {
+    @apply h-full;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-tap-highlight-color: transparent;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'DM Serif Display', 'Inter', serif;
+    @apply tracking-tight;
+  }
+  /* Ensure minimum 44px tap targets on interactive elements on mobile */
+  button, a, [role="button"] {
+    touch-action: manipulation;
+  }
+}
+
+@layer components {
+  .nest-card {
+    @apply bg-card rounded-3xl border border-border/60 shadow-sm;
+  }
+  .nest-pill {
+    @apply inline-flex items-center rounded-full px-4 py-2 text-sm font-medium;
+  }
+  .nest-chip {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider;
+  }
+  .nest-rule {
+    @apply h-px w-full bg-border/70;
+  }
+  .safe-bottom {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+  }
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}

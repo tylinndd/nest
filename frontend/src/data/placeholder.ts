@@ -1,0 +1,130 @@
+export const user = {
+  name: "Maria",
+  age: 18,
+  county: "Cobb County",
+  daysUntilExit: 90,
+};
+
+export type Task = {
+  id: string;
+  title: string;
+  due: string;
+  status: "overdue" | "week" | "done";
+  help?: string;
+  tone?: "coral" | "amber" | "sage";
+};
+
+export const tasks: Task[] = [
+  { id: "1", title: "Request your birth certificate", due: "Due 3 days ago", status: "overdue", help: "Help me do this", tone: "coral" },
+  { id: "2", title: "Apply for extended Medicaid (former foster youth)", due: "Due last week", status: "overdue", help: "Help me do this", tone: "coral" },
+  { id: "3", title: "Submit Chafee ETV application for fall semester", due: "Due Friday", status: "week", help: "Help me do this", tone: "amber" },
+  { id: "4", title: "Schedule KSU ASCEND intake call", due: "Due Sunday", status: "week", help: "Help me do this", tone: "amber" },
+  { id: "5", title: "Open a checking account", due: "Completed", status: "done", tone: "sage" },
+  { id: "6", title: "Upload Social Security card to Vault", due: "Completed", status: "done", tone: "sage" },
+];
+
+export type BenefitStatus = "qualify" | "action" | "auto";
+
+export type Benefit = {
+  id: string;
+  title: string;
+  eligibility: string;
+  summary: string;
+  source: string;
+  status: BenefitStatus;
+  cta?: string;
+};
+
+export const benefits: Benefit[] = [
+  {
+    id: "chafee-etv",
+    title: "Chafee Education & Training Voucher",
+    eligibility: "Up to $5,000 per academic year through age 26",
+    summary: "Pays for tuition, books, housing, and transportation while you're enrolled in post-secondary school or training.",
+    source: "Georgia DFCS · Chafee Program",
+    status: "qualify",
+    cta: "Start application",
+  },
+  {
+    id: "eyss",
+    title: "Extended Youth Support Services (EYSS)",
+    eligibility: "Ages 18–23 who were in foster care at 18",
+    summary: "Continued case management, a monthly stipend, and support for housing, school, and work goals.",
+    source: "Georgia DFCS · EYSS",
+    status: "qualify",
+    cta: "Contact your worker",
+  },
+  {
+    id: "medicaid-ext",
+    title: "Georgia Medicaid — Former Foster Care",
+    eligibility: "Automatic coverage until age 26",
+    summary: "Free health insurance if you aged out of Georgia foster care. No income limit.",
+    source: "Georgia DFCS · Title IV-E",
+    status: "auto",
+  },
+  {
+    id: "ksu-ascend",
+    title: "KSU ASCEND Program",
+    eligibility: "Foster, former foster, and unstably housed students",
+    summary: "Year-round housing, textbooks, personal coach, and a care team at Kennesaw State.",
+    source: "Kennesaw State University",
+    status: "action",
+    cta: "Book intake call",
+  },
+  {
+    id: "hud-fyi",
+    title: "HUD Foster Youth to Independence (FYI)",
+    eligibility: "Ages 18–24, aged out within 5 years",
+    summary: "Up to 36 months of rental assistance paired with support services through your local PHA.",
+    source: "HUD · FYI Voucher",
+    status: "action",
+    cta: "See how to apply",
+  },
+  {
+    id: "hb136",
+    title: "HB 136 Qualified Foster Care Scholarship",
+    eligibility: "Georgia foster youth at eligible public institutions",
+    summary: "Covers tuition and mandatory fees at Georgia's public colleges, universities, and technical colleges.",
+    source: "Georgia HB 136 · GSFC",
+    status: "qualify",
+    cta: "Check your school",
+  },
+];
+
+export const chatSeed = [
+  {
+    role: "assistant" as const,
+    text: "Hey Maria — I'm your Nest navigator. Ask me anything about housing, benefits, school, or what to do next.",
+  },
+];
+
+export const hotlines = [
+  {
+    id: "988",
+    name: "988 Suicide & Crisis Lifeline",
+    number: "988",
+    subtitle: "Call or text, 24/7",
+    kind: "call" as const,
+  },
+  {
+    id: "211",
+    name: "211 Georgia",
+    number: "211",
+    subtitle: "Shelter, food, utilities · 24/7",
+    kind: "call" as const,
+  },
+  {
+    id: "crisis-text",
+    name: "Crisis Text Line",
+    number: "741741",
+    subtitle: "Text HOME to 741741",
+    kind: "text" as const,
+  },
+  {
+    id: "wellroot",
+    name: "Wellroot Family Services",
+    number: "(404) 876-6878",
+    subtitle: "GA youth crisis · transitional housing",
+    kind: "call" as const,
+  },
+];
