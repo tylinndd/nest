@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { TopBar } from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
-import { ONBOARDING_STEPS } from "./steps";
+import { ONBOARDING_STEPS } from "./config";
 
 const NUMBERED_STEPS = ONBOARDING_STEPS.slice(0, ONBOARDING_STEPS.length - 1);
 
