@@ -145,12 +145,12 @@ const Path = () => (
                     repeat: Infinity,
                     ease: "easeOut",
                   }}
-                  className="absolute inset-0 rounded-full bg-nest-amber"
+                  className="absolute inset-0 z-0 rounded-full bg-nest-amber"
                 />
               )}
               <span
                 className={cn(
-                  "relative flex h-11 w-11 items-center justify-center rounded-full ring-4 ring-background",
+                  "relative z-10 flex h-11 w-11 items-center justify-center rounded-full ring-4 ring-background",
                   s.icon,
                 )}
               >
