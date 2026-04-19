@@ -219,6 +219,13 @@ const Home = () => {
   const displayAge = profileAge ?? user.age;
   const displayCounty = profileCounty ? `${profileCounty} County` : user.county;
 
+  const greeting = useMemo(() => {
+    const h = new Date().getHours();
+    if (h < 12) return "Good morning";
+    if (h < 17) return "Good afternoon";
+    return "Good evening";
+  }, []);
+
   const overdue = useMemo(() => taskList.filter((t) => t.status === "overdue"), [taskList]);
   const week = useMemo(() => taskList.filter((t) => t.status === "week"), [taskList]);
   const done = useMemo(() => taskList.filter((t) => t.status === "done"), [taskList]);
@@ -269,7 +276,7 @@ const Home = () => {
       <div className="px-5 pt-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm text-muted-foreground">Good morning,</p>
+            <p className="text-sm text-muted-foreground">{greeting},</p>
             <h1 className="font-display text-3xl text-primary">{displayName}.</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {displayCounty} · Age {displayAge}
