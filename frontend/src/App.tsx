@@ -45,12 +45,14 @@ const BASE_TITLE = "Nest — Your guide through foster care transitions";
 const RouteTitle = () => {
   const { pathname } = useLocation();
   useEffect(() => {
-    const match = ROUTE_TITLES.find(([prefix]) => pathname.startsWith(prefix));
-    document.title = match
-      ? match[1]
-      : pathname === "/"
-        ? "Home · Nest"
-        : BASE_TITLE;
+    if (pathname === "/") {
+      document.title = "Home · Nest";
+      return;
+    }
+    const match = ROUTE_TITLES.find(
+      ([prefix]) => pathname === prefix || pathname.startsWith(prefix + "/"),
+    );
+    document.title = match ? match[1] : "Not found · Nest";
   }, [pathname]);
   return null;
 };
