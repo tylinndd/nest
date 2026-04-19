@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useProfile } from "@/store/profile";
+import { useChat } from "@/store/chat";
 
 type Props = {
   showSaveExit?: boolean;
@@ -27,6 +28,7 @@ export const TopBar = ({ showSaveExit, right }: Props) => {
     timerRef.current = null;
     useProfile.getState().reset();
     useProfile.persist.clearStorage();
+    useChat.getState().clear();
     navigate("/onboarding/name");
     toast.success("Demo reset", {
       id: "demo-reset",

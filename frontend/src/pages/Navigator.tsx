@@ -4,6 +4,7 @@ import { Plus, Send } from "lucide-react";
 import { toast } from "sonner";
 import { buildChatSeed } from "@/data/placeholder";
 import { useProfile } from "@/store/profile";
+import { useChat, type ChatMsg } from "@/store/chat";
 import { cn } from "@/lib/utils";
 
 const LINKIFY_RE =
@@ -44,13 +45,7 @@ const linkify = (text: string): ReactNode[] => {
   return nodes;
 };
 
-type Msg = {
-  id: string;
-  role: "user" | "assistant";
-  text: string;
-  source?: string;
-  followUps?: string[];
-};
+type Msg = ChatMsg;
 
 const suggestionChips = [
   "I might be couch-surfing this weekend",
@@ -158,13 +153,23 @@ const TypingDots = () => (
 
 const Navigator = () => {
   const profileName = useProfile((s) => s.name);
-  const [messages, setMessages] = useState<Msg[]>(() =>
-    buildChatSeed(profileName).map((m) => ({ ...m, id: crypto.randomUUID() })),
-  );
+  const messages = useChat((s) => s.messages);
+  const setMessages = useChat((s) => s.setMessages);
+  const addMessage = useChat((s) => s.addMessage);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const pendingTimers = useRef<Set<number>>(new Set());
+
+  useEffect(() => {
+    if (messages.length === 0) {
+      const seed: Msg[] = buildChatSeed(profileName).map((m) => ({
+        ...m,
+        id: crypto.randomUUID(),
+      }));
+      setMessages(() => seed);
+    }
+  }, [messages.length, profileName, setMessages]);
 
   const lastAssistantId = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
@@ -199,11 +204,11 @@ const Navigator = () => {
       source: canned.source,
       followUps: canned.followUps,
     };
-    setMessages((m) => [...m, userMsg]);
+    addMessage(userMsg);
     setInput("");
     setTyping(true);
     const id = window.setTimeout(() => {
-      setMessages((m) => [...m, reply]);
+      addMessage(reply);
       pendingTimers.current.delete(id);
       if (pendingTimers.current.size === 0) setTyping(false);
     }, 750);
