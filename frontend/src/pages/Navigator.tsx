@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Plus, Send } from "lucide-react";
+import { Mic, Plus, Send } from "lucide-react";
 import { toast } from "sonner";
 import { buildChatSeed } from "@/data/placeholder";
 import { useProfile } from "@/store/profile";
@@ -123,6 +123,38 @@ const matchCanned = (input: string): CannedReply => {
   };
 };
 
+type SRConstructor = new () => SpeechRecognition;
+type SpeechRecognition = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+  onresult: ((e: SpeechRecognitionEvent) => void) | null;
+  onerror: ((e: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+};
+type SpeechRecognitionEvent = {
+  results: {
+    length: number;
+    [index: number]: {
+      isFinal: boolean;
+      [index: number]: { transcript: string };
+    };
+  };
+};
+type SpeechRecognitionErrorEvent = { error: string };
+
+const getSpeechRecognition = (): SRConstructor | null => {
+  if (typeof window === "undefined") return null;
+  const w = window as unknown as {
+    SpeechRecognition?: SRConstructor;
+    webkitSpeechRecognition?: SRConstructor;
+  };
+  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
+};
+
 const TypingDots = () => (
   <motion.div
     layout
@@ -158,8 +190,11 @@ const Navigator = () => {
   const addMessage = useChat((s) => s.addMessage);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const [listening, setListening] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const pendingTimers = useRef<Set<number>>(new Set());
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const voiceSupported = useMemo(() => getSpeechRecognition() !== null, []);
 
   useEffect(() => {
     if (messages.length === 0) {
@@ -189,8 +224,58 @@ const Navigator = () => {
     return () => {
       timers.forEach((id) => window.clearTimeout(id));
       timers.clear();
+      recognitionRef.current?.abort();
+      recognitionRef.current = null;
     };
   }, []);
+
+  const toggleListening = () => {
+    if (listening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const SR = getSpeechRecognition();
+    if (!SR) {
+      toast.error("Voice input not supported", {
+        id: "navigator-voice-unsupported",
+        description: "Try Chrome, Edge, or Safari on iOS 14.5+.",
+      });
+      return;
+    }
+    const recognition = new SR();
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.onresult = (e) => {
+      const result = e.results[e.results.length - 1];
+      const transcript = result[0].transcript;
+      setInput(transcript);
+      if (result.isFinal) {
+        recognition.stop();
+        send(transcript);
+      }
+    };
+    recognition.onerror = (e) => {
+      if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+        toast.error("Microphone blocked", {
+          id: "navigator-voice-error",
+          description: "Allow microphone access in your browser settings.",
+        });
+      } else if (e.error !== "aborted" && e.error !== "no-speech") {
+        toast.error("Voice input failed", {
+          id: "navigator-voice-error",
+          description: e.error,
+        });
+      }
+    };
+    recognition.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+    };
+    recognitionRef.current = recognition;
+    setListening(true);
+    recognition.start();
+  };
 
   const send = (override?: string) => {
     const text = (override ?? input).trim();
@@ -319,9 +404,25 @@ const Navigator = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
             aria-label="Ask Nest anything"
-            placeholder="Ask Nest anything…"
+            placeholder={listening ? "Listening…" : "Ask Nest anything…"}
             className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground"
           />
+          {voiceSupported && (
+            <button
+              type="button"
+              onClick={toggleListening}
+              aria-label={listening ? "Stop voice input" : "Start voice input"}
+              aria-pressed={listening}
+              className={cn(
+                "flex h-10 w-10 items-center justify-center rounded-full transition",
+                listening
+                  ? "bg-nest-coral text-white"
+                  : "bg-secondary text-primary",
+              )}
+            >
+              <Mic className="h-5 w-5" />
+            </button>
+          )}
           <button
             onClick={() => send()}
             aria-label="Send"
