@@ -139,7 +139,14 @@ const Vault = () => {
         <p className="mt-3 font-display text-3xl">
           {secured} of {docs.length} secured
         </p>
-        <div className="mt-4 h-1 rounded-full bg-primary-foreground/20 overflow-hidden">
+        <div
+          role="progressbar"
+          aria-label="Documents secured"
+          aria-valuenow={Math.round((secured / docs.length) * 100)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          className="mt-4 h-1 rounded-full bg-primary-foreground/20 overflow-hidden"
+        >
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${(secured / docs.length) * 100}%` }}

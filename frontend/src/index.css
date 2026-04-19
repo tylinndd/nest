@@ -97,6 +97,18 @@
   button, a, [role="button"] {
     touch-action: manipulation;
   }
+  /* Visible keyboard focus for every interactive element that hasn't
+     opted into its own focus treatment. Uses the nest-green ring var. */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
 }
 
 @layer components {

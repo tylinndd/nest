@@ -37,7 +37,14 @@ export const OnboardingLayout = () => {
             <div className="h-11 w-11" />
           )}
           <div className="flex-1">
-            <div className="h-1 w-full overflow-hidden rounded-full bg-border/70">
+            <div
+              role="progressbar"
+              aria-label="Onboarding progress"
+              aria-valuenow={percent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              className="h-1 w-full overflow-hidden rounded-full bg-border/70"
+            >
               <motion.div
                 initial={false}
                 animate={{ width: `${percent}%` }}

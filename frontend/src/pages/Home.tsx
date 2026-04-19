@@ -207,7 +207,14 @@ const Home = () => {
             </span>
             <span className="text-base opacity-90">days until you age out</span>
           </div>
-          <div className="mt-5 h-1 rounded-full bg-primary-foreground/20 overflow-hidden">
+          <div
+            role="progressbar"
+            aria-label="90-day plan progress"
+            aria-valuenow={progress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            className="mt-5 h-1 rounded-full bg-primary-foreground/20 overflow-hidden"
+          >
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}

@@ -146,7 +146,7 @@ const Navigator = () => {
       )}
 
       <div className="px-4 pb-4">
-        <div className="flex items-center gap-2 rounded-full bg-nest-cream border border-border px-2 py-2">
+        <div className="flex items-center gap-2 rounded-full bg-nest-cream border border-border px-2 py-2 transition focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
           <button
             type="button"
             aria-label="Attach a document"
@@ -164,6 +164,7 @@ const Navigator = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
+            aria-label="Ask Nest anything"
             placeholder="Ask Nest anything…"
             className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground"
           />
