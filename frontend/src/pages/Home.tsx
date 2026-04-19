@@ -210,55 +210,92 @@ const Section = ({
   </section>
 );
 
+const SWIPE_OFFSET_THRESHOLD = -80;
+const SWIPE_VELOCITY_THRESHOLD = -300;
+
 const TaskRow = ({
   t,
   onOpen,
+  onComplete,
 }: {
   t: Task;
   onOpen: (task: Task) => void;
+  onComplete: (task: Task) => void;
 }) => {
   const tone = t.tone ?? (t.status === "overdue" ? "coral" : t.status === "week" ? "amber" : "sage");
   const Icon = statusIcon[t.status];
+  const reduceMotion = useReducedMotion();
+  const swipeable = t.status !== "done" && !reduceMotion;
+  const x = useMotionValue(0);
+  const actionOpacity = useTransform(x, [SWIPE_OFFSET_THRESHOLD, -10, 0], [1, 0.4, 0]);
   return (
     <motion.div
       layoutId={`task-${t.id}`}
       transition={{ type: "spring", stiffness: 260, damping: 30 }}
-      className={cn(
-        "nest-card p-4 border-l-4",
-        toneBorder[tone],
-      )}
+      className="relative"
     >
-      <div className="flex items-start gap-3">
-        <span
-          className={cn(
-            "mt-0.5 flex h-9 w-9 items-center justify-center rounded-full",
-            toneIconWrap[tone],
-          )}
+      {swipeable && (
+        <motion.div
+          aria-hidden
+          style={{ opacity: actionOpacity }}
+          className="pointer-events-none absolute inset-0 flex items-center justify-end rounded-2xl bg-nest-sage pr-5 text-sm font-semibold text-white"
         >
-          <Icon className="h-4 w-4" />
-        </span>
-        <div className="flex-1">
-          <p
+          <CheckCircle2 className="mr-2 h-5 w-5" />
+          Done
+        </motion.div>
+      )}
+      <motion.div
+        drag={swipeable ? "x" : false}
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={{ left: 0.65, right: 0 }}
+        dragDirectionLock
+        style={{ x, touchAction: "pan-y" }}
+        onDragEnd={(_, info) => {
+          const past =
+            info.offset.x < SWIPE_OFFSET_THRESHOLD ||
+            info.velocity.x < SWIPE_VELOCITY_THRESHOLD;
+          if (past) {
+            x.set(0);
+            onComplete(t);
+          }
+        }}
+        className={cn(
+          "nest-card p-4 border-l-4 relative",
+          toneBorder[tone],
+        )}
+      >
+        <div className="flex items-start gap-3">
+          <span
             className={cn(
-              "font-medium leading-snug",
-              t.status === "done"
-                ? "line-through text-muted-foreground"
-                : "text-foreground",
+              "mt-0.5 flex h-9 w-9 items-center justify-center rounded-full",
+              toneIconWrap[tone],
             )}
           >
-            {t.title}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">{t.due}</p>
-          {t.help && (
-            <button
-              onClick={() => onOpen(t)}
-              className="mt-3 nest-pill bg-secondary text-secondary-foreground hover:bg-secondary/80 min-h-[2.5rem]"
+            <Icon className="h-4 w-4" />
+          </span>
+          <div className="flex-1">
+            <p
+              className={cn(
+                "font-medium leading-snug",
+                t.status === "done"
+                  ? "line-through text-muted-foreground"
+                  : "text-foreground",
+              )}
             >
-              {t.help} <ArrowRight className="ml-1 h-3.5 w-3.5" />
-            </button>
-          )}
+              {t.title}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">{t.due}</p>
+            {t.help && (
+              <button
+                onClick={() => onOpen(t)}
+                className="mt-3 nest-pill bg-secondary text-secondary-foreground hover:bg-secondary/80 min-h-[2.5rem]"
+              >
+                {t.help} <ArrowRight className="ml-1 h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
@@ -316,18 +353,16 @@ const Home = () => {
 
   const openTask = (task: Task) => setActiveTask(task);
 
-  const handleMarkDone = () => {
-    if (!activeTask) return;
-    const completingId = activeTask.id;
+  const completeTask = (task: Task) => {
+    if (task.status === "done") return;
     setTaskList((prev) =>
       prev.map((t) =>
-        t.id === completingId
+        t.id === task.id
           ? { ...t, status: "done" as const, tone: "sage" as const, due: "Completed" }
           : t,
       ),
     );
-    setCompletedId(completingId);
-    setActiveTask(null);
+    setCompletedId(task.id);
     if (!reduceMotion) {
       try {
         if (!localStorage.getItem(FIRST_TASK_KEY)) {
@@ -345,6 +380,13 @@ const Home = () => {
       setCompletedId(null);
       completedTimerRef.current = null;
     }, 2400);
+  };
+
+  const handleMarkDone = () => {
+    if (!activeTask) return;
+    const task = activeTask;
+    setActiveTask(null);
+    completeTask(task);
   };
 
   const completedTask = completedId
@@ -398,7 +440,7 @@ const Home = () => {
         {overdue.length > 0 && (
           <Section title="Overdue" count={overdue.length}>
             {overdue.map((t) => (
-              <TaskRow key={t.id} t={t} onOpen={openTask} />
+              <TaskRow key={t.id} t={t} onOpen={openTask} onComplete={completeTask} />
             ))}
           </Section>
         )}
@@ -406,7 +448,7 @@ const Home = () => {
         {week.length > 0 && (
           <Section title="This week" count={week.length}>
             {week.map((t) => (
-              <TaskRow key={t.id} t={t} onOpen={openTask} />
+              <TaskRow key={t.id} t={t} onOpen={openTask} onComplete={completeTask} />
             ))}
           </Section>
         )}
@@ -414,7 +456,7 @@ const Home = () => {
         {done.length > 0 && (
           <Section title="Completed" count={done.length}>
             {done.map((t) => (
-              <TaskRow key={t.id} t={t} onOpen={openTask} />
+              <TaskRow key={t.id} t={t} onOpen={openTask} onComplete={completeTask} />
             ))}
           </Section>
         )}
