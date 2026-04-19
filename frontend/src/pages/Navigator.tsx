@@ -146,6 +146,17 @@ type SpeechRecognitionEvent = {
 };
 type SpeechRecognitionErrorEvent = { error: string };
 
+const safeId = (): string => {
+  try {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+  } catch {
+    // crypto.randomUUID is gated on a secure context; fall through
+  }
+  return `id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+};
+
 const getSpeechRecognition = (): SRConstructor | null => {
   if (typeof window === "undefined") return null;
   const w = window as unknown as {
@@ -207,7 +218,7 @@ const Navigator = () => {
     if (messages.length === 0) {
       const seed: Msg[] = buildChatSeed(profileName).map((m) => ({
         ...m,
-        id: crypto.randomUUID(),
+        id: safeId(),
       }));
       setMessages(() => seed);
     }
@@ -287,10 +298,10 @@ const Navigator = () => {
   const send = (override?: string) => {
     const text = (override ?? input).trim();
     if (!text) return;
-    const userMsg: Msg = { id: crypto.randomUUID(), role: "user", text };
+    const userMsg: Msg = { id: safeId(), role: "user", text };
     const canned = matchCanned(text);
     const reply: Msg = {
-      id: crypto.randomUUID(),
+      id: safeId(),
       role: "assistant",
       text: canned.text,
       source: canned.source,
