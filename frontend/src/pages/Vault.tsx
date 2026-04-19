@@ -111,7 +111,22 @@ const Vault = () => {
                 <p className="text-xs text-muted-foreground">{d.detail}</p>
               </div>
               <span className={cn("nest-chip", m.chip)}>
-                <Icon className="mr-1 h-3 w-3" />
+                {d.state === "requested" ? (
+                  <motion.span
+                    aria-hidden
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    className="mr-1 inline-flex"
+                  >
+                    <Icon className="h-3 w-3" />
+                  </motion.span>
+                ) : (
+                  <Icon className="mr-1 h-3 w-3" />
+                )}
                 {m.label}
               </span>
             </motion.div>
