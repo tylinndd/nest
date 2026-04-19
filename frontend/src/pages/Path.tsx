@@ -126,92 +126,92 @@ const Path = () => {
           className="absolute left-[1.35rem] top-2 bottom-2 w-px bg-border"
         />
         {zones.map((z, i) => {
-        const s = stateStyle[z.state];
-        const StatusIcon =
-          z.state === "done" ? CheckCircle2 : z.state === "locked" ? Lock : Circle;
-        return (
-          <motion.li
-            key={z.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.28, delay: i * 0.06, ease: "easeOut" }}
-            className="relative mb-4 flex gap-4"
-          >
-            <span className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center">
-              {z.state === "active" && !prefersReducedMotion && (
-                <motion.span
-                  aria-hidden
-                  initial={{ scale: 1, opacity: 0.5 }}
-                  animate={{ scale: 1.9, opacity: 0 }}
-                  transition={{
-                    duration: 2.2,
-                    repeat: Infinity,
-                    ease: "easeOut",
-                  }}
-                  className="absolute inset-0 z-0 rounded-full bg-nest-amber"
-                />
-              )}
-              <span
-                className={cn(
-                  "relative z-10 flex h-11 w-11 items-center justify-center rounded-full ring-4 ring-background",
-                  s.icon,
+          const s = stateStyle[z.state];
+          const StatusIcon =
+            z.state === "done" ? CheckCircle2 : z.state === "locked" ? Lock : Circle;
+          return (
+            <motion.li
+              key={z.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.28, delay: i * 0.06, ease: "easeOut" }}
+              className="relative mb-4 flex gap-4"
+            >
+              <span className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center">
+                {z.state === "active" && !prefersReducedMotion && (
+                  <motion.span
+                    aria-hidden
+                    initial={{ scale: 1, opacity: 0.5 }}
+                    animate={{ scale: 1.9, opacity: 0 }}
+                    transition={{
+                      duration: 2.2,
+                      repeat: Infinity,
+                      ease: "easeOut",
+                    }}
+                    className="absolute inset-0 z-0 rounded-full bg-nest-amber"
+                  />
                 )}
-              >
-                <z.Icon className="h-5 w-5" />
-              </span>
-            </span>
-            <div className={cn("flex-1 rounded-3xl border p-5 transition", s.ring)}>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Zone 0{z.number}
-                  </p>
-                  <h2 className="mt-1 font-display text-lg text-foreground">
-                    {z.title}
-                  </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">{z.subtitle}</p>
-                </div>
                 <span
                   className={cn(
-                    "nest-chip shrink-0",
-                    s.badge,
+                    "relative z-10 flex h-11 w-11 items-center justify-center rounded-full ring-4 ring-background",
+                    s.icon,
                   )}
                 >
-                  <StatusIcon className="mr-1 h-3 w-3" />
-                  {z.state === "active" ? "In progress" : z.state === "locked" ? "Locked" : "Done"}
+                  <z.Icon className="h-5 w-5" />
                 </span>
-              </div>
-              <ul className="mt-4 space-y-2">
-                {z.items.map((item) => (
-                  <li
-                    key={item}
+              </span>
+              <div className={cn("flex-1 rounded-3xl border p-5 transition", s.ring)}>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Zone 0{z.number}
+                    </p>
+                    <h2 className="mt-1 font-display text-lg text-foreground">
+                      {z.title}
+                    </h2>
+                    <p className="mt-1 text-sm text-muted-foreground">{z.subtitle}</p>
+                  </div>
+                  <span
                     className={cn(
-                      "flex items-start gap-2 text-sm",
-                      z.state === "locked"
-                        ? "text-muted-foreground"
-                        : "text-foreground",
+                      "nest-chip shrink-0",
+                      s.badge,
                     )}
                   >
-                    <span
+                    <StatusIcon className="mr-1 h-3 w-3" />
+                    {z.state === "active" ? "In progress" : z.state === "locked" ? "Locked" : "Done"}
+                  </span>
+                </div>
+                <ul className="mt-4 space-y-2">
+                  {z.items.map((item) => (
+                    <li
+                      key={item}
                       className={cn(
-                        "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full",
-                        z.state === "active"
-                          ? "bg-nest-amber"
-                          : z.state === "done"
-                            ? "bg-nest-sage"
-                            : "bg-border",
+                        "flex items-start gap-2 text-sm",
+                        z.state === "locked"
+                          ? "text-muted-foreground"
+                          : "text-foreground",
                       )}
-                    />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </motion.li>
-        );
-      })}
-    </ol>
-  </div>
+                    >
+                      <span
+                        className={cn(
+                          "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full",
+                          z.state === "active"
+                            ? "bg-nest-amber"
+                            : z.state === "done"
+                              ? "bg-nest-sage"
+                              : "bg-border",
+                        )}
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.li>
+          );
+        })}
+      </ol>
+    </div>
   );
 };
 
