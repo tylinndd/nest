@@ -99,7 +99,7 @@ export const TopBar = ({ showSaveExit, right }: Props) => {
               onClick={toggleTheme}
               aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
               aria-pressed={isDark}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-primary transition hover:bg-secondary/80"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-primary transition hover:bg-secondary/80"
             >
               {isDark ? (
                 <Sun className="h-4 w-4" />

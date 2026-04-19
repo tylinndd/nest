@@ -413,7 +413,7 @@ const Navigator = () => {
                 description: "Pulling from your Vault lands in the next build.",
               })
             }
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-primary"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-primary"
           >
             <Plus className="h-5 w-5" />
           </button>
@@ -432,7 +432,7 @@ const Navigator = () => {
               aria-label={listening ? "Stop voice input" : "Start voice input"}
               aria-pressed={listening}
               className={cn(
-                "flex h-10 w-10 items-center justify-center rounded-full transition",
+                "flex h-11 w-11 items-center justify-center rounded-full transition",
                 listening
                   ? "bg-nest-coral text-white"
                   : "bg-secondary text-primary",
