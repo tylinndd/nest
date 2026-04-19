@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
+import {
+  animate,
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import {
   CheckCircle2,
   Clock,
@@ -43,6 +51,75 @@ const statusIcon = {
   week: Clock,
   done: CheckCircle2,
 } as const;
+
+const HeroCard = ({
+  days,
+  progress,
+  reduceMotion,
+}: {
+  days: MotionValue<number>;
+  progress: number;
+  reduceMotion: boolean;
+}) => {
+  const mouseX = useMotionValue(-200);
+  const mouseY = useMotionValue(-200);
+  const spotlight = useMotionTemplate`radial-gradient(420px circle at ${mouseX}px ${mouseY}px, rgba(82,183,136,0.22), transparent 55%)`;
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (reduceMotion) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
+
+  const handleLeave = () => {
+    mouseX.set(-200);
+    mouseY.set(-200);
+  };
+
+  return (
+    <div
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      className="nest-card p-6 bg-primary text-primary-foreground overflow-hidden relative group"
+    >
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        style={{ background: spotlight }}
+      />
+      <div className="relative">
+        <p className="text-xs font-semibold uppercase tracking-widest opacity-80">
+          Your 90-day plan
+        </p>
+        <div className="mt-3 flex items-baseline gap-2">
+          <motion.span className="font-display text-[5rem] leading-none tabular-nums">
+            {days}
+          </motion.span>
+          <span className="text-base opacity-90">days until you age out</span>
+        </div>
+        <div
+          role="progressbar"
+          aria-label="90-day plan progress"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          className="mt-5 h-1 rounded-full bg-primary-foreground/20 overflow-hidden"
+        >
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.9, ease: "easeOut", delay: 0.25 }}
+            className="h-full bg-nest-sage"
+          />
+        </div>
+        <p className="mt-2 text-xs opacity-80">
+          {progress}% of week-one checklist complete
+        </p>
+      </div>
+    </div>
+  );
+};
 
 const Section = ({
   title,
@@ -209,35 +286,11 @@ const Home = () => {
       </div>
 
       <div className="px-5 mt-5">
-        <div className="nest-card p-6 bg-primary text-primary-foreground overflow-hidden relative">
-          <p className="text-xs font-semibold uppercase tracking-widest opacity-80">
-            Your 90-day plan
-          </p>
-          <div className="mt-3 flex items-baseline gap-2">
-            <motion.span className="font-display text-[5rem] leading-none tabular-nums">
-              {daysRounded}
-            </motion.span>
-            <span className="text-base opacity-90">days until you age out</span>
-          </div>
-          <div
-            role="progressbar"
-            aria-label="90-day plan progress"
-            aria-valuenow={progress}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            className="mt-5 h-1 rounded-full bg-primary-foreground/20 overflow-hidden"
-          >
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.9, ease: "easeOut", delay: 0.25 }}
-              className="h-full bg-nest-sage"
-            />
-          </div>
-          <p className="mt-2 text-xs opacity-80">
-            {progress}% of week-one checklist complete
-          </p>
-        </div>
+        <HeroCard
+          days={daysRounded}
+          progress={progress}
+          reduceMotion={!!reduceMotion}
+        />
       </div>
 
       <div className="px-5 mt-4">
