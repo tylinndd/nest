@@ -149,6 +149,27 @@ const HeroCard = ({
   );
 };
 
+const AllCaughtUpCard = () => (
+  <div className="nest-card p-5 border-nest-sage/40 bg-nest-sage/5">
+    <div className="flex items-start gap-3">
+      <span className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-nest-sage/15 text-[#2E7D5B]">
+        <CheckCircle2 className="h-5 w-5" />
+      </span>
+      <div className="flex-1">
+        <p className="text-xs font-semibold uppercase tracking-widest text-[#2E7D5B]">
+          All caught up
+        </p>
+        <p className="mt-2 font-display text-xl text-primary leading-tight">
+          Nothing pressing right now.
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Nest will flag your next step as your aging-out date gets closer.
+        </p>
+      </div>
+    </div>
+  </div>
+);
+
 const NextMoveCard = ({
   task,
   onOpen,
@@ -430,11 +451,15 @@ const Home = () => {
         />
       </div>
 
-      {nextMove && (
+      {nextMove ? (
         <div className="px-5 mt-4">
           <NextMoveCard task={nextMove} onOpen={openTask} />
         </div>
-      )}
+      ) : done.length > 0 ? (
+        <div className="px-5 mt-4">
+          <AllCaughtUpCard />
+        </div>
+      ) : null}
 
       <div className="px-5 mt-4">
         <SuccessCard
