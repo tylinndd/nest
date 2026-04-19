@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   animate,
+  LayoutGroup,
   motion,
   useMotionTemplate,
   useMotionValue,
@@ -154,9 +155,14 @@ const TaskRow = ({
   const Icon = statusIcon[t.status];
   return (
     <motion.div
+      layout
+      layoutId={`task-${t.id}`}
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.24 }}
+      transition={{
+        duration: 0.24,
+        layout: { type: "spring", stiffness: 260, damping: 30 },
+      }}
       className={cn(
         "nest-card p-4 border-l-4",
         toneBorder[tone],
@@ -308,29 +314,31 @@ const Home = () => {
         />
       </div>
 
-      {overdue.length > 0 && (
-        <Section title="Overdue" count={overdue.length}>
-          {overdue.map((t) => (
-            <TaskRow key={t.id} t={t} onOpen={openTask} />
-          ))}
-        </Section>
-      )}
+      <LayoutGroup>
+        {overdue.length > 0 && (
+          <Section title="Overdue" count={overdue.length}>
+            {overdue.map((t) => (
+              <TaskRow key={t.id} t={t} onOpen={openTask} />
+            ))}
+          </Section>
+        )}
 
-      {week.length > 0 && (
-        <Section title="This week" count={week.length}>
-          {week.map((t) => (
-            <TaskRow key={t.id} t={t} onOpen={openTask} />
-          ))}
-        </Section>
-      )}
+        {week.length > 0 && (
+          <Section title="This week" count={week.length}>
+            {week.map((t) => (
+              <TaskRow key={t.id} t={t} onOpen={openTask} />
+            ))}
+          </Section>
+        )}
 
-      {done.length > 0 && (
-        <Section title="Completed" count={done.length}>
-          {done.map((t) => (
-            <TaskRow key={t.id} t={t} onOpen={openTask} />
-          ))}
-        </Section>
-      )}
+        {done.length > 0 && (
+          <Section title="Completed" count={done.length}>
+            {done.map((t) => (
+              <TaskRow key={t.id} t={t} onOpen={openTask} />
+            ))}
+          </Section>
+        )}
+      </LayoutGroup>
 
       <section className="mt-8 px-5 grid grid-cols-2 gap-3">
         <Link
