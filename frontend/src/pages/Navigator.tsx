@@ -1,10 +1,48 @@
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, Send } from "lucide-react";
 import { toast } from "sonner";
 import { buildChatSeed } from "@/data/placeholder";
 import { useProfile } from "@/store/profile";
 import { cn } from "@/lib/utils";
+
+const LINKIFY_RE =
+  /([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})|(\(\d{3}\)\s?\d{3}[-.\s]?\d{4}|\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b)|(\b(?:211|988|911)\b)/g;
+
+const linkify = (text: string): ReactNode[] => {
+  const nodes: ReactNode[] = [];
+  let lastIdx = 0;
+  for (const m of text.matchAll(LINKIFY_RE)) {
+    const start = m.index ?? 0;
+    if (start > lastIdx) nodes.push(text.slice(lastIdx, start));
+    const [full, email, phone, shortCode] = m;
+    const key = `${start}-${full}`;
+    const linkClass =
+      "underline decoration-current/40 underline-offset-2 hover:decoration-current";
+    if (email) {
+      nodes.push(
+        <a key={key} href={`mailto:${email}`} className={linkClass}>
+          {email}
+        </a>,
+      );
+    } else if (phone) {
+      nodes.push(
+        <a key={key} href={`tel:${phone.replace(/\D/g, "")}`} className={linkClass}>
+          {phone}
+        </a>,
+      );
+    } else if (shortCode) {
+      nodes.push(
+        <a key={key} href={`tel:${shortCode}`} className={linkClass}>
+          {shortCode}
+        </a>,
+      );
+    }
+    lastIdx = start + full.length;
+  }
+  if (lastIdx < text.length) nodes.push(text.slice(lastIdx));
+  return nodes;
+};
 
 type Msg = { id: string; role: "user" | "assistant"; text: string; source?: string };
 
@@ -165,7 +203,7 @@ const Navigator = () => {
                       : "bg-card border border-border text-foreground rounded-bl-md",
                   )}
                 >
-                  <p className="leading-relaxed">{m.text}</p>
+                  <p className="leading-relaxed">{linkify(m.text)}</p>
                   {m.source && (
                     <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
                       Source · {m.source}
