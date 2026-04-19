@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,7 @@ import {
   Hammer,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useProfile, type EducationPlan } from "@/store/profile";
 
 const TOTAL_QUESTIONS = 7;
 
@@ -110,13 +111,15 @@ const Choice = ({
 );
 
 export const StepName = () => {
-  const [name, setName] = useState("");
+  const name = useProfile((s) => s.name);
+  const setName = useProfile((s) => s.setName);
   return (
     <StepShell
       stepIndex={1}
       title="What should we call you?"
       subtitle="A first name or nickname is fine — this stays on your device."
       next="/onboarding/age"
+      disabled={!name.trim()}
     >
       <Label htmlFor="name" className="text-sm font-medium text-foreground">
         Your name
@@ -125,7 +128,6 @@ export const StepName = () => {
         id="name"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Maria"
         autoComplete="given-name"
         className="mt-2 h-14 rounded-2xl text-lg"
       />
@@ -134,13 +136,25 @@ export const StepName = () => {
 };
 
 export const StepAge = () => {
-  const [age, setAge] = useState("18");
+  const age = useProfile((s) => s.age);
+  const setAge = useProfile((s) => s.setAge);
+  const [raw, setRaw] = useState(age !== null ? String(age) : "");
+  const handleChange = (value: string) => {
+    setRaw(value);
+    if (value === "") {
+      setAge(null);
+      return;
+    }
+    const n = Number(value);
+    if (!Number.isNaN(n)) setAge(n);
+  };
   return (
     <StepShell
       stepIndex={2}
       title="How old are you?"
       subtitle="Your age unlocks the right benefits and programs."
       next="/onboarding/county"
+      disabled={age === null}
     >
       <Label htmlFor="age" className="text-sm font-medium text-foreground">
         Age
@@ -149,8 +163,8 @@ export const StepAge = () => {
         id="age"
         type="number"
         inputMode="numeric"
-        value={age}
-        onChange={(e) => setAge(e.target.value)}
+        value={raw}
+        onChange={(e) => handleChange(e.target.value)}
         className="mt-2 h-14 rounded-2xl text-lg"
       />
     </StepShell>
@@ -178,7 +192,8 @@ const GA_COUNTIES = [
 
 export const StepCounty = () => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<string>("Cobb");
+  const selected = useProfile((s) => s.county);
+  const setCounty = useProfile((s) => s.setCounty);
   const label = selected ? `${selected} County` : "Select your county";
   return (
     <StepShell
@@ -218,7 +233,7 @@ export const StepCounty = () => {
                     key={c}
                     value={c}
                     onSelect={() => {
-                      setSelected(c);
+                      setCounty(c);
                       setOpen(false);
                     }}
                     className="min-h-[2.75rem]"
@@ -250,9 +265,8 @@ const DOCUMENT_OPTIONS = [
 ];
 
 export const StepDocuments = () => {
-  const [have, setHave] = useState<string[]>([]);
-  const toggle = (id: string) =>
-    setHave((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  const have = useProfile((s) => s.documentsHave);
+  const toggle = useProfile((s) => s.toggleDocument);
   return (
     <StepShell
       stepIndex={4}
@@ -302,7 +316,12 @@ export const StepDocuments = () => {
   );
 };
 
-const EDUCATION_OPTIONS = [
+const EDUCATION_OPTIONS: {
+  id: EducationPlan;
+  label: string;
+  description: string;
+  Icon: typeof GraduationCap;
+}[] = [
   {
     id: "college",
     label: "4-year college",
@@ -324,7 +343,8 @@ const EDUCATION_OPTIONS = [
 ];
 
 export const StepEducation = () => {
-  const [pick, setPick] = useState<string | null>(null);
+  const pick = useProfile((s) => s.education);
+  const setEducation = useProfile((s) => s.setEducation);
   return (
     <StepShell
       stepIndex={5}
@@ -340,7 +360,7 @@ export const StepEducation = () => {
             <button
               key={id}
               type="button"
-              onClick={() => setPick(id)}
+              onClick={() => setEducation(id)}
               className={cn(
                 "flex w-full items-start gap-4 rounded-2xl border-2 px-5 py-4 text-left transition min-h-[3.5rem]",
                 active
@@ -376,7 +396,8 @@ export const StepEducation = () => {
 };
 
 export const StepHousing = () => {
-  const [pick, setPick] = useState<string | null>(null);
+  const pick = useProfile((s) => s.housing);
+  const setHousing = useProfile((s) => s.setHousing);
   const options = [
     "Foster home",
     "Group home",
@@ -398,7 +419,7 @@ export const StepHousing = () => {
             key={o}
             label={o}
             active={pick === o}
-            onClick={() => setPick(o)}
+            onClick={() => setHousing(o)}
           />
         ))}
       </div>
@@ -407,9 +428,8 @@ export const StepHousing = () => {
 };
 
 export const StepHealth = () => {
-  const [picks, setPicks] = useState<string[]>([]);
-  const toggle = (o: string) =>
-    setPicks((p) => (p.includes(o) ? p.filter((x) => x !== o) : [...p, o]));
+  const picks = useProfile((s) => s.health);
+  const toggle = useProfile((s) => s.toggleHealth);
   const options = [
     "I have Medicaid right now",
     "I take prescriptions",
@@ -438,11 +458,34 @@ export const StepHealth = () => {
   );
 };
 
+const describeProfile = (name: string, age: number | null, county: string) => {
+  const parts = [name.trim() || "you"];
+  if (age !== null) parts.push(String(age));
+  if (county) parts.push(`${county} County`);
+  return parts.join(", ");
+};
+
 export const StepReview = () => {
+  const name = useProfile((s) => s.name);
+  const age = useProfile((s) => s.age);
+  const county = useProfile((s) => s.county);
+  const descriptor = describeProfile(name, age, county);
   const highlights = [
-    { Icon: FileText, title: "Your 90-day plan", note: "Seven priorities tailored to Maria, 18, Cobb County." },
-    { Icon: Heart, title: "Six benefits you likely qualify for", note: "Chafee ETV, EYSS, extended Medicaid, KSU ASCEND, HUD FYI, HB 136." },
-    { Icon: GraduationCap, title: "Documents and school plan", note: "We tracked what you already have and what's next." },
+    {
+      Icon: FileText,
+      title: "Your 90-day plan",
+      note: `Seven priorities tailored to ${descriptor}.`,
+    },
+    {
+      Icon: Heart,
+      title: "Six benefits you likely qualify for",
+      note: "Chafee ETV, EYSS, extended Medicaid, KSU ASCEND, HUD FYI, HB 136.",
+    },
+    {
+      Icon: GraduationCap,
+      title: "Documents and school plan",
+      note: "We tracked what you already have and what's next.",
+    },
   ];
   return (
     <StepShell

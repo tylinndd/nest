@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { user, tasks, type Task } from "@/data/placeholder";
 import { SuccessCard } from "@/components/ui/SuccessCard";
+import { useProfile } from "@/store/profile";
 import { cn } from "@/lib/utils";
 
 const toneBorder: Record<NonNullable<Task["tone"]>, string> = {
@@ -110,6 +111,14 @@ const TaskRow = ({
 
 const Home = () => {
   const [completedId, setCompletedId] = useState<string | null>(null);
+  const profileName = useProfile((s) => s.name);
+  const profileAge = useProfile((s) => s.age);
+  const profileCounty = useProfile((s) => s.county);
+
+  const displayName = profileName.trim() || user.name;
+  const displayAge = profileAge ?? user.age;
+  const displayCounty = profileCounty ? `${profileCounty} County` : user.county;
+
   const overdue = useMemo(() => tasks.filter((t) => t.status === "overdue"), []);
   const week = useMemo(() => tasks.filter((t) => t.status === "week"), []);
   const done = useMemo(() => tasks.filter((t) => t.status === "done"), []);
@@ -129,9 +138,9 @@ const Home = () => {
     <div className="pb-6">
       <div className="px-5 pt-5">
         <p className="text-sm text-muted-foreground">Good morning,</p>
-        <h1 className="font-display text-3xl text-primary">{user.name}.</h1>
+        <h1 className="font-display text-3xl text-primary">{displayName}.</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {user.county} · Age {user.age}
+          {displayCounty} · Age {displayAge}
         </p>
       </div>
 
