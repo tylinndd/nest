@@ -155,14 +155,8 @@ const TaskRow = ({
   const Icon = statusIcon[t.status];
   return (
     <motion.div
-      layout
       layoutId={`task-${t.id}`}
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.24,
-        layout: { type: "spring", stiffness: 260, damping: 30 },
-      }}
+      transition={{ type: "spring", stiffness: 260, damping: 30 }}
       className={cn(
         "nest-card p-4 border-l-4",
         toneBorder[tone],
