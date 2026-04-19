@@ -191,12 +191,19 @@ const Navigator = () => {
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [listening, setListening] = useState(false);
+  const [hydrated, setHydrated] = useState(() => useChat.persist.hasHydrated());
   const scrollRef = useRef<HTMLDivElement>(null);
   const pendingTimers = useRef<Set<number>>(new Set());
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const voiceSupported = useMemo(() => getSpeechRecognition() !== null, []);
 
   useEffect(() => {
+    if (hydrated) return;
+    return useChat.persist.onFinishHydration(() => setHydrated(true));
+  }, [hydrated]);
+
+  useEffect(() => {
+    if (!hydrated) return;
     if (messages.length === 0) {
       const seed: Msg[] = buildChatSeed(profileName).map((m) => ({
         ...m,
@@ -204,7 +211,7 @@ const Navigator = () => {
       }));
       setMessages(() => seed);
     }
-  }, [messages.length, profileName, setMessages]);
+  }, [hydrated, messages.length, profileName, setMessages]);
 
   const lastAssistantId = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
