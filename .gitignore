@@ -20,10 +20,12 @@ frontend/build
 *.sln
 *.sw?
 
-# Env
+# Environment & secrets
 .env
 .env.local
 .env.*.local
+.env.*
+!.env.example
 
 # Logs
 npm-debug.log*
@@ -32,16 +34,30 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Test
+# Test / coverage
 coverage
 .playwright-mcp
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
-# Python (backend)
-__pycache__
+# Python
+__pycache__/
 *.py[cod]
 *$py.class
-.venv
-venv
-.pytest_cache
-.mypy_cache
-*.egg-info
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual environments
+backend/venv/
+.venv/
+venv/
+
+# Chroma / local vector DB (regenerate with ingest)
+backend/vectorstore/
