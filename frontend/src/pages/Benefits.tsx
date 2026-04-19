@@ -30,11 +30,18 @@ const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
     <motion.article
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -3 }}
       transition={{ duration: 0.28, delay: index * 0.05, ease: "easeOut" }}
-      className="nest-card p-5"
+      className="nest-card p-5 transition-shadow duration-200 hover:shadow-lg"
     >
       <div className="flex items-center justify-between gap-3">
-        <span className={cn("nest-chip", badge.className)}>
+        <span
+          className={cn(
+            "nest-chip",
+            badge.className,
+            b.status === "qualify" && "nest-shimmer",
+          )}
+        >
           <Icon className="mr-1 h-3 w-3" strokeWidth={2.5} />
           {badge.label}
         </span>

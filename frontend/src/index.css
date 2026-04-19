@@ -126,4 +126,28 @@
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { scrollbar-width: none; }
+
+  .nest-shimmer {
+    background-image: linear-gradient(
+      110deg,
+      transparent 30%,
+      hsl(var(--success) / 0.18) 45%,
+      hsl(var(--success) / 0.38) 50%,
+      hsl(var(--success) / 0.18) 55%,
+      transparent 70%
+    );
+    background-size: 220% 100%;
+    background-repeat: no-repeat;
+    background-position: -150% 0;
+    animation: nest-shimmer-sweep 3.6s ease-in-out 0.8s infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nest-shimmer { animation: none; }
+  }
+}
+
+@keyframes nest-shimmer-sweep {
+  0%   { background-position: -150% 0; }
+  55%  { background-position: 250% 0; }
+  100% { background-position: 250% 0; }
 }
