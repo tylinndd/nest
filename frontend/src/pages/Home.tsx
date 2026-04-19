@@ -12,6 +12,16 @@ import {
 } from "lucide-react";
 import { user, tasks, type Task } from "@/data/placeholder";
 import { SuccessCard } from "@/components/ui/SuccessCard";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 import { useProfile } from "@/store/profile";
 import { cn } from "@/lib/utils";
 
@@ -57,10 +67,10 @@ const Section = ({
 
 const TaskRow = ({
   t,
-  onComplete,
+  onOpen,
 }: {
   t: Task;
-  onComplete: (id: string) => void;
+  onOpen: (task: Task) => void;
 }) => {
   const tone = t.tone ?? (t.status === "overdue" ? "coral" : t.status === "week" ? "amber" : "sage");
   const Icon = statusIcon[t.status];
@@ -97,7 +107,7 @@ const TaskRow = ({
           <p className="text-xs text-muted-foreground mt-1">{t.due}</p>
           {t.help && (
             <button
-              onClick={() => onComplete(t.id)}
+              onClick={() => onOpen(t)}
               className="mt-3 nest-pill bg-secondary text-secondary-foreground hover:bg-secondary/80 min-h-[2.5rem]"
             >
               {t.help} <ArrowRight className="ml-1 h-3.5 w-3.5" />
@@ -111,6 +121,7 @@ const TaskRow = ({
 
 const Home = () => {
   const [completedId, setCompletedId] = useState<string | null>(null);
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
   const profileName = useProfile((s) => s.name);
   const profileAge = useProfile((s) => s.age);
   const profileCounty = useProfile((s) => s.county);
@@ -125,8 +136,12 @@ const Home = () => {
 
   const progress = Math.round((done.length / tasks.length) * 100);
 
-  const handleComplete = (id: string) => {
-    setCompletedId(id);
+  const openTask = (task: Task) => setActiveTask(task);
+
+  const handleMarkDone = () => {
+    if (!activeTask) return;
+    setCompletedId(activeTask.id);
+    setActiveTask(null);
     window.setTimeout(() => setCompletedId(null), 2400);
   };
 
@@ -180,7 +195,7 @@ const Home = () => {
       {overdue.length > 0 && (
         <Section title="Overdue" count={overdue.length}>
           {overdue.map((t) => (
-            <TaskRow key={t.id} t={t} onComplete={handleComplete} />
+            <TaskRow key={t.id} t={t} onOpen={openTask} />
           ))}
         </Section>
       )}
@@ -188,7 +203,7 @@ const Home = () => {
       {week.length > 0 && (
         <Section title="This week" count={week.length}>
           {week.map((t) => (
-            <TaskRow key={t.id} t={t} onComplete={handleComplete} />
+            <TaskRow key={t.id} t={t} onOpen={openTask} />
           ))}
         </Section>
       )}
@@ -196,7 +211,7 @@ const Home = () => {
       {done.length > 0 && (
         <Section title="Completed" count={done.length}>
           {done.map((t) => (
-            <TaskRow key={t.id} t={t} onComplete={handleComplete} />
+            <TaskRow key={t.id} t={t} onOpen={openTask} />
           ))}
         </Section>
       )}
@@ -243,6 +258,61 @@ const Home = () => {
           <ArrowRight className="h-4 w-4 text-muted-foreground" />
         </Link>
       </section>
+
+      <Drawer
+        open={activeTask !== null}
+        onOpenChange={(o) => !o && setActiveTask(null)}
+      >
+        <DrawerContent className="max-w-md mx-auto">
+          <DrawerHeader className="text-left">
+            <DrawerTitle className="font-display text-xl text-primary">
+              {activeTask?.title}
+            </DrawerTitle>
+            {activeTask?.guide && (
+              <DrawerDescription>{activeTask.guide.subtitle}</DrawerDescription>
+            )}
+          </DrawerHeader>
+          <div className="px-4 pb-2 space-y-4">
+            {activeTask?.guide ? (
+              <>
+                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  Source · {activeTask.guide.source}
+                </span>
+                <ol className="space-y-3">
+                  {activeTask.guide.steps.map((step, i) => (
+                    <li key={i} className="flex gap-3">
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-primary">
+                        {i + 1}
+                      </span>
+                      <p className="text-sm text-foreground leading-relaxed">
+                        {step}
+                      </p>
+                    </li>
+                  ))}
+                </ol>
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Step-by-step guidance will load here once your Navigator pulls
+                the latest DFCS source.
+              </p>
+            )}
+          </div>
+          <DrawerFooter>
+            <Button
+              onClick={handleMarkDone}
+              className="rounded-full h-12 font-semibold"
+            >
+              Mark as done
+            </Button>
+            <DrawerClose asChild>
+              <Button variant="outline" className="rounded-full">
+                Close
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };
