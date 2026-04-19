@@ -46,7 +46,7 @@ const matchCanned = (input: string): CannedReply => {
       source: "Georgia DFCS · Former Foster Care Medicaid",
     };
   }
-  if (/(birth certificate|\bid\b|ssn|social security|document|vital records)/.test(q)) {
+  if (/(birth certificate|\bid\b|ssn|social security|document|docs|vital records)/.test(q)) {
     return {
       text:
         "For a Georgia birth certificate, ask your DFCS caseworker for the foster-care fee-waiver letter, then apply through Vital Records with your photo ID. Social Security cards are free — your caseworker can start that request with you.",
@@ -55,7 +55,7 @@ const matchCanned = (input: string): CannedReply => {
   }
   return {
     text:
-      "I can help with housing, benefits, school, health, or documents. Try one of the suggestions above, or tell me what's most urgent.",
+      "I can help with housing, benefits, school, health, or documents. Tell me what's most urgent.",
   };
 };
 
