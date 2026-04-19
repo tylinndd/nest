@@ -94,7 +94,7 @@ export const benefits: Benefit[] = [
 export const chatSeed = [
   {
     role: "assistant" as const,
-    text: "Hey Maria — I'm your Nest navigator. Ask me anything about housing, benefits, school, or what to do next.",
+    text: "Hey Maria. I can help with housing, benefits, school, or your next step.",
   },
 ];
 

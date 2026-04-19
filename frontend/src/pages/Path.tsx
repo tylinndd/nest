@@ -111,10 +111,10 @@ const stateStyle: Record<ZoneState, { ring: string; icon: string; badge: string 
 
 const Path = () => (
   <div className="px-5 pt-5 pb-4">
-    <p className="text-sm text-muted-foreground">Your journey</p>
+    <p className="text-sm text-muted-foreground">Overview</p>
     <h1 className="font-display text-3xl text-primary">The Path</h1>
     <p className="mt-2 text-muted-foreground">
-      Five zones to land safely. Unlock each as you close out the one before it.
+      Five zones, in order. Finish one to unlock the next.
     </p>
 
     <ol className="relative mt-8 pl-4">

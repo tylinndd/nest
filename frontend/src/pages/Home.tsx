@@ -65,7 +65,6 @@ const TaskRow = ({
   const Icon = statusIcon[t.status];
   return (
     <motion.div
-      layout
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.24 }}
@@ -164,7 +163,7 @@ const Home = () => {
       <div className="px-5 mt-4">
         <SuccessCard
           show={!!completedTask}
-          title="Nice — logged for you"
+          title="Logged"
           detail={completedTask ? completedTask.title : undefined}
         />
       </div>

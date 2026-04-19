@@ -217,8 +217,8 @@ export const StepCounty = () => {
                   <CommandItem
                     key={c}
                     value={c}
-                    onSelect={(value) => {
-                      setSelected(value);
+                    onSelect={() => {
+                      setSelected(c);
                       setOpen(false);
                     }}
                     className="min-h-[2.75rem]"
@@ -318,7 +318,7 @@ const EDUCATION_OPTIONS = [
   {
     id: "working",
     label: "Working or taking a break",
-    description: "That's okay — benefits don't require school",
+    description: "Benefits don't require school enrollment",
     Icon: Briefcase,
   },
 ];
@@ -446,9 +446,9 @@ export const StepReview = () => {
   ];
   return (
     <StepShell
-      eyebrow="You're all set"
-      title="Here's what Nest built for you."
-      subtitle="You can update any of this anytime from your home screen."
+      eyebrow="Review"
+      title="Here's your starting plan."
+      subtitle="Update any of this later from Home."
       next="/"
       cta="See my plan"
     >

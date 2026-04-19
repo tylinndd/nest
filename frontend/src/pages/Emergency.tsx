@@ -36,7 +36,7 @@ const Emergency = () => (
         transition={{ duration: 0.3 }}
         className="mt-6 font-display text-4xl leading-tight"
       >
-        You're not alone.
+        Help is available.
       </motion.h1>
       <p className="mt-3 text-sm opacity-85">
         Tap any line to call or text. If you're in immediate danger, dial 911.
@@ -60,7 +60,7 @@ const Emergency = () => (
           const Icon = h.kind === "text" ? MessageSquare : Phone;
           const href =
             h.kind === "text"
-              ? `sms:${h.number.replace(/\D/g, "")}&body=HOME`
+              ? `sms:${h.number.replace(/\D/g, "")}?body=HOME`
               : `tel:${h.number.replace(/\D/g, "")}`;
           return (
             <motion.a
@@ -115,7 +115,7 @@ const Emergency = () => (
           </p>
         </a>
         <a
-          href="sms:741741&body=HOME"
+          href="sms:741741?body=HOME"
           className="nest-card p-5 text-left min-h-[6.5rem]"
         >
           <MessageSquare className="h-6 w-6 text-primary" />

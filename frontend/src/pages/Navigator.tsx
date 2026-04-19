@@ -4,7 +4,7 @@ import { Plus, Send } from "lucide-react";
 import { chatSeed } from "@/data/placeholder";
 import { cn } from "@/lib/utils";
 
-type Msg = { role: "user" | "assistant"; text: string; source?: string };
+type Msg = { id: string; role: "user" | "assistant"; text: string; source?: string };
 
 const suggestionChips = [
   "I might be couch-surfing this weekend",
@@ -13,7 +13,9 @@ const suggestionChips = [
 ];
 
 const Navigator = () => {
-  const [messages, setMessages] = useState<Msg[]>(chatSeed);
+  const [messages, setMessages] = useState<Msg[]>(() =>
+    chatSeed.map((m) => ({ ...m, id: crypto.randomUUID() })),
+  );
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -26,33 +28,34 @@ const Navigator = () => {
   const send = (override?: string) => {
     const text = (override ?? input).trim();
     if (!text) return;
-    const userMsg: Msg = { role: "user", text };
+    const userMsg: Msg = { id: crypto.randomUUID(), role: "user", text };
     const reply: Msg = {
+      id: crypto.randomUUID(),
       role: "assistant",
       text:
         "You're still covered — Georgia automatically keeps former foster youth on Medicaid until age 26 with no income test. I can pull up the exact member ID lookup if you want.",
-      source: "Georgia DFCS · Title IV-E Medicaid · Section 1002.1",
+      source: "Georgia DFCS · Former Foster Care Medicaid",
     };
     setMessages((m) => [...m, userMsg, reply]);
     setInput("");
   };
 
   return (
-    <div className="flex h-[calc(100vh-7rem)] flex-col">
+    <div className="flex h-[calc(100dvh-7rem)] flex-col">
       <div className="px-5 pt-5">
         <p className="text-sm text-muted-foreground">Always on · private</p>
-        <h1 className="font-display text-3xl text-primary">AI Navigator</h1>
+        <h1 className="font-display text-3xl text-primary">Ask Navigator</h1>
       </div>
 
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto px-5 py-4 space-y-3 no-scrollbar"
       >
-        {messages.map((m, i) => {
+        {messages.map((m) => {
           const isUser = m.role === "user";
           return (
             <motion.div
-              key={i}
+              key={m.id}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}

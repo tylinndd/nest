@@ -52,7 +52,7 @@ const Vault = () => {
       <p className="text-sm text-muted-foreground">Encrypted on your device</p>
       <h1 className="font-display text-3xl text-primary">Document Vault</h1>
       <p className="mt-2 text-muted-foreground">
-        Keep every ID, letter, and record in one place you control.
+        Every ID, letter, and record in one place.
       </p>
 
       <div className="mt-5 nest-card p-5 bg-primary text-primary-foreground">
