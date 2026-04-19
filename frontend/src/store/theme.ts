@@ -79,5 +79,3 @@ export const useTheme = create<ThemeState>()(
     },
   ),
 );
-
-applyTheme(useTheme.getState().theme);
