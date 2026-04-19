@@ -336,6 +336,14 @@ const Home = () => {
     () => overdue[0] ?? week[0] ?? null,
     [overdue, week],
   );
+  const overdueRest = useMemo(
+    () => overdue.filter((t) => t.id !== nextMove?.id),
+    [overdue, nextMove],
+  );
+  const weekRest = useMemo(
+    () => week.filter((t) => t.id !== nextMove?.id),
+    [week, nextMove],
+  );
 
   const progress = Math.round((done.length / taskList.length) * 100);
 
@@ -437,17 +445,17 @@ const Home = () => {
       </div>
 
       <LayoutGroup>
-        {overdue.length > 0 && (
-          <Section title="Overdue" count={overdue.length}>
-            {overdue.map((t) => (
+        {overdueRest.length > 0 && (
+          <Section title="Overdue" count={overdueRest.length}>
+            {overdueRest.map((t) => (
               <TaskRow key={t.id} t={t} onOpen={openTask} onComplete={completeTask} />
             ))}
           </Section>
         )}
 
-        {week.length > 0 && (
-          <Section title="This week" count={week.length}>
-            {week.map((t) => (
+        {weekRest.length > 0 && (
+          <Section title="This week" count={weekRest.length}>
+            {weekRest.map((t) => (
               <TaskRow key={t.id} t={t} onOpen={openTask} onComplete={completeTask} />
             ))}
           </Section>
