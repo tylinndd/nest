@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Nest — Your guide through foster care transitions">
+  <rect width="1200" height="630" fill="#1B4332"/>
+  <rect x="0" y="605" width="1200" height="25" fill="#52B788"/>
+
+  <circle cx="120" cy="120" r="48" fill="#FAF7F2"/>
+  <text x="120" y="142" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="54" fill="#1B4332" font-weight="400">N</text>
+  <text x="190" y="138" font-family="Georgia, 'Times New Roman', serif" font-size="46" fill="#FAF7F2" font-weight="400">Nest</text>
+
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="76" fill="#FAF7F2" font-weight="400">
+    <tspan x="120" y="320">Your guide through</tspan>
+    <tspan x="120" y="410">foster care transitions.</tspan>
+  </text>
+
+  <text x="120" y="530" font-family="'Helvetica Neue', Arial, sans-serif" font-size="26" fill="#FAF7F2" fill-opacity="0.85">
+    Built for Georgia foster youth aging out of care.
+  </text>
+</svg>
