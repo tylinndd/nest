@@ -29,6 +29,11 @@ export const TopBar = ({ showSaveExit, right }: Props) => {
     useProfile.getState().reset();
     useProfile.persist.clearStorage();
     useChat.getState().clear();
+    try {
+      localStorage.removeItem("nest.first-task-fired");
+    } catch {
+      // storage unavailable; confetti gate stays as-is
+    }
     navigate("/onboarding/name");
     toast.success("Demo reset", {
       id: "demo-reset",

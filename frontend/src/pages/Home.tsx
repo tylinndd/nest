@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import confetti from "canvas-confetti";
 import {
   animate,
   LayoutGroup,
@@ -34,6 +35,32 @@ import {
 import { Button } from "@/components/ui/button";
 import { useProfile } from "@/store/profile";
 import { cn } from "@/lib/utils";
+
+const FIRST_TASK_KEY = "nest.first-task-fired";
+
+const fireFirstTaskConfetti = () => {
+  const colors = ["#52B788", "#D97706", "#E07B6A", "#1B4332"];
+  const defaults = {
+    startVelocity: 35,
+    spread: 70,
+    ticks: 60,
+    gravity: 0.9,
+    scalar: 0.9,
+    colors,
+  };
+  confetti({
+    ...defaults,
+    particleCount: 60,
+    origin: { x: 0.2, y: 0.7 },
+    angle: 60,
+  });
+  confetti({
+    ...defaults,
+    particleCount: 60,
+    origin: { x: 0.8, y: 0.7 },
+    angle: 120,
+  });
+};
 
 const toneBorder: Record<NonNullable<Task["tone"]>, string> = {
   coral: "border-l-nest-coral",
@@ -301,6 +328,16 @@ const Home = () => {
     );
     setCompletedId(completingId);
     setActiveTask(null);
+    if (!reduceMotion) {
+      try {
+        if (!localStorage.getItem(FIRST_TASK_KEY)) {
+          fireFirstTaskConfetti();
+          localStorage.setItem(FIRST_TASK_KEY, "1");
+        }
+      } catch {
+        // storage unavailable; skip persistence, still no re-fire this session
+      }
+    }
     if (completedTimerRef.current !== null) {
       window.clearTimeout(completedTimerRef.current);
     }
