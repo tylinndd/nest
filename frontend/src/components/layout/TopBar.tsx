@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Moon, Sun } from "lucide-react";
 import { useProfile } from "@/store/profile";
 import { useChat } from "@/store/chat";
+import { useTheme } from "@/store/theme";
 
 type Props = {
   showSaveExit?: boolean;
@@ -15,6 +17,9 @@ export const TopBar = ({ showSaveExit, right }: Props) => {
   const navigate = useNavigate();
   const timerRef = useRef<number | null>(null);
   const firedRef = useRef(false);
+  const theme = useTheme((s) => s.theme);
+  const toggleTheme = useTheme((s) => s.toggle);
+  const isDark = theme === "dark";
 
   useEffect(
     () => () => {
@@ -87,7 +92,22 @@ export const TopBar = ({ showSaveExit, right }: Props) => {
             Save &amp; Exit
           </Link>
         ) : (
-          right
+          <div className="flex items-center gap-2">
+            {right}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              aria-pressed={isDark}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-primary transition hover:bg-secondary/80"
+            >
+              {isDark ? (
+                <Sun className="h-4 w-4" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
+            </button>
+          </div>
         )}
       </div>
     </header>
