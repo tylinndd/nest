@@ -9,6 +9,7 @@ import {
   MessageCircle,
   ArrowRight,
   LifeBuoy,
+  Pencil,
 } from "lucide-react";
 import { user, tasks, type Task } from "@/data/placeholder";
 import { SuccessCard } from "@/components/ui/SuccessCard";
@@ -177,11 +178,22 @@ const Home = () => {
   return (
     <div className="pb-6">
       <div className="px-5 pt-5">
-        <p className="text-sm text-muted-foreground">Good morning,</p>
-        <h1 className="font-display text-3xl text-primary">{displayName}.</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {displayCounty} · Age {displayAge}
-        </p>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-sm text-muted-foreground">Good morning,</p>
+            <h1 className="font-display text-3xl text-primary">{displayName}.</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {displayCounty} · Age {displayAge}
+            </p>
+          </div>
+          <Link
+            to="/onboarding"
+            aria-label="Edit your profile"
+            className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-primary transition hover:bg-secondary/80"
+          >
+            <Pencil className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
 
       <div className="px-5 mt-5">
