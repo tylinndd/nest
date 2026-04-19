@@ -1,0 +1,25 @@
+{
+  "name": "Nest — Transition Navigator",
+  "short_name": "Nest",
+  "description": "Your guide through Georgia foster-care transitions.",
+  "theme_color": "#1B4332",
+  "background_color": "#FAF7F2",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "/",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
