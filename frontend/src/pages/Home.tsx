@@ -122,6 +122,45 @@ const HeroCard = ({
   );
 };
 
+const NextMoveCard = ({
+  task,
+  onOpen,
+}: {
+  task: Task;
+  onOpen: (t: Task) => void;
+}) => {
+  const isOverdue = task.status === "overdue";
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(task)}
+      className={cn(
+        "group w-full nest-card p-5 text-left transition active:scale-[0.995]",
+        isOverdue
+          ? "border-nest-coral/40 hover:border-nest-coral"
+          : "border-nest-amber/40 hover:border-nest-amber",
+      )}
+    >
+      <p
+        className={cn(
+          "text-xs font-semibold uppercase tracking-widest",
+          isOverdue ? "text-nest-coral" : "text-nest-amber",
+        )}
+      >
+        Your next move
+      </p>
+      <p className="mt-2 font-display text-xl text-primary leading-tight">
+        {task.title}
+      </p>
+      <p className="mt-1 text-sm text-muted-foreground">{task.due}</p>
+      <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
+        Start now
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+      </div>
+    </button>
+  );
+};
+
 const Section = ({
   title,
   count,
@@ -229,6 +268,10 @@ const Home = () => {
   const overdue = useMemo(() => taskList.filter((t) => t.status === "overdue"), [taskList]);
   const week = useMemo(() => taskList.filter((t) => t.status === "week"), [taskList]);
   const done = useMemo(() => taskList.filter((t) => t.status === "done"), [taskList]);
+  const nextMove = useMemo<Task | null>(
+    () => overdue[0] ?? week[0] ?? null,
+    [overdue, week],
+  );
 
   const progress = Math.round((done.length / taskList.length) * 100);
 
@@ -299,6 +342,12 @@ const Home = () => {
           reduceMotion={!!reduceMotion}
         />
       </div>
+
+      {nextMove && (
+        <div className="px-5 mt-4">
+          <NextMoveCard task={nextMove} onOpen={openTask} />
+        </div>
+      )}
 
       <div className="px-5 mt-4">
         <SuccessCard
