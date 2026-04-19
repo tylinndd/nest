@@ -59,12 +59,13 @@ export const TopBar = ({ showSaveExit, right }: Props) => {
       <div className="mx-auto max-w-md flex items-center justify-between px-5 py-4">
         <Link
           to="/"
-          className="flex items-center gap-2 select-none"
+          className="flex items-center gap-2 select-none [-webkit-touch-callout:none]"
           onPointerDown={startPress}
           onPointerUp={cancelPress}
           onPointerCancel={cancelPress}
           onPointerLeave={cancelPress}
           onClick={handleClick}
+          onContextMenu={(e) => e.preventDefault()}
         >
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-display text-lg">
             N
