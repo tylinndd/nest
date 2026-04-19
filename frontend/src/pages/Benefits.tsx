@@ -1,8 +1,16 @@
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck } from "lucide-react";
+import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { benefits, type Benefit, type BenefitStatus } from "@/data/placeholder";
 import { cn } from "@/lib/utils";
+
+const formatVerified = (iso: string) => {
+  const parts = iso.split("-").map(Number);
+  if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+  const [y, m, d] = parts;
+  const date = new Date(y, m - 1, d);
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+};
 
 const statusBadge: Record<BenefitStatus, { label: string; className: string; Icon: typeof CheckCircle2 }> = {
   qualify: {
@@ -26,6 +34,7 @@ const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
   const badge = statusBadge[b.status];
   const Icon = badge.Icon;
   const cta = b.cta;
+  const verifiedLabel = b.verifiedOn ? formatVerified(b.verifiedOn) : null;
   return (
     <motion.article
       initial={{ opacity: 0, y: 10 }}
@@ -54,8 +63,17 @@ const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
       </h2>
       <p className="mt-1 text-xs font-medium text-primary/80">{b.eligibility}</p>
       <p className="mt-3 text-sm text-muted-foreground">{b.summary}</p>
-      {cta && (
-        <div className="mt-4">
+      <div className="mt-4 flex items-center justify-between gap-3 flex-wrap">
+        {verifiedLabel && (
+          <span
+            className="nest-chip bg-muted text-muted-foreground"
+            title={`Last verified against the source on ${verifiedLabel}`}
+          >
+            <ShieldCheck className="mr-1 h-3 w-3" strokeWidth={2.5} />
+            Verified {verifiedLabel}
+          </span>
+        )}
+        {cta && (
           <button
             type="button"
             onClick={() =>
@@ -74,8 +92,8 @@ const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
             {cta}
             <ArrowRight className="ml-1 h-4 w-4" />
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </motion.article>
   );
 };

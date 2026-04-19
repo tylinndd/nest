@@ -108,6 +108,7 @@ export type Benefit = {
   source: string;
   status: BenefitStatus;
   cta?: string;
+  verifiedOn?: string;
 };
 
 export const benefits: Benefit[] = [
@@ -119,6 +120,7 @@ export const benefits: Benefit[] = [
     source: "Georgia DFCS · Chafee Program",
     status: "qualify",
     cta: "Start application",
+    verifiedOn: "2026-04-15",
   },
   {
     id: "eyss",
@@ -128,6 +130,7 @@ export const benefits: Benefit[] = [
     source: "Georgia DFCS · EYSS",
     status: "qualify",
     cta: "Contact your worker",
+    verifiedOn: "2026-04-12",
   },
   {
     id: "medicaid-ext",
@@ -136,6 +139,7 @@ export const benefits: Benefit[] = [
     summary: "Free health insurance if you aged out of Georgia foster care. No income limit.",
     source: "Georgia DFCS · Title IV-E",
     status: "auto",
+    verifiedOn: "2026-04-18",
   },
   {
     id: "ksu-ascend",
@@ -145,6 +149,7 @@ export const benefits: Benefit[] = [
     source: "Kennesaw State University",
     status: "action",
     cta: "Book intake call",
+    verifiedOn: "2026-04-10",
   },
   {
     id: "hud-fyi",
@@ -154,6 +159,7 @@ export const benefits: Benefit[] = [
     source: "HUD · FYI Voucher",
     status: "action",
     cta: "See how to apply",
+    verifiedOn: "2026-04-08",
   },
   {
     id: "hb136",
@@ -163,6 +169,7 @@ export const benefits: Benefit[] = [
     source: "Georgia HB 136 · GSFC",
     status: "qualify",
     cta: "Check your school",
+    verifiedOn: "2026-04-14",
   },
 ];
 
