@@ -120,6 +120,7 @@ const TaskRow = ({
 };
 
 const Home = () => {
+  const [taskList, setTaskList] = useState<Task[]>(tasks);
   const [completedId, setCompletedId] = useState<string | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const profileName = useProfile((s) => s.name);
@@ -130,23 +131,31 @@ const Home = () => {
   const displayAge = profileAge ?? user.age;
   const displayCounty = profileCounty ? `${profileCounty} County` : user.county;
 
-  const overdue = useMemo(() => tasks.filter((t) => t.status === "overdue"), []);
-  const week = useMemo(() => tasks.filter((t) => t.status === "week"), []);
-  const done = useMemo(() => tasks.filter((t) => t.status === "done"), []);
+  const overdue = useMemo(() => taskList.filter((t) => t.status === "overdue"), [taskList]);
+  const week = useMemo(() => taskList.filter((t) => t.status === "week"), [taskList]);
+  const done = useMemo(() => taskList.filter((t) => t.status === "done"), [taskList]);
 
-  const progress = Math.round((done.length / tasks.length) * 100);
+  const progress = Math.round((done.length / taskList.length) * 100);
 
   const openTask = (task: Task) => setActiveTask(task);
 
   const handleMarkDone = () => {
     if (!activeTask) return;
-    setCompletedId(activeTask.id);
+    const completingId = activeTask.id;
+    setTaskList((prev) =>
+      prev.map((t) =>
+        t.id === completingId
+          ? { ...t, status: "done" as const, tone: "sage" as const, due: "Completed" }
+          : t,
+      ),
+    );
+    setCompletedId(completingId);
     setActiveTask(null);
     window.setTimeout(() => setCompletedId(null), 2400);
   };
 
   const completedTask = completedId
-    ? tasks.find((t) => t.id === completedId) ?? null
+    ? taskList.find((t) => t.id === completedId) ?? null
     : null;
 
   return (
