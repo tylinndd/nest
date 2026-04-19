@@ -60,12 +60,12 @@ export const TopBar = ({ showSaveExit, right }: Props) => {
         <Link
           to="/"
           className="flex items-center gap-2 select-none [-webkit-touch-callout:none]"
-          onPointerDown={startPress}
-          onPointerUp={cancelPress}
-          onPointerCancel={cancelPress}
-          onPointerLeave={cancelPress}
-          onClick={handleClick}
-          onContextMenu={(e) => e.preventDefault()}
+          onPointerDown={showSaveExit ? undefined : startPress}
+          onPointerUp={showSaveExit ? undefined : cancelPress}
+          onPointerCancel={showSaveExit ? undefined : cancelPress}
+          onPointerLeave={showSaveExit ? undefined : cancelPress}
+          onClick={showSaveExit ? undefined : handleClick}
+          onContextMenu={showSaveExit ? undefined : (e) => e.preventDefault()}
         >
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-display text-lg">
             N
