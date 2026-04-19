@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Plus, Send } from "lucide-react";
+import { toast } from "sonner";
 import { buildChatSeed } from "@/data/placeholder";
 import { useProfile } from "@/store/profile";
 import { cn } from "@/lib/utils";
@@ -102,7 +103,14 @@ const Navigator = () => {
       <div className="px-4 pb-4">
         <div className="flex items-center gap-2 rounded-full bg-nest-cream border border-border px-2 py-2">
           <button
-            aria-label="Attach"
+            type="button"
+            aria-label="Attach a document"
+            onClick={() =>
+              toast.info("Attach a document", {
+                id: "navigator-attach",
+                description: "Pulling from your Vault lands in the next build.",
+              })
+            }
             className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-primary"
           >
             <Plus className="h-5 w-5" />
