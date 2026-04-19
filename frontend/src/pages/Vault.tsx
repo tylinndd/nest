@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import {
   FileText,
   ShieldCheck,
@@ -6,7 +8,21 @@ import {
   Lock,
   CheckCircle2,
   CircleDashed,
+  Camera,
+  Upload,
+  Send,
+  ChevronRight,
 } from "lucide-react";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type Doc = {
@@ -45,8 +61,64 @@ const stateMeta = {
   },
 } as const;
 
+type AddTarget = { mode: "doc"; doc: Doc } | { mode: "new" } | null;
+
+const Option = ({
+  Icon,
+  title,
+  detail,
+  onClick,
+}: {
+  Icon: typeof Camera;
+  title: string;
+  detail: string;
+  onClick: () => void;
+}) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className="flex w-full items-center gap-4 rounded-2xl border-2 border-border bg-card px-4 py-3 text-left transition hover:border-primary/40 min-h-[3.5rem]"
+  >
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
+      <Icon className="h-5 w-5" />
+    </span>
+    <div className="flex-1 min-w-0">
+      <p className="font-semibold text-foreground">{title}</p>
+      <p className="text-xs text-muted-foreground mt-0.5">{detail}</p>
+    </div>
+    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+  </button>
+);
+
 const Vault = () => {
+  const [target, setTarget] = useState<AddTarget>(null);
+  const isOpen = target !== null;
   const secured = docs.filter((d) => d.state === "uploaded").length;
+
+  const handleRowClick = (doc: Doc) => {
+    if (doc.state === "missing") {
+      setTarget({ mode: "doc", doc });
+      return;
+    }
+    if (doc.state === "requested") {
+      toast.info("Request in progress", {
+        description: doc.detail,
+      });
+    }
+  };
+
+  const handleAction = (label: string, description: string) => {
+    setTarget(null);
+    toast(label, { description });
+  };
+
+  const drawerTitle =
+    target?.mode === "doc" ? `Add your ${target.doc.title}` : "Add a document";
+  const drawerSubtitle =
+    target?.mode === "doc"
+      ? "Upload what you have, or we'll request it on your behalf."
+      : "Pick how you want to add it.";
+
   return (
     <div className="px-5 pt-5 pb-6">
       <p className="text-sm text-muted-foreground">Encrypted on your device</p>
@@ -82,13 +154,23 @@ const Vault = () => {
         {docs.map((d, i) => {
           const m = stateMeta[d.state];
           const Icon = m.icon;
+          const interactive = d.state !== "uploaded";
           return (
-            <motion.div
+            <motion.button
+              type="button"
               key={d.id}
+              disabled={!interactive}
+              onClick={() => handleRowClick(d)}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.24, delay: i * 0.04 }}
-              className={cn("nest-card p-4 flex items-center gap-4 border-l-4", m.border)}
+              className={cn(
+                "nest-card p-4 flex items-center gap-4 border-l-4 w-full text-left",
+                m.border,
+                interactive
+                  ? "cursor-pointer transition hover:border-primary/30"
+                  : "cursor-default",
+              )}
             >
               <span
                 className={cn(
@@ -129,15 +211,68 @@ const Vault = () => {
                 )}
                 {m.label}
               </span>
-            </motion.div>
+            </motion.button>
           );
         })}
       </div>
 
-      <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border-2 border-dashed border-border bg-card py-4 text-sm font-semibold text-primary min-h-[3.5rem]">
+      <button
+        type="button"
+        onClick={() => setTarget({ mode: "new" })}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border-2 border-dashed border-border bg-card py-4 text-sm font-semibold text-primary min-h-[3.5rem] transition hover:border-primary/40"
+      >
         <Plus className="h-4 w-4" />
         Add another document
       </button>
+
+      <Drawer open={isOpen} onOpenChange={(o) => !o && setTarget(null)}>
+        <DrawerContent className="max-w-md mx-auto">
+          <DrawerHeader className="text-left">
+            <DrawerTitle className="font-display text-xl text-primary">
+              {drawerTitle}
+            </DrawerTitle>
+            <DrawerDescription>{drawerSubtitle}</DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4 pb-2 space-y-3">
+            <Option
+              Icon={Camera}
+              title="Take a photo"
+              detail="Snap the front and back. We'll detect edges and store it encrypted."
+              onClick={() =>
+                handleAction("Opening your camera", "Center the document in the frame.")
+              }
+            />
+            <Option
+              Icon={Upload}
+              title="Upload from files"
+              detail="PDF, JPG, PNG, or HEIC up to 20MB."
+              onClick={() =>
+                handleAction("Choose a file", "Pick a document from your device.")
+              }
+            />
+            <Option
+              Icon={Send}
+              title="Request from Georgia DFCS"
+              detail="We'll draft an email to your caseworker with the right form attached."
+              onClick={() =>
+                handleAction(
+                  "Drafting request to DFCS",
+                  target?.mode === "doc"
+                    ? `We'll ask for your ${target.doc.title.toLowerCase()}.`
+                    : "Review and send from your email app.",
+                )
+              }
+            />
+          </div>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="outline" className="rounded-full">
+                Cancel
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };
