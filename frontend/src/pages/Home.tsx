@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import confetti from "canvas-confetti";
 import {
   animate,
+  AnimatePresence,
   LayoutGroup,
   motion,
   useMotionTemplate,
@@ -451,15 +452,31 @@ const Home = () => {
         />
       </div>
 
-      {nextMove ? (
-        <div className="px-5 mt-4">
-          <NextMoveCard task={nextMove} onOpen={openTask} />
-        </div>
-      ) : done.length > 0 ? (
-        <div className="px-5 mt-4">
-          <AllCaughtUpCard />
-        </div>
-      ) : null}
+      <AnimatePresence mode="wait" initial={false}>
+        {nextMove ? (
+          <motion.div
+            key="next-move"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="px-5 mt-4"
+          >
+            <NextMoveCard task={nextMove} onOpen={openTask} />
+          </motion.div>
+        ) : done.length > 0 ? (
+          <motion.div
+            key="all-caught-up"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="px-5 mt-4"
+          >
+            <AllCaughtUpCard />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <div className="px-5 mt-4">
         <SuccessCard
