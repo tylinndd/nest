@@ -102,6 +102,7 @@ const Vault = () => {
     }
     if (doc.state === "requested") {
       toast.info("Request in progress", {
+        id: "vault-action",
         description: doc.detail,
       });
     }
@@ -109,7 +110,7 @@ const Vault = () => {
 
   const handleAction = (label: string, description: string) => {
     setTarget(null);
-    toast(label, { description });
+    toast(label, { id: "vault-action", description });
   };
 
   const drawerTitle =
