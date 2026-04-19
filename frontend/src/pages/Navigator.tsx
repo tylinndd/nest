@@ -95,7 +95,7 @@ const Navigator = () => {
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const typingTimer = useRef<number | null>(null);
+  const pendingTimers = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -104,10 +104,10 @@ const Navigator = () => {
   }, [messages, typing]);
 
   useEffect(() => {
+    const timers = pendingTimers.current;
     return () => {
-      if (typingTimer.current !== null) {
-        window.clearTimeout(typingTimer.current);
-      }
+      timers.forEach((id) => window.clearTimeout(id));
+      timers.clear();
     };
   }, []);
 
@@ -125,14 +125,12 @@ const Navigator = () => {
     setMessages((m) => [...m, userMsg]);
     setInput("");
     setTyping(true);
-    if (typingTimer.current !== null) {
-      window.clearTimeout(typingTimer.current);
-    }
-    typingTimer.current = window.setTimeout(() => {
+    const id = window.setTimeout(() => {
       setMessages((m) => [...m, reply]);
-      setTyping(false);
-      typingTimer.current = null;
+      pendingTimers.current.delete(id);
+      if (pendingTimers.current.size === 0) setTyping(false);
     }, 750);
+    pendingTimers.current.add(id);
   };
 
   return (
