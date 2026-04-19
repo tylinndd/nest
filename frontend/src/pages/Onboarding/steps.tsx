@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Calendar,
   Check,
   ChevronDown,
   FileText,
@@ -24,15 +26,22 @@ import {
   GraduationCap,
   Briefcase,
   Hammer,
+  Home,
+  ListChecks,
+  MapPin,
+  User as UserIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useProfile, type EducationPlan } from "@/store/profile";
+
+type StepIcon = typeof Check;
 
 const TOTAL_QUESTIONS = 7;
 
 const StepShell = ({
   stepIndex,
   eyebrow,
+  Icon,
   title,
   subtitle,
   children,
@@ -42,6 +51,7 @@ const StepShell = ({
 }: {
   stepIndex?: number;
   eyebrow?: string;
+  Icon?: StepIcon;
   title: string;
   subtitle?: string;
   children: React.ReactNode;
@@ -55,6 +65,17 @@ const StepShell = ({
     : eyebrow;
   return (
     <div className="flex h-full flex-col">
+      {Icon && (
+        <motion.div
+          initial={{ opacity: 0, y: -6, scale: 0.92 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
+          className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-primary"
+          aria-hidden
+        >
+          <Icon className="h-6 w-6" strokeWidth={2} />
+        </motion.div>
+      )}
       {derivedEyebrow && (
         <p className="text-xs font-semibold uppercase tracking-widest text-nest-amber">
           {derivedEyebrow}
@@ -116,6 +137,7 @@ export const StepName = () => {
   return (
     <StepShell
       stepIndex={1}
+      Icon={UserIcon}
       title="What should we call you?"
       subtitle="A first name or nickname is fine — this stays on your device."
       next="/onboarding/age"
@@ -152,6 +174,7 @@ export const StepAge = () => {
   return (
     <StepShell
       stepIndex={2}
+      Icon={Calendar}
       title="How old are you?"
       subtitle="Your age unlocks the right benefits and programs."
       next="/onboarding/county"
@@ -202,6 +225,7 @@ export const StepCounty = () => {
   return (
     <StepShell
       stepIndex={3}
+      Icon={MapPin}
       title="Which Georgia county are you in?"
       subtitle="This routes you to the right DFCS office and local supports."
       next="/onboarding/documents"
@@ -274,6 +298,7 @@ export const StepDocuments = () => {
   return (
     <StepShell
       stepIndex={4}
+      Icon={FileText}
       title="Which documents do you already have?"
       subtitle="We'll build a checklist for the ones still missing."
       next="/onboarding/education"
@@ -352,6 +377,7 @@ export const StepEducation = () => {
   return (
     <StepShell
       stepIndex={5}
+      Icon={GraduationCap}
       title="What's your education plan?"
       subtitle="Pick what fits right now. You can change this anytime."
       next="/onboarding/housing"
@@ -412,6 +438,7 @@ export const StepHousing = () => {
   return (
     <StepShell
       stepIndex={6}
+      Icon={Home}
       title="Where are you living right now?"
       subtitle="This helps us recommend the right transitional housing path."
       next="/onboarding/health"
@@ -444,6 +471,7 @@ export const StepHealth = () => {
   return (
     <StepShell
       stepIndex={7}
+      Icon={Heart}
       title="Anything we should know about your health?"
       subtitle="Pick any that apply. Nothing is shared without your permission."
       next="/onboarding/review"
@@ -494,6 +522,7 @@ export const StepReview = () => {
   return (
     <StepShell
       eyebrow="Review"
+      Icon={ListChecks}
       title="Here's your starting plan."
       subtitle="Update any of this later from Home."
       next="/"
