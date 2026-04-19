@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck, ShieldCheck } from "lucide-react";
+import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck, ShieldCheck, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { benefits, type Benefit, type BenefitStatus } from "@/data/placeholder";
 import { cn } from "@/lib/utils";
@@ -73,13 +73,29 @@ const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
             Verified {verifiedLabel}
           </span>
         )}
-        {cta && (
+        {cta && b.href && (
+          <a
+            href={b.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "nest-pill min-h-[2.75rem] font-semibold",
+              b.status === "auto"
+                ? "bg-secondary text-secondary-foreground"
+                : "bg-primary text-primary-foreground hover:bg-primary/90",
+            )}
+          >
+            {cta}
+            <ExternalLink className="ml-1 h-4 w-4" />
+          </a>
+        )}
+        {cta && !b.href && (
           <button
             type="button"
             onClick={() =>
               toast.info(cta, {
                 id: "benefit-cta",
-                description: `${b.title} flow lands in the next build.`,
+                description: `Ask your caseworker — ${b.title} is coordinated in person.`,
               })
             }
             className={cn(

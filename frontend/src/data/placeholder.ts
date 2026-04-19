@@ -108,6 +108,7 @@ export type Benefit = {
   source: string;
   status: BenefitStatus;
   cta?: string;
+  href?: string;
   verifiedOn?: string;
 };
 
@@ -120,36 +121,41 @@ export const benefits: Benefit[] = [
     source: "Georgia DFCS · Chafee Program",
     status: "qualify",
     cta: "Start application",
-    verifiedOn: "2026-04-15",
+    href: "https://dfcs.georgia.gov/education-and-training",
+    verifiedOn: "2026-04-19",
   },
   {
     id: "eyss",
     title: "Extended Youth Support Services (EYSS)",
     eligibility: "Ages 18–23 who were in foster care at 18",
     summary: "Continued case management, a monthly stipend, and support for housing, school, and work goals.",
-    source: "Georgia DFCS · EYSS",
+    source: "Georgia DHS · Connected By 21",
     status: "qualify",
-    cta: "Contact your worker",
-    verifiedOn: "2026-04-12",
+    cta: "Open Connected By 21",
+    href: "https://dhs.georgia.gov/connected-21",
+    verifiedOn: "2026-04-19",
   },
   {
     id: "medicaid-ext",
     title: "Georgia Medicaid — Former Foster Care",
     eligibility: "Automatic coverage until age 26",
     summary: "Free health insurance if you aged out of Georgia foster care. No income limit.",
-    source: "Georgia DFCS · Title IV-E",
+    source: "Georgia Gateway · Title IV-E",
     status: "auto",
-    verifiedOn: "2026-04-18",
+    cta: "Open Gateway",
+    href: "https://gateway.ga.gov/access/",
+    verifiedOn: "2026-04-19",
   },
   {
     id: "ksu-ascend",
     title: "KSU ASCEND Program",
     eligibility: "Foster, former foster, and unstably housed students",
     summary: "Year-round housing, textbooks, personal coach, and a care team at Kennesaw State.",
-    source: "Kennesaw State University",
+    source: "Kennesaw State · CARE Services",
     status: "action",
     cta: "Book intake call",
-    verifiedOn: "2026-04-10",
+    href: "https://campus.kennesaw.edu/current-students/student-affairs/wellbeing/care-services/ascend-program.php",
+    verifiedOn: "2026-04-19",
   },
   {
     id: "hud-fyi",
@@ -159,17 +165,19 @@ export const benefits: Benefit[] = [
     source: "HUD · FYI Voucher",
     status: "action",
     cta: "See how to apply",
-    verifiedOn: "2026-04-08",
+    href: "https://www.hud.gov/hud-partners/public-indian-housing-fyi",
+    verifiedOn: "2026-04-19",
   },
   {
     id: "hb136",
-    title: "HB 136 Qualified Foster Care Scholarship",
-    eligibility: "Georgia foster youth at eligible public institutions",
-    summary: "Covers tuition and mandatory fees at Georgia's public colleges, universities, and technical colleges.",
-    source: "Georgia HB 136 · GSFC",
+    title: "Georgia Post-Secondary Tuition Waiver",
+    eligibility: "Georgia foster youth under 28 at eligible public institutions",
+    summary: "Waives tuition and fees at TCSG technical colleges and eligible University System schools.",
+    source: "Georgia DFCS · Tuition Waiver",
     status: "qualify",
-    cta: "Check your school",
-    verifiedOn: "2026-04-14",
+    cta: "Open application",
+    href: "https://dfcs.georgia.gov/form/postsecondary-tuition-waiver-app",
+    verifiedOn: "2026-04-19",
   },
 ];
 
