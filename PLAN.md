@@ -30,11 +30,12 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked
 | 1.8 | Emergency screen | `frontend/src/pages/Emergency.tsx` | Stephen | ✅ | 1.1 | 988, 211 GA, Crisis Text, Wellroot; hides bottom nav |
 | 1.9 | BottomNav + AppShell | `frontend/src/components/layout/*` | Stephen | ✅ | 1.1 | Emergency tab in coral; route-aware hide |
 | 1.10 | Success Cards micro-interaction | `frontend/src/components/ui/SuccessCard.tsx` | Stephen | ✅ | 1.1 | Framer Motion; Task #22 on poster/demo |
-| 2.1 | FastAPI `/ask` endpoint | `backend/app/` | Tylin | ⬜ | — | Accept `{query, profile}`; return `{answer, sources[]}` |
-| 2.2 | LangChain RAG pipeline | `backend/rag/` | Tylin | ⬜ | 2.1 | Retrieval → generation with source citations |
-| 2.3 | ChromaDB indexing of 250-page DFCS PDF | `backend/data/` | Tylin | ⬜ | — | Chunk + embed the transition handbook |
+| 1.11 | Frontend cleanup pass (a11y + dead code + lint) | `frontend/` | Stephen | ✅ | 1.1–1.10 | Global focus-visible ring, progressbar ARIA, stripped Lovable scaffold, deleted ~1500 lines of unused shadcn primitives. Lint 0/0, typecheck clean, CSS bundle 50.97 → 44.80 kB |
+| 2.1 | FastAPI `/chat` endpoint | `backend/app/main.py` | Tylin | 🟡 | — | Scaffold in place. Contract updated to `/chat` — see Shared Contracts. Known import paths need fixing (`app.rag.*` references don't match `backend/rag/` layout; `retreiver.py` filename typo) |
+| 2.2 | LangChain RAG pipeline | `backend/rag/` | Tylin | 🟡 | 2.1 | `chain.py` + `retreiver.py` scaffolded (crisis keyword routing, county rerank, MiniLM embeddings, GPT-4o-mini). Needs working imports + corpus indexed |
+| 2.3 | ChromaDB indexing of 250-page DFCS PDF | `backend/data/`, `backend/rag/ingest.py` | Tylin | ⬜ | — | `ingest.py` stub exists; corpus not yet chunked / embedded |
 | 2.4 | Rules engine for 6 benefit programs | `backend/rules/` | Tylin | ⬜ | — | Deterministic eligibility from profile |
-| 3.1 | Wire Navigator → `/ask` | `frontend/src/pages/Navigator.tsx` | Stephen | ⬜ | 2.1 | Replace stub reply with fetch |
+| 3.1 | Wire Navigator → `/chat` | `frontend/src/pages/Navigator.tsx` | Stephen | ⬜ | 2.1 | Replace stub reply with fetch; honor `route_to_emergency` flag |
 | 3.2 | Wire Benefits → rules JSON | `frontend/src/data/benefits.json` | Stephen | ⬜ | 2.4 | Replace placeholder.ts shape with rules output |
 | 4.1 | Poster PDF | `/deliverables/poster.pdf` | Brenden | ⬜ | 1.* | 8-feature layout + demo persona Maria |
 | 4.2 | 30-sec flash video | `/deliverables/flash.mp4` | Brenden + Stephen | ⬜ | 1.* | Optional, targets C-Day loop |
@@ -65,9 +66,10 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked
 
 | Contract | Owner | Consumers | Definition |
 |----------|-------|-----------|------------|
-| `POST /ask` | Tylin | Stephen | Request: `{ query: string, profile?: { name, age, county, education, housing } }`. Response: `{ answer: string, sources: Array<{ title: string, section?: string, page?: number, url?: string }> }` |
-| `GET /benefits` | Tylin | Stephen | Response: `Benefit[]` where `Benefit = { id, title, eligibility, summary, source, status: "qualify" \| "action" \| "auto", cta? }`. Matches `src/data/placeholder.ts` Benefit type. |
-| User profile envelope | Stephen | Tylin | `{ name: string, age: number, county: string, education: "college" \| "trade" \| "working", housing: string, documentsHave: string[], health: string[] }` — sent on `/ask` and on first sync. |
+| `POST /chat` | Tylin | Stephen | Request: `{ query: string, user_profile: UserProfile }`. Response: `{ answer: string, sources: string[], fallback: boolean, route_to_emergency: boolean }`. See `backend/app/schemas.py` — ground truth lives in Pydantic. |
+| `GET /benefits` | Tylin | Stephen | Response: `Benefit[]` where `Benefit = { id, title, eligibility, summary, source, status: "qualify" \| "action" \| "auto", cta? }`. Matches `frontend/src/data/placeholder.ts` Benefit type. _Not yet implemented._ |
+| `UserProfile` envelope | Stephen | Tylin | `{ age?: number, county?: string, status?: string, months_in_care?: number, college_intent?: string, top_concerns: string[], enrolled_at_ksu?: boolean, aged_out_at_18?: boolean, in_foster_care_at_18?: boolean, documents: Record<string, boolean> }` — sent on `/chat`. Frontend store needs a mapper; current zustand store shape differs from backend `UserProfile` and will need reconciliation before wiring 3.1. |
+| Crisis routing | Tylin | Stephen | Backend flips `route_to_emergency: true` on crisis keywords (`suicide`, `kill myself`, `unsafe`, `homeless tonight`, etc.). Frontend must navigate to `/emergency` when flag is true instead of rendering the chat reply. |
 
 ---
 
@@ -105,9 +107,9 @@ Trauma-informed design — red destructive tone feels alarming. Full nest-green 
 
 > Things that need a decision before work can proceed. Tag the person who needs to decide.
 
-- [ ] **Q1:** Backend hosting URL for `/ask` during C-Day demo — needs Tylin's input. Ngrok, Vercel, or Render?
+- [ ] **Q1:** Backend hosting URL for `/chat` during C-Day demo — needs Tylin's input. Ngrok, Vercel, or Render?
 - [ ] **Q2:** Whether to ship public repo before C-Day or after — needs Stephen's call after poster finalized.
-- [ ] **Q3:** Flash video script (optional deliverable) — needs Brenden to confirm commit before Sunday.
+- [ ] **Q3:** Flash video script (optional deliverable) — needs Brenden to confirm commit. Deadline to call it: Sun 2026-04-19 EOD.
 
 ---
 
