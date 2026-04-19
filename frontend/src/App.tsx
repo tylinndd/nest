@@ -1,5 +1,12 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { MotionConfig } from "framer-motion";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,12 +32,36 @@ import {
 
 const queryClient = new QueryClient();
 
+const ROUTE_TITLES: Array<[string, string]> = [
+  ["/onboarding", "Set up · Nest"],
+  ["/path", "Your Path · Nest"],
+  ["/benefits", "Benefits · Nest"],
+  ["/navigator", "Ask Navigator · Nest"],
+  ["/vault", "Document Vault · Nest"],
+  ["/emergency", "Emergency · Nest"],
+];
+const BASE_TITLE = "Nest — Your guide through foster care transitions";
+
+const RouteTitle = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const match = ROUTE_TITLES.find(([prefix]) => pathname.startsWith(prefix));
+    document.title = match
+      ? match[1]
+      : pathname === "/"
+        ? "Home · Nest"
+        : BASE_TITLE;
+  }, [pathname]);
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <MotionConfig reducedMotion="user">
       <TooltipProvider>
         <Sonner />
         <BrowserRouter>
+          <RouteTitle />
           <Routes>
             <Route path="/onboarding" element={<OnboardingLayout />}>
               <Route index element={<Navigate to="name" replace />} />
