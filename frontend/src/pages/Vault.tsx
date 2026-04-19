@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { toast } from "sonner";
 import {
   FileText,
@@ -92,6 +92,7 @@ const Option = ({
 
 const Vault = () => {
   const [target, setTarget] = useState<AddTarget>(null);
+  const prefersReducedMotion = useReducedMotion();
   const isOpen = target !== null;
   const secured = docs.filter((d) => d.state === "uploaded").length;
 
@@ -194,7 +195,7 @@ const Vault = () => {
                 <p className="text-xs text-muted-foreground">{d.detail}</p>
               </div>
               <span className={cn("nest-chip", m.chip)}>
-                {d.state === "requested" ? (
+                {d.state === "requested" && !prefersReducedMotion ? (
                   <motion.span
                     aria-hidden
                     animate={{ rotate: 360 }}

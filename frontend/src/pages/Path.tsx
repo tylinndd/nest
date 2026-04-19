@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   CheckCircle2,
   Circle,
@@ -109,20 +109,23 @@ const stateStyle: Record<ZoneState, { ring: string; icon: string; badge: string 
   },
 };
 
-const Path = () => (
-  <div className="px-5 pt-5 pb-4">
-    <p className="text-sm text-muted-foreground">Overview</p>
-    <h1 className="font-display text-3xl text-primary">The Path</h1>
-    <p className="mt-2 text-muted-foreground">
-      Five zones, in order. Finish one to unlock the next.
-    </p>
+const Path = () => {
+  const prefersReducedMotion = useReducedMotion();
 
-    <ol className="relative mt-8 pl-4">
-      <span
-        aria-hidden
-        className="absolute left-[1.35rem] top-2 bottom-2 w-px bg-border"
-      />
-      {zones.map((z, i) => {
+  return (
+    <div className="px-5 pt-5 pb-4">
+      <p className="text-sm text-muted-foreground">Overview</p>
+      <h1 className="font-display text-3xl text-primary">The Path</h1>
+      <p className="mt-2 text-muted-foreground">
+        Five zones, in order. Finish one to unlock the next.
+      </p>
+
+      <ol className="relative mt-8 pl-4">
+        <span
+          aria-hidden
+          className="absolute left-[1.35rem] top-2 bottom-2 w-px bg-border"
+        />
+        {zones.map((z, i) => {
         const s = stateStyle[z.state];
         const StatusIcon =
           z.state === "done" ? CheckCircle2 : z.state === "locked" ? Lock : Circle;
@@ -135,7 +138,7 @@ const Path = () => (
             className="relative mb-4 flex gap-4"
           >
             <span className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center">
-              {z.state === "active" && (
+              {z.state === "active" && !prefersReducedMotion && (
                 <motion.span
                   aria-hidden
                   initial={{ scale: 1, opacity: 0.5 }}
@@ -209,6 +212,7 @@ const Path = () => (
       })}
     </ol>
   </div>
-);
+  );
+};
 
 export default Path;
