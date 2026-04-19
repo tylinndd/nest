@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -123,6 +123,16 @@ const Home = () => {
   const [taskList, setTaskList] = useState<Task[]>(tasks);
   const [completedId, setCompletedId] = useState<string | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const completedTimerRef = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (completedTimerRef.current !== null) {
+        window.clearTimeout(completedTimerRef.current);
+      }
+    },
+    [],
+  );
   const profileName = useProfile((s) => s.name);
   const profileAge = useProfile((s) => s.age);
   const profileCounty = useProfile((s) => s.county);
@@ -151,7 +161,13 @@ const Home = () => {
     );
     setCompletedId(completingId);
     setActiveTask(null);
-    window.setTimeout(() => setCompletedId(null), 2400);
+    if (completedTimerRef.current !== null) {
+      window.clearTimeout(completedTimerRef.current);
+    }
+    completedTimerRef.current = window.setTimeout(() => {
+      setCompletedId(null);
+      completedTimerRef.current = null;
+    }, 2400);
   };
 
   const completedTask = completedId
