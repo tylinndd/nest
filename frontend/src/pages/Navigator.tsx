@@ -1,10 +1,22 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Mic, Plus, Send } from "lucide-react";
+import { FolderLock, Mic, Paperclip, Plus, Send } from "lucide-react";
 import { toast } from "sonner";
 import { buildChatSeed } from "@/data/placeholder";
 import { useProfile } from "@/store/profile";
 import { useChat, type ChatMsg } from "@/store/chat";
+import { DOCUMENT_CATALOG } from "@/lib/personalize";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const LINKIFY_RE =
@@ -196,13 +208,24 @@ const TypingDots = () => (
 
 const Navigator = () => {
   const profileName = useProfile((s) => s.name);
+  const uploadedDocs = useProfile((s) => s.uploadedDocs);
   const messages = useChat((s) => s.messages);
   const setMessages = useChat((s) => s.setMessages);
   const addMessage = useChat((s) => s.addMessage);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [listening, setListening] = useState(false);
+  const [attachOpen, setAttachOpen] = useState(false);
   const [hydrated, setHydrated] = useState(() => useChat.persist.hasHydrated());
+
+  const attachableDocs = useMemo(
+    () =>
+      DOCUMENT_CATALOG.filter((d) => uploadedDocs.includes(d.id)).map((d) => ({
+        id: d.id,
+        title: d.title,
+      })),
+    [uploadedDocs],
+  );
   const scrollRef = useRef<HTMLDivElement>(null);
   const pendingTimers = useRef<Set<number>>(new Set());
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -293,6 +316,11 @@ const Navigator = () => {
     recognitionRef.current = recognition;
     setListening(true);
     recognition.start();
+  };
+
+  const attachDoc = (title: string) => {
+    setAttachOpen(false);
+    send(`Looking at my ${title.toLowerCase()} — what do I do next?`);
   };
 
   const send = (override?: string) => {
@@ -406,13 +434,8 @@ const Navigator = () => {
         <div className="flex items-center gap-2 rounded-full bg-nest-cream border border-border px-2 py-2 transition focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background">
           <button
             type="button"
-            aria-label="Attach a document"
-            onClick={() =>
-              toast.info("Attach a document", {
-                id: "navigator-attach",
-                description: "Pulling from your Vault lands in the next build.",
-              })
-            }
+            aria-label="Attach a document from your vault"
+            onClick={() => setAttachOpen(true)}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-primary"
           >
             <Plus className="h-5 w-5" />
@@ -451,6 +474,68 @@ const Navigator = () => {
           </button>
         </div>
       </div>
+
+      <Drawer open={attachOpen} onOpenChange={setAttachOpen}>
+        <DrawerContent className="max-w-md mx-auto">
+          <DrawerHeader className="text-left">
+            <DrawerTitle className="font-display text-xl text-primary">
+              Attach from your vault
+            </DrawerTitle>
+            <DrawerDescription>
+              Navigator will frame its answer around the document you pick.
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4 pb-2 space-y-2">
+            {attachableDocs.length > 0 ? (
+              attachableDocs.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => attachDoc(d.title)}
+                  className="flex w-full items-center gap-3 rounded-2xl border-2 border-border bg-card px-4 py-3 text-left transition hover:border-primary/40 min-h-[3.5rem]"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
+                    <Paperclip className="h-5 w-5" />
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-foreground truncate">
+                      {d.title}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Secured in your vault
+                    </p>
+                  </div>
+                </button>
+              ))
+            ) : (
+              <Link
+                to="/vault"
+                onClick={() => setAttachOpen(false)}
+                className="flex w-full items-center gap-3 rounded-2xl border-2 border-dashed border-border bg-card px-4 py-3 transition hover:border-primary/40 min-h-[3.5rem]"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
+                  <FolderLock className="h-5 w-5" />
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-foreground">
+                    No documents yet
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Secure one in your vault first, then attach it here.
+                  </p>
+                </div>
+              </Link>
+            )}
+          </div>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="outline" className="rounded-full">
+                Cancel
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };
