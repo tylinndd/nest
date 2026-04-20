@@ -134,6 +134,7 @@ const Vault = () => {
   const docs = useMemo(() => derivePersonalizedVault(profile), [profile]);
   const isOpen = target.kind !== "closed";
   const secured = docs.filter((d) => d.state === "uploaded").length;
+  const securedPercent = docs.length > 0 ? (secured / docs.length) * 100 : 0;
 
   useEffect(() => {
     return () => {
@@ -290,14 +291,14 @@ const Vault = () => {
         <div
           role="progressbar"
           aria-label="Documents secured"
-          aria-valuenow={Math.round((secured / docs.length) * 100)}
+          aria-valuenow={Math.round(securedPercent)}
           aria-valuemin={0}
           aria-valuemax={100}
           className="mt-4 h-1 rounded-full bg-primary-foreground/20 overflow-hidden"
         >
           <motion.div
             initial={{ width: 0 }}
-            animate={{ width: `${(secured / docs.length) * 100}%` }}
+            animate={{ width: `${securedPercent}%` }}
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="h-full bg-nest-sage"
           />
