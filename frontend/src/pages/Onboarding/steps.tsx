@@ -178,6 +178,7 @@ export const StepAge = () => {
     if (!Number.isNaN(n) && n > 0) setAge(n);
   };
   const valid = age !== null && age >= 14 && age <= 26;
+  const outOfRange = age !== null && !valid;
   return (
     <StepShell
       stepIndex={2}
@@ -199,8 +200,22 @@ export const StepAge = () => {
         step={1}
         value={raw}
         onChange={(e) => handleChange(e.target.value)}
+        aria-invalid={outOfRange}
+        aria-describedby="age-hint"
         className="mt-2 h-14 rounded-2xl text-lg"
       />
+      <p
+        id="age-hint"
+        role={outOfRange ? "alert" : undefined}
+        className={cn(
+          "mt-2 text-xs",
+          outOfRange ? "text-nest-coral" : "text-muted-foreground",
+        )}
+      >
+        {outOfRange
+          ? "Nest supports ages 14–26. Enter an age in that range to continue."
+          : "Must be between 14 and 26."}
+      </p>
     </StepShell>
   );
 };
