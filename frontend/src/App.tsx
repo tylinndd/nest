@@ -14,8 +14,8 @@ import { AppShell } from "@/components/layout/AppShell";
 import { RequireProfile } from "@/components/guards/RequireProfile";
 import { PersistenceBanner } from "@/components/PersistenceBanner";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import Home from "./pages/Home";
 
+const Home = lazy(() => import("./pages/Home"));
 const Path = lazy(() => import("./pages/Path"));
 const Benefits = lazy(() => import("./pages/Benefits"));
 const Navigator = lazy(() => import("./pages/Navigator"));
