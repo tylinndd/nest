@@ -1,5 +1,4 @@
 import { lazy, Suspense, useEffect } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   BrowserRouter,
   Navigate,
@@ -57,8 +56,6 @@ const StepReview = lazy(() =>
   import("./pages/Onboarding/steps").then((m) => ({ default: m.StepReview })),
 );
 
-const queryClient = new QueryClient();
-
 const ROUTE_TITLES: Array<[string, string]> = [
   ["/onboarding", "Set up · Nest"],
   ["/path", "Your Path · Nest"],
@@ -95,46 +92,44 @@ const RouteFallback = () => (
 );
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <MotionConfig reducedMotion="user">
-      <TooltipProvider>
-        <Sonner />
-        <BrowserRouter>
-          <RouteTitle />
-          <PersistenceBanner />
-          <UpdatePrompt />
-          <ErrorBoundary>
-            <Suspense fallback={<RouteFallback />}>
-              <Routes>
-                <Route path="/onboarding" element={<OnboardingLayout />}>
-                  <Route index element={<Navigate to="name" replace />} />
-                  <Route path="name" element={<StepName />} />
-                  <Route path="age" element={<StepAge />} />
-                  <Route path="county" element={<StepCounty />} />
-                  <Route path="documents" element={<StepDocuments />} />
-                  <Route path="education" element={<StepEducation />} />
-                  <Route path="housing" element={<StepHousing />} />
-                  <Route path="health" element={<StepHealth />} />
-                  <Route path="review" element={<StepReview />} />
+  <MotionConfig reducedMotion="user">
+    <TooltipProvider>
+      <Sonner />
+      <BrowserRouter>
+        <RouteTitle />
+        <PersistenceBanner />
+        <UpdatePrompt />
+        <ErrorBoundary>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route path="/onboarding" element={<OnboardingLayout />}>
+                <Route index element={<Navigate to="name" replace />} />
+                <Route path="name" element={<StepName />} />
+                <Route path="age" element={<StepAge />} />
+                <Route path="county" element={<StepCounty />} />
+                <Route path="documents" element={<StepDocuments />} />
+                <Route path="education" element={<StepEducation />} />
+                <Route path="housing" element={<StepHousing />} />
+                <Route path="health" element={<StepHealth />} />
+                <Route path="review" element={<StepReview />} />
+              </Route>
+              <Route element={<RequireProfile />}>
+                <Route element={<AppShell />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/path" element={<Path />} />
+                  <Route path="/benefits" element={<Benefits />} />
+                  <Route path="/navigator" element={<Navigator />} />
+                  <Route path="/vault" element={<Vault />} />
+                  <Route path="/emergency" element={<Emergency />} />
                 </Route>
-                <Route element={<RequireProfile />}>
-                  <Route element={<AppShell />}>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/path" element={<Path />} />
-                    <Route path="/benefits" element={<Benefits />} />
-                    <Route path="/navigator" element={<Navigator />} />
-                    <Route path="/vault" element={<Vault />} />
-                    <Route path="/emergency" element={<Emergency />} />
-                  </Route>
-                </Route>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </ErrorBoundary>
-        </BrowserRouter>
-      </TooltipProvider>
-    </MotionConfig>
-  </QueryClientProvider>
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
+      </BrowserRouter>
+    </TooltipProvider>
+  </MotionConfig>
 );
 
 export default App;
