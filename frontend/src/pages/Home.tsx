@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import confetti from "canvas-confetti";
 import {
   animate,
   AnimatePresence,
@@ -41,7 +40,8 @@ import { cn } from "@/lib/utils";
 
 const FIRST_TASK_KEY = "nest.first-task-fired";
 
-const fireFirstTaskConfetti = () => {
+const fireFirstTaskConfetti = async () => {
+  const { default: confetti } = await import("canvas-confetti");
   const colors = ["#52B788", "#D97706", "#E07B6A", "#1B4332"];
   const defaults = {
     startVelocity: 35,
@@ -435,7 +435,7 @@ const Home = () => {
     markTaskDone(task.id);
     setCompletedId(task.id);
     if (!reduceMotion && !safeStorage.getItem(FIRST_TASK_KEY)) {
-      fireFirstTaskConfetti();
+      void fireFirstTaskConfetti();
       safeStorage.setItem(FIRST_TASK_KEY, "1");
     }
     if (completedTimerRef.current !== null) {
