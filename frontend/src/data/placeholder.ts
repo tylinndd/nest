@@ -1,10 +1,3 @@
-export const user = {
-  name: "Maria",
-  age: 18,
-  county: "Cobb County",
-  daysUntilExit: 90,
-};
-
 export type TaskGuide = {
   subtitle: string;
   source: string;
@@ -20,83 +13,6 @@ export type Task = {
   tone?: "coral" | "amber" | "sage";
   guide?: TaskGuide;
 };
-
-export const tasks: Task[] = [
-  {
-    id: "1",
-    title: "Request your birth certificate",
-    due: "Due 3 days ago",
-    status: "overdue",
-    help: "Help me do this",
-    tone: "coral",
-    guide: {
-      subtitle: "Georgia walkthrough · confirm specifics with your caseworker.",
-      source: "Georgia DPH · Vital Records",
-      steps: [
-        "Ask your DFCS caseworker for the foster-care fee-waiver letter.",
-        "Apply online at gachildsupport.com or visit a Vital Records office.",
-        "Upload your photo ID plus the waiver letter with the request.",
-        "Expect delivery in 5–10 business days.",
-      ],
-    },
-  },
-  {
-    id: "2",
-    title: "Apply for extended Medicaid (former foster youth)",
-    due: "Due last week",
-    status: "overdue",
-    help: "Help me do this",
-    tone: "coral",
-    guide: {
-      subtitle: "Automatic coverage up to age 26 if you aged out in Georgia.",
-      source: "Georgia Medicaid · Title IV-E",
-      steps: [
-        "Confirm you aged out of Georgia foster care at or after 18.",
-        "Call the Georgia Gateway helpline at 877-423-4746 if your card hasn't arrived.",
-        "Ask for your Former Foster Care member ID for proof of coverage.",
-        "No yearly renewal — coverage runs automatically until age 26.",
-      ],
-    },
-  },
-  {
-    id: "3",
-    title: "Submit Chafee ETV application for fall semester",
-    due: "Due Friday",
-    status: "week",
-    help: "Help me do this",
-    tone: "amber",
-    guide: {
-      subtitle: "Up to $5,000 per academic year through age 26.",
-      source: "Georgia DFCS · Chafee ETV",
-      steps: [
-        "Submit the ETV application through your DFCS worker or ILP coordinator.",
-        "Attach proof of enrollment — class schedule or acceptance letter.",
-        "Use funds for tuition, books, housing, or transportation.",
-        "Reapply each semester until age 26.",
-      ],
-    },
-  },
-  {
-    id: "4",
-    title: "Schedule KSU ASCEND intake call",
-    due: "Due Sunday",
-    status: "week",
-    help: "Help me do this",
-    tone: "amber",
-    guide: {
-      subtitle: "Year-round housing, books, and a personal coach at Kennesaw State.",
-      source: "Kennesaw State University · ASCEND",
-      steps: [
-        "Email careservices@kennesaw.edu or call 470-578-6777 to request an intake.",
-        "Intake is about 30 minutes, in person or on Zoom.",
-        "Bring your foster-care documentation if you have it.",
-        "Program covers housing, books, and a personal coach year-round.",
-      ],
-    },
-  },
-  { id: "5", title: "Open a checking account", due: "Completed", status: "done", tone: "sage" },
-  { id: "6", title: "Upload Social Security card to Vault", due: "Completed", status: "done", tone: "sage" },
-];
 
 export type BenefitStatus = "qualify" | "action" | "auto";
 
