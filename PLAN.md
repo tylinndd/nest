@@ -39,7 +39,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked
 | 3.2 | Wire Benefits → `/intake` bestfit deep link | `frontend/src/store/intake.ts`, `frontend/src/pages/Benefits.tsx` | Stephen | ✅ | 2.4 | BestFit CTA card wired per D1 (link-out, not full screener). Static benefit copy retained — richer drawer guides than `/intake.eligibility` would return. Intake store: fetch/dedupe/abort + 8 tests. |
 | 4.1 | Poster PDF | `/deliverables/poster.pdf` | Brenden | ⬜ | 1.* | 8-feature layout + demo persona Maria |
 | 4.2 | 30-sec flash video | `/deliverables/flash.mp4` | Brenden + Stephen | ⬜ | 1.* | Optional, targets C-Day loop |
-| 4.3 | CMT submission (cmt3.research.microsoft.com/CDAY2026) | — | Stephen | ⬜ | 4.1 | Title/abstract/authors confirmed |
+| 4.3 | CMT submission (cmt3.research.microsoft.com/CDAY2026) | — | Stephen | ⬜ | 4.1 | Title/abstract/authors confirmed; live demo URL https://nest-zeta-nine.vercel.app |
 | 4.4 | SharePoint UC-151-197 deposit | kennesawedu.sharepoint.com | Stephen | ⬜ | 4.1, 4.2 | Final artifacts |
 | 4.5 | Lauren Padgett feedback pass | — | Stephen | ⬜ | 1.* | Target Sunday April 19 evening |
 
@@ -107,7 +107,7 @@ Trauma-informed design — red destructive tone feels alarming. Full nest-green 
 
 > Things that need a decision before work can proceed. Tag the person who needs to decide.
 
-- [ ] **Q1:** Backend hosting URL for `/chat` during C-Day demo — needs Tylin's input. Ngrok, Vercel, or Render?
+- [x] ~~**Q1:**~~ **Resolved 2026-04-20** — Backend on Render (nest-backend-ehl9.onrender.com, Standard 2GB), Frontend on Vercel (nest-zeta-nine.vercel.app). CORS locked to Vercel URL.
 - [ ] **Q2:** Whether to ship public repo before C-Day or after — needs Stephen's call after poster finalized.
 - [ ] **Q3:** Flash video script (optional deliverable) — needs Brenden to confirm commit. Deadline to call it: Sun 2026-04-19 EOD.
 

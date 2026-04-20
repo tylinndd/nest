@@ -4,6 +4,11 @@ An AI-powered transition navigator for Georgia foster youth aging out of care.
 
 KSU CCSE C-Day Spring 2026 · Project **UC-151-197** · [cmt3.research.microsoft.com/CDAY2026](https://cmt3.research.microsoft.com/CDAY2026)
 
+## Live
+
+- **App:** https://nest-zeta-nine.vercel.app
+- **API:** https://nest-backend-ehl9.onrender.com (`/health`, `/chat`, `/intake`)
+
 ## The problem
 
 Every year, hundreds of Georgia foster youth age out of the system at 18 with little more than a trash bag of belongings and a packet of phone numbers. Within a year, nearly 1 in 4 will experience homelessness; a third will be arrested; fewer than 3% will earn a college degree by 26. The services they need — Chafee ETV, Medicaid extension, HUD Family Unification Vouchers, HB 136 tuition waivers — exist. What's missing is a single place to understand what applies to **them**, by county, by age, by status, at the moment they need it.
