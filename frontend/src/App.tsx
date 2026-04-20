@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   BrowserRouter,
@@ -13,23 +13,46 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/layout/AppShell";
 import { RequireProfile } from "@/components/guards/RequireProfile";
 import Home from "./pages/Home";
-import Path from "./pages/Path";
-import Benefits from "./pages/Benefits";
-import Navigator from "./pages/Navigator";
-import Emergency from "./pages/Emergency";
-import Vault from "./pages/Vault";
-import NotFound from "./pages/NotFound";
-import { OnboardingLayout } from "./pages/Onboarding/OnboardingLayout";
-import {
-  StepName,
-  StepAge,
-  StepCounty,
-  StepDocuments,
-  StepEducation,
-  StepHousing,
-  StepHealth,
-  StepReview,
-} from "./pages/Onboarding/steps";
+
+const Path = lazy(() => import("./pages/Path"));
+const Benefits = lazy(() => import("./pages/Benefits"));
+const Navigator = lazy(() => import("./pages/Navigator"));
+const Emergency = lazy(() => import("./pages/Emergency"));
+const Vault = lazy(() => import("./pages/Vault"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const OnboardingLayout = lazy(() =>
+  import("./pages/Onboarding/OnboardingLayout").then((m) => ({
+    default: m.OnboardingLayout,
+  })),
+);
+const StepName = lazy(() =>
+  import("./pages/Onboarding/steps").then((m) => ({ default: m.StepName })),
+);
+const StepAge = lazy(() =>
+  import("./pages/Onboarding/steps").then((m) => ({ default: m.StepAge })),
+);
+const StepCounty = lazy(() =>
+  import("./pages/Onboarding/steps").then((m) => ({ default: m.StepCounty })),
+);
+const StepDocuments = lazy(() =>
+  import("./pages/Onboarding/steps").then((m) => ({
+    default: m.StepDocuments,
+  })),
+);
+const StepEducation = lazy(() =>
+  import("./pages/Onboarding/steps").then((m) => ({
+    default: m.StepEducation,
+  })),
+);
+const StepHousing = lazy(() =>
+  import("./pages/Onboarding/steps").then((m) => ({ default: m.StepHousing })),
+);
+const StepHealth = lazy(() =>
+  import("./pages/Onboarding/steps").then((m) => ({ default: m.StepHealth })),
+);
+const StepReview = lazy(() =>
+  import("./pages/Onboarding/steps").then((m) => ({ default: m.StepReview })),
+);
 
 const queryClient = new QueryClient();
 
@@ -41,7 +64,6 @@ const ROUTE_TITLES: Array<[string, string]> = [
   ["/vault", "Document Vault · Nest"],
   ["/emergency", "Emergency · Nest"],
 ];
-const BASE_TITLE = "Nest — Your guide through foster care transitions";
 
 const RouteTitle = () => {
   const { pathname } = useLocation();
@@ -58,6 +80,17 @@ const RouteTitle = () => {
   return null;
 };
 
+const RouteFallback = () => (
+  <div
+    role="status"
+    aria-live="polite"
+    className="flex min-h-[60vh] items-center justify-center"
+  >
+    <span className="h-6 w-6 animate-spin rounded-full border-2 border-muted border-t-primary" />
+    <span className="sr-only">Loading…</span>
+  </div>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <MotionConfig reducedMotion="user">
@@ -65,30 +98,32 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <RouteTitle />
-          <Routes>
-            <Route path="/onboarding" element={<OnboardingLayout />}>
-              <Route index element={<Navigate to="name" replace />} />
-              <Route path="name" element={<StepName />} />
-              <Route path="age" element={<StepAge />} />
-              <Route path="county" element={<StepCounty />} />
-              <Route path="documents" element={<StepDocuments />} />
-              <Route path="education" element={<StepEducation />} />
-              <Route path="housing" element={<StepHousing />} />
-              <Route path="health" element={<StepHealth />} />
-              <Route path="review" element={<StepReview />} />
-            </Route>
-            <Route element={<RequireProfile />}>
-              <Route element={<AppShell />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/path" element={<Path />} />
-                <Route path="/benefits" element={<Benefits />} />
-                <Route path="/navigator" element={<Navigator />} />
-                <Route path="/vault" element={<Vault />} />
-                <Route path="/emergency" element={<Emergency />} />
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route path="/onboarding" element={<OnboardingLayout />}>
+                <Route index element={<Navigate to="name" replace />} />
+                <Route path="name" element={<StepName />} />
+                <Route path="age" element={<StepAge />} />
+                <Route path="county" element={<StepCounty />} />
+                <Route path="documents" element={<StepDocuments />} />
+                <Route path="education" element={<StepEducation />} />
+                <Route path="housing" element={<StepHousing />} />
+                <Route path="health" element={<StepHealth />} />
+                <Route path="review" element={<StepReview />} />
               </Route>
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              <Route element={<RequireProfile />}>
+                <Route element={<AppShell />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/path" element={<Path />} />
+                  <Route path="/benefits" element={<Benefits />} />
+                  <Route path="/navigator" element={<Navigator />} />
+                  <Route path="/vault" element={<Vault />} />
+                  <Route path="/emergency" element={<Emergency />} />
+                </Route>
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
     </MotionConfig>
