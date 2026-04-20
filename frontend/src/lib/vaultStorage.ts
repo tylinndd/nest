@@ -1,6 +1,11 @@
-import { createStore, get, set, del, keys } from "idb-keyval";
+import { createStore, get, set, del, keys, type UseStore } from "idb-keyval";
 
-const store = createStore("nest-vault", "files");
+let cachedStore: UseStore | null = null;
+
+const getStore = (): UseStore => {
+  if (!cachedStore) cachedStore = createStore("nest-vault", "files");
+  return cachedStore;
+};
 
 export type StoredDoc = {
   id: string;
@@ -23,20 +28,20 @@ export const saveDocument = async (
     uploadedAt: new Date().toISOString(),
     blob: file,
   };
-  await set(id, record, store);
+  await set(id, record, getStore());
   return record;
 };
 
 export const getDocument = async (id: string): Promise<StoredDoc | null> => {
-  const record = await get<StoredDoc>(id, store);
+  const record = await get<StoredDoc>(id, getStore());
   return record ?? null;
 };
 
 export const deleteDocument = async (id: string): Promise<void> => {
-  await del(id, store);
+  await del(id, getStore());
 };
 
 export const listDocumentIds = async (): Promise<string[]> => {
-  const all = await keys(store);
+  const all = await keys(getStore());
   return all.filter((k): k is string => typeof k === "string");
 };
