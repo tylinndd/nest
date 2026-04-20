@@ -9,12 +9,11 @@ import { safeStorage } from "@/lib/safeStorage";
 
 type Props = {
   showSaveExit?: boolean;
-  right?: React.ReactNode;
 };
 
 const LONG_PRESS_MS = 800;
 
-export const TopBar = ({ showSaveExit, right }: Props) => {
+export const TopBar = ({ showSaveExit }: Props) => {
   const navigate = useNavigate();
   const timerRef = useRef<number | null>(null);
   const firedRef = useRef(false);
@@ -90,7 +89,6 @@ export const TopBar = ({ showSaveExit, right }: Props) => {
           </Link>
         ) : (
           <div className="flex items-center gap-2">
-            {right}
             <button
               type="button"
               onClick={toggleTheme}
