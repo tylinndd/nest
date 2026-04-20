@@ -22,7 +22,7 @@ import {
   LifeBuoy,
   Pencil,
 } from "lucide-react";
-import { user, type Task } from "@/data/placeholder";
+import { type Task } from "@/data/placeholder";
 import { derivePersonalizedTasks, computeDaysUntilAgeOut } from "@/lib/personalize";
 import { SuccessCard } from "@/components/ui/SuccessCard";
 import {
@@ -348,10 +348,10 @@ const Home = () => {
     [],
   );
 
-  const displayName = profile.name.trim() || user.name;
-  const displayAge = profile.age ?? user.age;
-  const displayCounty = profile.county ? `${profile.county} County` : user.county;
-  const daysUntilExit = profile.age !== null ? computeDaysUntilAgeOut(profile.age) : user.daysUntilExit;
+  const displayName = profile.name.trim();
+  const displayAge = profile.age;
+  const displayCounty = profile.county ? `${profile.county} County` : null;
+  const daysUntilExit = computeDaysUntilAgeOut(profile.age);
 
   const greeting = useMemo(() => {
     const h = new Date().getHours();
@@ -442,9 +442,13 @@ const Home = () => {
           <div>
             <p className="text-sm text-muted-foreground">{greeting},</p>
             <h1 className="font-display text-3xl text-primary">{displayName}.</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {displayCounty} · Age {displayAge}
-            </p>
+            {(displayCounty || displayAge !== null) && (
+              <p className="mt-1 text-sm text-muted-foreground">
+                {[displayCounty, displayAge !== null ? `Age ${displayAge}` : null]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+            )}
           </div>
           <Link
             to="/onboarding"

@@ -11,6 +11,7 @@ import { MotionConfig } from "framer-motion";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/layout/AppShell";
+import { RequireProfile } from "@/components/guards/RequireProfile";
 import Home from "./pages/Home";
 import Path from "./pages/Path";
 import Benefits from "./pages/Benefits";
@@ -76,13 +77,15 @@ const App = () => (
               <Route path="health" element={<StepHealth />} />
               <Route path="review" element={<StepReview />} />
             </Route>
-            <Route element={<AppShell />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/path" element={<Path />} />
-              <Route path="/benefits" element={<Benefits />} />
-              <Route path="/navigator" element={<Navigator />} />
-              <Route path="/vault" element={<Vault />} />
-              <Route path="/emergency" element={<Emergency />} />
+            <Route element={<RequireProfile />}>
+              <Route element={<AppShell />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/path" element={<Path />} />
+                <Route path="/benefits" element={<Benefits />} />
+                <Route path="/navigator" element={<Navigator />} />
+                <Route path="/vault" element={<Vault />} />
+                <Route path="/emergency" element={<Emergency />} />
+              </Route>
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
