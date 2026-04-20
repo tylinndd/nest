@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { FolderLock, Mic, Paperclip, Plus, Send } from "lucide-react";
@@ -7,6 +7,7 @@ import { buildChatSeed } from "@/data/placeholder";
 import { useProfile } from "@/store/profile";
 import { useChat, type ChatMsg } from "@/store/chat";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
+import { linkify } from "@/lib/linkify";
 import {
   Drawer,
   DrawerClose,
@@ -18,44 +19,6 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-const LINKIFY_RE =
-  /([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})|(\(\d{3}\)\s?\d{3}[-.\s]?\d{4}|\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b)|(\b(?:211|988|911)\b)/g;
-
-const linkify = (text: string): ReactNode[] => {
-  const nodes: ReactNode[] = [];
-  let lastIdx = 0;
-  for (const m of text.matchAll(LINKIFY_RE)) {
-    const start = m.index ?? 0;
-    if (start > lastIdx) nodes.push(text.slice(lastIdx, start));
-    const [full, email, phone, shortCode] = m;
-    const key = `${start}-${full}`;
-    const linkClass =
-      "underline decoration-current/40 underline-offset-2 hover:decoration-current";
-    if (email) {
-      nodes.push(
-        <a key={key} href={`mailto:${email}`} className={linkClass}>
-          {email}
-        </a>,
-      );
-    } else if (phone) {
-      nodes.push(
-        <a key={key} href={`tel:${phone.replace(/\D/g, "")}`} className={linkClass}>
-          {phone}
-        </a>,
-      );
-    } else if (shortCode) {
-      nodes.push(
-        <a key={key} href={`tel:${shortCode}`} className={linkClass}>
-          {shortCode}
-        </a>,
-      );
-    }
-    lastIdx = start + full.length;
-  }
-  if (lastIdx < text.length) nodes.push(text.slice(lastIdx));
-  return nodes;
-};
 
 type Msg = ChatMsg;
 
