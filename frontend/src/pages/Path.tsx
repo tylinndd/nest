@@ -34,9 +34,12 @@ const STABLE_HOUSING = new Set([
 ]);
 
 const buildZones = (profile: Profile): Zone[] => {
-  const uploadedCount = profile.uploadedDocs.length;
+  const uploadedSet = new Set(profile.uploadedDocs);
+  const uploadedCount = DOCUMENT_CATALOG.filter((d) =>
+    uploadedSet.has(d.id),
+  ).length;
   const totalDocs = DOCUMENT_CATALOG.length;
-  const docsDone = uploadedCount >= totalDocs;
+  const docsDone = uploadedCount === totalDocs;
 
   const hasMedicaid = profile.health.includes("I have Medicaid right now");
   const needsPcp = profile.health.includes("I need a primary care doctor");
