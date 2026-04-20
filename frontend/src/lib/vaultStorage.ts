@@ -1,4 +1,4 @@
-import { createStore, get, set, del, keys, type UseStore } from "idb-keyval";
+import { createStore, get, set, del, type UseStore } from "idb-keyval";
 
 let cachedStore: UseStore | null = null;
 
@@ -39,9 +39,4 @@ export const getDocument = async (id: string): Promise<StoredDoc | null> => {
 
 export const deleteDocument = async (id: string): Promise<void> => {
   await del(id, getStore());
-};
-
-export const listDocumentIds = async (): Promise<string[]> => {
-  const all = await keys(getStore());
-  return all.filter((k): k is string => typeof k === "string");
 };
