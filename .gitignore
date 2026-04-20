@@ -63,3 +63,7 @@ venv/
 # Chroma / local vector DB (regenerate with ingest)
 # vectorstore is intentionally committed for Render free-tier deploy.
 # Re-run `python -m rag.ingest` and commit when data/georgia_resources.json changes.
+
+# Personal/team working notes — kept local, not versioned
+BRENDEN_EMAIL.md
+TEAM_NOTE.md
