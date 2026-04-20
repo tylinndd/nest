@@ -169,7 +169,7 @@ export const benefits: Benefit[] = [
     verifiedOn: "2026-04-19",
   },
   {
-    id: "hb136",
+    id: "tuition-waiver",
     title: "Georgia Post-Secondary Tuition Waiver",
     eligibility: "Georgia foster youth under 28 at eligible public institutions",
     summary: "Waives tuition and fees at TCSG technical colleges and eligible University System schools.",
