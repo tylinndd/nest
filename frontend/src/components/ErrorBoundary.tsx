@@ -43,14 +43,14 @@ export class ErrorBoundary extends Component<Props, State> {
             <button
               type="button"
               onClick={this.handleRetry}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-nest-forest px-4 py-2.5 text-sm font-medium text-white transition hover:bg-nest-forest/90"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-nest-green px-4 py-2.5 text-sm font-medium text-white transition hover:bg-nest-green/90"
             >
               Try again
             </button>
             <button
               type="button"
               onClick={this.handleReload}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-nest-forest/20 bg-white px-4 py-2.5 text-sm font-medium text-nest-forest transition hover:bg-nest-forest/5"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-nest-green/20 bg-white px-4 py-2.5 text-sm font-medium text-nest-green transition hover:bg-nest-green/5"
             >
               <RefreshCw className="h-4 w-4" aria-hidden />
               Reload
