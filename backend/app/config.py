@@ -6,8 +6,8 @@ not call ``os.getenv`` ad hoc. Values are exposed through a cached
 
 Design notes
 ------------
-* ``load_dotenv`` is called against ``backend/.env`` so local development
-  works with the same variables Render uses in production.
+* ``load_dotenv`` checks both ``backend/.env`` and the repo-root ``.env``.
+  ``backend/.env`` takes precedence when both are present.
 * Secrets (``GROQ_API_KEY``) are validated lazily. Importing this module
   -- or hitting ``/health`` -- never crashes if the key is missing. The
   error only surfaces when something actually needs the key, and the
@@ -27,8 +27,13 @@ from dotenv import load_dotenv
 
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
+ROOT_DIR = BACKEND_DIR.parent
 
+# Load both dotenv locations:
+# 1) backend/.env (preferred for backend-only deployment)
+# 2) repo-root .env (fallback for local monorepo setups)
 load_dotenv(BACKEND_DIR / ".env")
+load_dotenv(ROOT_DIR / ".env")
 
 
 class ConfigError(RuntimeError):
@@ -58,9 +63,10 @@ class Settings:
         """Return the Groq API key or raise a clear ConfigError if missing."""
         if not self._groq_api_key:
             raise ConfigError(
-                "GROQ_API_KEY is not set. Add it to backend/.env for local "
-                "development, or define it under Environment in the Render "
-                "service dashboard before calling /chat."
+                "GROQ_API_KEY is not set. Add it to backend/.env or the repo "
+                "root .env for local development, or define it under "
+                "Environment in the Render service dashboard before calling "
+                "/chat."
             )
         return self._groq_api_key
 
