@@ -57,14 +57,17 @@ npm run lint       # clean: 0 errors, 0 warnings
 cd backend
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-# set OPENAI_API_KEY in backend/.env
+cp .env.example .env        # then paste your Groq key (console.groq.com/keys)
 uvicorn app.main:app --reload --port 8000
 ```
 
 API surface:
 
-- `GET /health` → `{ "ok": true }`
-- `POST /chat` → see `backend/app/schemas.py` for the current `ChatRequest` / `ChatResponse` shape. The response includes `answer`, `sources`, `fallback`, and `route_to_emergency` (the last triggers the Emergency screen on crisis keywords).
+- `GET /health` → `{ ok, environment, model, groq_api_key_configured }`
+- `POST /chat` → `{ answer, sources[], fallback, route_to_emergency }`. Request body is `{ query, user_profile }`. The `route_to_emergency` flag triggers the Emergency screen on crisis keywords; `fallback: true` indicates the retriever had no confident match and the answer points the user to 211 Georgia.
+- `POST /intake` → `{ normalized_profile, eligibility[], tasks[], bestfit_url, days_remaining }`. Used by the Benefits page to surface the BestFit deep link (Georgia public benefits screener) and by the app's planning layer for days-until-aging-out. Request body is `{ user_profile }`.
+
+See `backend/app/schemas.py` for the canonical Pydantic shapes; `frontend/src/lib/api.ts` mirrors them in TypeScript. The frontend's zustand `Profile` maps into `UserProfile` via `frontend/src/lib/profileMap.ts`.
 
 ## Repo layout
 
@@ -72,13 +75,15 @@ API surface:
 frontend/              React + Vite + TypeScript (Stephen)
   src/pages/           Home, Path, Benefits, Navigator, Vault, Emergency, Onboarding/, NotFound
   src/components/      layout (AppShell, BottomNav, TopBar), ui/ (shadcn primitives)
-  src/store/           zustand profile store with safe localStorage persistence
-  src/data/            fixture data used until backend is wired in
+  src/store/           zustand slices — profile (persisted), chat, intake, theme
+  src/lib/             api client, profile→backend mapper, personalize rules, safeStorage
+  src/data/            benefits + task fixture content used by the client rules engine
 
 backend/               FastAPI + LangChain + ChromaDB (Tylin)
-  app/                 FastAPI entry, schemas
+  app/                 FastAPI entry, Pydantic schemas, services/ (eligibility, tasks, intake)
   rag/                 ingest, retriever, chain, prompt
   data/                georgia_resources.json
+  tests/               pytest — /intake, eligibility, chat-logic
 
 Background Info/       Shared reference PDFs (DFCS handbook, CMT templates, etc.)
 PLAN.md                Living coordination doc — who is working on what
