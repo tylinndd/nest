@@ -510,12 +510,12 @@ export const StepReview = () => {
   const highlights = [
     {
       Icon: FileText,
-      title: "Your 90-day plan",
-      note: `Seven priorities tailored to ${descriptor}.`,
+      title: "Your personalized plan",
+      note: `Priorities tailored to ${descriptor}.`,
     },
     {
       Icon: Heart,
-      title: "Six benefits you likely qualify for",
+      title: "Georgia benefits we screened you for",
       note: "Chafee ETV, EYSS, extended Medicaid, KSU ASCEND, HUD FYI, tuition waiver.",
     },
     {

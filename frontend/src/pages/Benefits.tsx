@@ -122,7 +122,7 @@ const Benefits = () => {
       <p className="text-sm text-muted-foreground">Matched to your profile</p>
       <h1 className="font-display text-3xl text-primary">Benefits</h1>
       <p className="mt-2 text-muted-foreground">
-        Six Georgia programs, sorted by what to do first.
+        {benefits.length} Georgia programs, sorted by what to do first.
       </p>
 
       <div className="mt-4 flex gap-2 text-xs font-semibold">

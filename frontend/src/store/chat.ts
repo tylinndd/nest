@@ -1,9 +1,6 @@
 import { create } from "zustand";
-import {
-  persist,
-  createJSONStorage,
-  type StateStorage,
-} from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { safeStorage } from "@/lib/safeStorage";
 
 export type ChatMsg = {
   id: string;
@@ -18,34 +15,6 @@ type ChatState = {
   setMessages: (updater: (m: ChatMsg[]) => ChatMsg[]) => void;
   addMessage: (msg: ChatMsg) => void;
   clear: () => void;
-};
-
-const safeStorage: StateStorage = {
-  getItem: (key) => {
-    try {
-      return localStorage.getItem(key);
-    } catch (err) {
-      console.warn("[nest.chat] read failed:", err);
-      return null;
-    }
-  },
-  setItem: (key, value) => {
-    try {
-      localStorage.setItem(key, value);
-    } catch (err) {
-      console.warn(
-        "[nest.chat] write failed — conversation will not persist this session:",
-        err,
-      );
-    }
-  },
-  removeItem: (key) => {
-    try {
-      localStorage.removeItem(key);
-    } catch (err) {
-      console.warn("[nest.chat] remove failed:", err);
-    }
-  },
 };
 
 export const useChat = create<ChatState>()(
