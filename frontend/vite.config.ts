@@ -20,6 +20,11 @@ export default defineConfig(() => ({
       includeAssets: [
         "icon.svg",
         "icon-maskable.svg",
+        "icon-192.png",
+        "icon-512.png",
+        "icon-maskable-192.png",
+        "icon-maskable-512.png",
+        "apple-touch-icon.png",
         "og-image.png",
         "manifest.webmanifest",
       ],

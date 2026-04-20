@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "og:render": "node scripts/render-og.mjs"
+    "og:render": "node scripts/render-og.mjs",
+    "icons:render": "node scripts/render-icons.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
