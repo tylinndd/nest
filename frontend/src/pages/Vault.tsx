@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
   FileText,
@@ -7,7 +7,6 @@ import {
   Plus,
   Lock,
   CheckCircle2,
-  CircleDashed,
   Camera,
   Upload,
   Send,
@@ -26,7 +25,12 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { useProfile, type DocumentId } from "@/store/profile";
-import { derivePersonalizedVault, type VaultDoc } from "@/lib/personalize";
+import {
+  derivePersonalizedVault,
+  describeVaultDoc,
+  type VaultDoc,
+  type VaultDocState,
+} from "@/lib/personalize";
 import {
   deleteDocument,
   getDocument,
@@ -39,26 +43,29 @@ type Doc = VaultDoc;
 
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 
-const stateMeta = {
+const stateMeta: Record<
+  VaultDocState,
+  { label: string; chip: string; icon: typeof CheckCircle2; border: string }
+> = {
   uploaded: {
     label: "Secured",
     chip: "bg-nest-sage/15 text-[#2E7D5B]",
     icon: CheckCircle2,
     border: "border-l-nest-sage",
   },
-  requested: {
-    label: "In progress",
+  haveNotSecured: {
+    label: "Attach now",
     chip: "bg-nest-amber/15 text-nest-amber",
-    icon: CircleDashed,
+    icon: Camera,
     border: "border-l-nest-amber",
   },
-  missing: {
+  needToGet: {
     label: "Add now",
     chip: "bg-nest-coral/15 text-nest-coral",
     icon: Plus,
     border: "border-l-nest-coral",
   },
-} as const;
+};
 
 type AddTarget =
   | { kind: "closed" }
@@ -117,7 +124,6 @@ const Vault = () => {
     stored: StoredDoc | null;
     previewUrl: string | null;
   } | null>(null);
-  const prefersReducedMotion = useReducedMotion();
   const profile = useProfile();
   const markUploaded = useProfile((s) => s.markUploaded);
   const unmarkUploaded = useProfile((s) => s.unmarkUploaded);
@@ -160,14 +166,7 @@ const Vault = () => {
       openPreview(doc);
       return;
     }
-    if (doc.state === "missing") {
-      setTarget({ kind: "addToDoc", doc });
-      return;
-    }
-    toast.info("Request in progress", {
-      id: "vault-action",
-      description: doc.detail,
-    });
+    setTarget({ kind: "addToDoc", doc });
   };
 
   const triggerAttach = (which: "camera" | "file", docId: DocumentId) => {
@@ -331,9 +330,7 @@ const Vault = () => {
                   "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
                   d.state === "uploaded"
                     ? "bg-nest-sage text-white"
-                    : d.state === "requested"
-                      ? "bg-nest-amber/15 text-nest-amber"
-                      : "bg-muted text-foreground",
+                    : "bg-muted text-foreground",
                 )}
               >
                 {d.state === "uploaded" ? (
@@ -344,25 +341,12 @@ const Vault = () => {
               </span>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-foreground truncate">{d.title}</p>
-                <p className="text-xs text-muted-foreground">{d.detail}</p>
+                <p className="text-xs text-muted-foreground">
+                  {describeVaultDoc(d)}
+                </p>
               </div>
               <span className={cn("nest-chip", m.chip)}>
-                {d.state === "requested" && !prefersReducedMotion ? (
-                  <motion.span
-                    aria-hidden
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 6,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    className="mr-1 inline-flex"
-                  >
-                    <Icon className="h-3 w-3" />
-                  </motion.span>
-                ) : (
-                  <Icon className="mr-1 h-3 w-3" />
-                )}
+                <Icon className="mr-1 h-3 w-3" />
                 {m.label}
               </span>
             </motion.button>

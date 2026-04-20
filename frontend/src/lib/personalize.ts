@@ -39,41 +39,43 @@ export const DOCUMENT_CATALOG: Array<{
   },
 ];
 
+export type VaultDocState = "uploaded" | "haveNotSecured" | "needToGet";
+
 export type VaultDoc = {
   id: DocumentId;
   title: string;
-  detail: string;
-  state: "uploaded" | "missing" | "requested";
+  state: VaultDocState;
+};
+
+const CATALOG_BY_ID = Object.fromEntries(
+  DOCUMENT_CATALOG.map((entry) => [entry.id, entry]),
+) as Record<DocumentId, (typeof DOCUMENT_CATALOG)[number]>;
+
+export const describeVaultDoc = (doc: VaultDoc): string => {
+  switch (doc.state) {
+    case "uploaded":
+      return "Secured in your vault";
+    case "haveNotSecured":
+      return "You have this — add a photo to secure it";
+    case "needToGet":
+      return CATALOG_BY_ID[doc.id].missingDetail;
+  }
 };
 
 export const derivePersonalizedVault = (profile: Profile): VaultDoc[] => {
   const have = new Set(profile.documentsHave);
   const uploaded = new Set(profile.uploadedDocs);
-
-  return DOCUMENT_CATALOG.map((entry) => {
-    if (uploaded.has(entry.id)) {
-      return {
-        id: entry.id,
-        title: entry.title,
-        detail: "Secured in your vault",
-        state: "uploaded" as const,
-      };
-    }
-    if (have.has(entry.id)) {
-      return {
-        id: entry.id,
-        title: entry.title,
-        detail: "You have this — add a photo to secure it",
-        state: "missing" as const,
-      };
-    }
-    return {
+  return DOCUMENT_CATALOG.map(
+    (entry): VaultDoc => ({
       id: entry.id,
       title: entry.title,
-      detail: entry.missingDetail,
-      state: "missing" as const,
-    };
-  });
+      state: uploaded.has(entry.id)
+        ? "uploaded"
+        : have.has(entry.id)
+          ? "haveNotSecured"
+          : "needToGet",
+    }),
+  );
 };
 
 const documentTaskGuides: Record<string, Task["guide"]> = {
