@@ -1,7 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { VitePWA } from "vite-plugin-pwa";
+import { visualizer } from "rollup-plugin-visualizer";
 import path from "path";
+
+const ANALYZE = process.env.ANALYZE === "1";
 
 export default defineConfig(() => ({
   server: {
@@ -13,6 +16,18 @@ export default defineConfig(() => ({
   },
   plugins: [
     react(),
+    ANALYZE &&
+      visualizer({
+        filename: "dist/bundle-stats.html",
+        gzipSize: true,
+        brotliSize: true,
+        template: "treemap",
+      }),
+    ANALYZE &&
+      visualizer({
+        filename: "dist/bundle-stats.json",
+        template: "raw-data",
+      }),
     VitePWA({
       registerType: "prompt",
       injectRegister: false,
@@ -30,6 +45,7 @@ export default defineConfig(() => ({
       ],
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,webmanifest}"],
+        globIgnores: ["**/bundle-stats.*"],
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api/, /^\/_/],
         cleanupOutdatedCaches: true,
