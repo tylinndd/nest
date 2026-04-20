@@ -61,9 +61,6 @@ export default {
           sage: "#52B788",
           coral: "#E07B6A",
           card: "#FFFFFF",
-          ink: "#0B2A1F",
-          line: "#E8E2D5",
-          subtle: "#6B7268",
         },
       },
       fontFamily: {
