@@ -5,6 +5,7 @@ import { Moon, Sun } from "lucide-react";
 import { useProfile } from "@/store/profile";
 import { useChat } from "@/store/chat";
 import { useTheme } from "@/store/theme";
+import { safeStorage } from "@/lib/safeStorage";
 
 type Props = {
   showSaveExit?: boolean;
@@ -34,11 +35,7 @@ export const TopBar = ({ showSaveExit, right }: Props) => {
     useProfile.getState().reset();
     useProfile.persist.clearStorage();
     useChat.getState().clear();
-    try {
-      localStorage.removeItem("nest.first-task-fired");
-    } catch {
-      // storage unavailable; confetti gate stays as-is
-    }
+    safeStorage.removeItem("nest.first-task-fired");
     navigate("/onboarding/name");
     toast.success("Demo reset", {
       id: "demo-reset",
