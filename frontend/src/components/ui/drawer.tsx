@@ -8,8 +8,6 @@ const Drawer = ({ shouldScaleBackground = true, ...props }: React.ComponentProps
 );
 Drawer.displayName = "Drawer";
 
-const DrawerTrigger = DrawerPrimitive.Trigger;
-
 const DrawerPortal = DrawerPrimitive.Portal;
 
 const DrawerClose = DrawerPrimitive.Close;
@@ -77,7 +75,6 @@ export {
   Drawer,
   DrawerPortal,
   DrawerOverlay,
-  DrawerTrigger,
   DrawerClose,
   DrawerContent,
   DrawerHeader,
