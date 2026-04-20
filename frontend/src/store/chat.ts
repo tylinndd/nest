@@ -10,6 +10,13 @@ export type ChatMsg = {
   followUps?: string[];
 };
 
+export const CHAT_MESSAGE_CAP = 200;
+
+const cap = (messages: ChatMsg[]): ChatMsg[] =>
+  messages.length > CHAT_MESSAGE_CAP
+    ? messages.slice(messages.length - CHAT_MESSAGE_CAP)
+    : messages;
+
 type ChatState = {
   messages: ChatMsg[];
   setMessages: (updater: (m: ChatMsg[]) => ChatMsg[]) => void;
@@ -22,8 +29,9 @@ export const useChat = create<ChatState>()(
     (set) => ({
       messages: [],
       setMessages: (updater) =>
-        set((s) => ({ messages: updater(s.messages) })),
-      addMessage: (msg) => set((s) => ({ messages: [...s.messages, msg] })),
+        set((s) => ({ messages: cap(updater(s.messages)) })),
+      addMessage: (msg) =>
+        set((s) => ({ messages: cap([...s.messages, msg]) })),
       clear: () => set({ messages: [] }),
     }),
     {

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { useChat, type ChatMsg } from "./chat";
+import { useChat, type ChatMsg, CHAT_MESSAGE_CAP } from "./chat";
 
 const msg = (id: string, role: "user" | "assistant" = "user"): ChatMsg => ({
   id,
@@ -60,5 +60,25 @@ describe("useChat", () => {
     useChat.getState().setMessages((prev) => prev.filter((m) => m.id !== "1"));
 
     expect(useChat.getState().messages.map((m) => m.id)).toEqual(["2"]);
+  });
+
+  it("caps the message list via addMessage, dropping the oldest", () => {
+    for (let i = 0; i < CHAT_MESSAGE_CAP + 5; i++) {
+      useChat.getState().addMessage(msg(`m-${i}`));
+    }
+    const { messages } = useChat.getState();
+    expect(messages).toHaveLength(CHAT_MESSAGE_CAP);
+    expect(messages[0].id).toBe("m-5");
+    expect(messages[messages.length - 1].id).toBe(`m-${CHAT_MESSAGE_CAP + 4}`);
+  });
+
+  it("caps the message list via setMessages too", () => {
+    const oversized = Array.from({ length: CHAT_MESSAGE_CAP + 3 }, (_, i) =>
+      msg(`s-${i}`),
+    );
+    useChat.getState().setMessages(() => oversized);
+    const { messages } = useChat.getState();
+    expect(messages).toHaveLength(CHAT_MESSAGE_CAP);
+    expect(messages[0].id).toBe("s-3");
   });
 });
