@@ -1,9 +1,6 @@
 import { create } from "zustand";
-import {
-  persist,
-  createJSONStorage,
-  type StateStorage,
-} from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { safeStorage } from "@/lib/safeStorage";
 
 export type Theme = "light" | "dark";
 
@@ -11,31 +8,6 @@ type ThemeState = {
   theme: Theme;
   setTheme: (t: Theme) => void;
   toggle: () => void;
-};
-
-const safeStorage: StateStorage = {
-  getItem: (key) => {
-    try {
-      return localStorage.getItem(key);
-    } catch (err) {
-      console.warn("[nest.theme] read failed:", err);
-      return null;
-    }
-  },
-  setItem: (key, value) => {
-    try {
-      localStorage.setItem(key, value);
-    } catch (err) {
-      console.warn("[nest.theme] write failed:", err);
-    }
-  },
-  removeItem: (key) => {
-    try {
-      localStorage.removeItem(key);
-    } catch (err) {
-      console.warn("[nest.theme] remove failed:", err);
-    }
-  },
 };
 
 const applyTheme = (t: Theme) => {
