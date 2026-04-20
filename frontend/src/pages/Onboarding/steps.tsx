@@ -121,6 +121,7 @@ const Choice = ({
   <button
     type="button"
     onClick={onClick}
+    aria-pressed={active}
     className={cn(
       "w-full rounded-2xl border-2 px-5 py-4 text-left transition min-h-[3.5rem]",
       active
@@ -333,6 +334,7 @@ export const StepDocuments = () => {
               key={d.id}
               type="button"
               onClick={() => toggle(d.id)}
+              aria-pressed={active}
               className={cn(
                 "flex w-full items-center gap-4 rounded-2xl border-2 px-5 py-4 text-left transition min-h-[3.5rem]",
                 active
@@ -413,6 +415,7 @@ export const StepEducation = () => {
               key={id}
               type="button"
               onClick={() => setEducation(id)}
+              aria-pressed={active}
               className={cn(
                 "flex w-full items-start gap-4 rounded-2xl border-2 px-5 py-4 text-left transition min-h-[3.5rem]",
                 active

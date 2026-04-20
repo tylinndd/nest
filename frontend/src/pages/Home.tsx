@@ -347,6 +347,7 @@ const TaskRow = ({
             <p className="text-xs text-muted-foreground mt-1">{t.due}</p>
             {t.help && (
               <button
+                type="button"
                 onClick={() => onOpen(t)}
                 className="mt-3 nest-pill bg-secondary text-secondary-foreground hover:bg-secondary/80 min-h-[2.5rem]"
               >
