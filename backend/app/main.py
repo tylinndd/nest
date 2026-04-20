@@ -1,3 +1,7 @@
+import asyncio
+import logging
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -5,10 +9,24 @@ from app.config import ConfigError, get_settings
 from app.schemas import ChatRequest, ChatResponse, IntakeRequest, IntakeResponse
 from app.services.intake import build_intake_response
 from rag.chain import answer_question
+from rag.retreiver import retrieve_documents
 
 settings = get_settings()
+logger = logging.getLogger("uvicorn.error")
 
-app = FastAPI(title="Nest API", version="1.0.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("nest warmup: loading embeddings + priming vectorstore")
+    try:
+        await asyncio.to_thread(retrieve_documents, "warmup", 1)
+        logger.info("nest warmup: RAG pipeline ready")
+    except Exception as exc:
+        logger.warning("nest warmup failed (%s); first /chat may be slow", exc)
+    yield
+
+
+app = FastAPI(title="Nest API", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
