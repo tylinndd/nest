@@ -354,7 +354,7 @@ const EDUCATION_OPTIONS: {
   {
     id: "college",
     label: "4-year college",
-    description: "KSU, GSU, UGA — Chafee ETV + HB 136 apply",
+    description: "KSU, GSU, UGA — Chafee ETV + tuition waiver apply",
     Icon: GraduationCap,
   },
   {
@@ -511,7 +511,7 @@ export const StepReview = () => {
     {
       Icon: Heart,
       title: "Six benefits you likely qualify for",
-      note: "Chafee ETV, EYSS, extended Medicaid, KSU ASCEND, HUD FYI, HB 136.",
+      note: "Chafee ETV, EYSS, extended Medicaid, KSU ASCEND, HUD FYI, tuition waiver.",
     },
     {
       Icon: GraduationCap,

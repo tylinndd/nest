@@ -94,8 +94,8 @@ const matchCanned = (input: string): CannedReply => {
   if (/(chafee|etv|tuition|scholarship|hb\s*136|college)/.test(q)) {
     return {
       text:
-        "Chafee ETV covers up to $5,000 a year through age 26 for tuition, books, housing, or transportation. Your DFCS worker or ILP coordinator submits it for you with proof of enrollment. HB 136 also waives tuition at Georgia public colleges.",
-      source: "Georgia DFCS · Chafee ETV · HB 136",
+        "Chafee ETV covers up to $5,000 a year through age 26 for tuition, books, housing, or transportation. Your DFCS worker or ILP coordinator submits it for you with proof of enrollment. The Georgia Post-Secondary Tuition Waiver (from HB 136) also covers tuition and fees at eligible public colleges and tech schools.",
+      source: "Georgia DFCS · Chafee ETV · Post-Secondary Tuition Waiver",
       followUps: [
         "How do I prove enrollment?",
         "Can I use Chafee for a trade school?",
