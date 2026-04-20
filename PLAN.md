@@ -31,11 +31,11 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked
 | 1.9 | BottomNav + AppShell | `frontend/src/components/layout/*` | Stephen | ✅ | 1.1 | Emergency tab in coral; route-aware hide |
 | 1.10 | Success Cards micro-interaction | `frontend/src/components/ui/SuccessCard.tsx` | Stephen | ✅ | 1.1 | Framer Motion; Task #22 on poster/demo |
 | 1.11 | Frontend cleanup pass (a11y + dead code + lint) | `frontend/` | Stephen | ✅ | 1.1–1.10 | Global focus-visible ring, progressbar ARIA, stripped Lovable scaffold, deleted ~1500 lines of unused shadcn primitives. Lint 0/0, typecheck clean, CSS bundle 50.97 → 44.80 kB |
-| 2.1 | FastAPI `/chat` endpoint | `backend/app/main.py` | Tylin | CHECK | — | Scaffold in place. Contract updated to `/chat` — see Shared Contracts. Known import paths need fixing (`app.rag.*` references don't match `backend/rag/` layout; `retreiver.py` filename typo) |
-| 2.2 | LangChain RAG pipeline | `backend/rag/` | Tylin | CHECK | 2.1 | `chain.py` + `retreiver.py` scaffolded (crisis keyword routing, county rerank, MiniLM embeddings, GPT-4o-mini). Needs working imports + corpus indexed |
-| 2.3 | ChromaDB indexing of 250-page DFCS PDF | `backend/data/`, `backend/rag/ingest.py` | Tylin | CHECK | — | `ingest.py` stub exists; corpus not yet chunked / embedded |
-| 2.4 | Rules engine for 6 benefit programs | `backend/rules/` | Tylin | CHECK | — | Deterministic eligibility from profile |
-| 3.1 | Wire Navigator → `/chat` | `frontend/src/pages/Navigator.tsx` | Stephen | check | 2.1 | Replace stub reply with fetch; honor `route_to_emergency` flag |
+| 2.1 | FastAPI `/chat` endpoint | `backend/app/main.py` | Tylin | ✅ | — | Verified end-to-end 2026-04-20 — Groq answers, 4 sources, CORS passes |
+| 2.2 | LangChain RAG pipeline | `backend/rag/` | Tylin | ✅ | 2.1 | Verified 2026-04-20 — `chain.py` + `retreiver.py` live; crisis routing + county rerank active |
+| 2.3 | ChromaDB indexing of 250-page DFCS PDF | `backend/data/`, `backend/rag/ingest.py` | Tylin | ✅ | — | Verified 2026-04-20 — corpus indexed, retrieval returns real chunks |
+| 2.4 | Rules engine for 6 benefit programs | `backend/rules/` | Tylin | ✅ | — | Verified 2026-04-20 — `/intake` returns eligibility[] + tasks[] for Maria persona |
+| 3.1 | Wire Navigator → `/chat` | `frontend/src/pages/Navigator.tsx` | Stephen | ✅ | 2.1 | Wired via `lib/api.ts` + `lib/profileMap.ts`; `route_to_emergency` navigates to `/emergency`; verified in browser 2026-04-20 |
 | 3.2 | Wire Benefits → rules JSON | `frontend/src/data/benefits.json` | Stephen | ⬜ | 2.4 | Replace placeholder.ts shape with rules output |
 | 4.1 | Poster PDF | `/deliverables/poster.pdf` | Brenden | ⬜ | 1.* | 8-feature layout + demo persona Maria |
 | 4.2 | 30-sec flash video | `/deliverables/flash.mp4` | Brenden + Stephen | ⬜ | 1.* | Optional, targets C-Day loop |
@@ -113,4 +113,4 @@ Trauma-informed design — red destructive tone feels alarming. Full nest-green 
 
 ---
 
-_Last updated: 2026-04-19 by Stephen._
+_Last updated: 2026-04-20 by Stephen._
