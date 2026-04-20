@@ -151,6 +151,42 @@ const HeroCard = ({
   );
 };
 
+const UnknownAgeCard = ({ progress }: { progress: number }) => (
+  <div className="nest-card p-6 bg-primary text-primary-foreground">
+    <p className="text-xs font-semibold uppercase tracking-widest opacity-80">
+      Your plan
+    </p>
+    <p className="mt-3 font-display text-3xl leading-tight">
+      Tell us your age to unlock the countdown.
+    </p>
+    <Link
+      to="/onboarding/age"
+      className="mt-4 inline-flex items-center gap-1 rounded-full bg-primary-foreground/10 px-4 py-2 text-sm font-semibold transition hover:bg-primary-foreground/15"
+    >
+      Add your age
+      <ArrowRight className="h-4 w-4" />
+    </Link>
+    <div
+      role="progressbar"
+      aria-label="Week-one checklist progress"
+      aria-valuenow={progress}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      className="mt-5 h-1 rounded-full bg-primary-foreground/20 overflow-hidden"
+    >
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: `${progress}%` }}
+        transition={{ duration: 0.9, ease: "easeOut", delay: 0.25 }}
+        className="h-full bg-nest-sage"
+      />
+    </div>
+    <p className="mt-2 text-xs opacity-80">
+      {progress}% of week-one checklist complete
+    </p>
+  </div>
+);
+
 const AllCaughtUpCard = () => (
   <div className="nest-card p-5 border-nest-sage/40 bg-nest-sage/5">
     <div className="flex items-start gap-3">
@@ -352,6 +388,7 @@ const Home = () => {
   const displayAge = profile.age;
   const displayCounty = profile.county ? `${profile.county} County` : null;
   const daysUntilExit = computeDaysUntilAgeOut(profile.age);
+  const hasAge = daysUntilExit !== null;
 
   const greeting = useMemo(() => {
     const h = new Date().getHours();
@@ -382,19 +419,21 @@ const Home = () => {
       : Math.round((done.length / taskList.length) * 100);
 
   const reduceMotion = useReducedMotion();
-  const daysCount = useMotionValue(reduceMotion ? daysUntilExit : 0);
+  const daysTarget = daysUntilExit ?? 0;
+  const daysCount = useMotionValue(reduceMotion ? daysTarget : 0);
   const daysRounded = useTransform(daysCount, (v) => Math.round(v));
   useEffect(() => {
+    if (!hasAge) return;
     if (reduceMotion) {
-      daysCount.set(daysUntilExit);
+      daysCount.set(daysTarget);
       return;
     }
-    const controls = animate(daysCount, daysUntilExit, {
+    const controls = animate(daysCount, daysTarget, {
       duration: 1.1,
       ease: "easeOut",
     });
     return () => controls.stop();
-  }, [daysCount, daysUntilExit, reduceMotion]);
+  }, [daysCount, daysTarget, hasAge, reduceMotion]);
 
   const openTask = (task: Task) => setActiveTask(task);
 
@@ -464,11 +503,15 @@ const Home = () => {
       </div>
 
       <div className="px-5 mt-5">
-        <HeroCard
-          days={daysRounded}
-          progress={progress}
-          reduceMotion={!!reduceMotion}
-        />
+        {hasAge ? (
+          <HeroCard
+            days={daysRounded}
+            progress={progress}
+            reduceMotion={!!reduceMotion}
+          />
+        ) : (
+          <UnknownAgeCard progress={progress} />
+        )}
       </div>
 
       <AnimatePresence mode="wait" initial={false}>

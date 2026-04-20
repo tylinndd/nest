@@ -282,8 +282,8 @@ export const derivePersonalizedTasks = (profile: Profile): Task[] => {
   return derived;
 };
 
-export const computeDaysUntilAgeOut = (age: number | null): number => {
-  if (age === null) return 90;
+export const computeDaysUntilAgeOut = (age: number | null): number | null => {
+  if (age === null) return null;
   if (age >= 21) return 0;
   if (age >= 18) return (21 - age) * 365;
   return (18 - age) * 365;
