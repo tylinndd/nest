@@ -13,6 +13,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/layout/AppShell";
 import { RequireProfile } from "@/components/guards/RequireProfile";
 import { PersistenceBanner } from "@/components/PersistenceBanner";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Home from "./pages/Home";
 
 const Path = lazy(() => import("./pages/Path"));
@@ -100,32 +101,34 @@ const App = () => (
         <BrowserRouter>
           <RouteTitle />
           <PersistenceBanner />
-          <Suspense fallback={<RouteFallback />}>
-            <Routes>
-              <Route path="/onboarding" element={<OnboardingLayout />}>
-                <Route index element={<Navigate to="name" replace />} />
-                <Route path="name" element={<StepName />} />
-                <Route path="age" element={<StepAge />} />
-                <Route path="county" element={<StepCounty />} />
-                <Route path="documents" element={<StepDocuments />} />
-                <Route path="education" element={<StepEducation />} />
-                <Route path="housing" element={<StepHousing />} />
-                <Route path="health" element={<StepHealth />} />
-                <Route path="review" element={<StepReview />} />
-              </Route>
-              <Route element={<RequireProfile />}>
-                <Route element={<AppShell />}>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/path" element={<Path />} />
-                  <Route path="/benefits" element={<Benefits />} />
-                  <Route path="/navigator" element={<Navigator />} />
-                  <Route path="/vault" element={<Vault />} />
-                  <Route path="/emergency" element={<Emergency />} />
+          <ErrorBoundary>
+            <Suspense fallback={<RouteFallback />}>
+              <Routes>
+                <Route path="/onboarding" element={<OnboardingLayout />}>
+                  <Route index element={<Navigate to="name" replace />} />
+                  <Route path="name" element={<StepName />} />
+                  <Route path="age" element={<StepAge />} />
+                  <Route path="county" element={<StepCounty />} />
+                  <Route path="documents" element={<StepDocuments />} />
+                  <Route path="education" element={<StepEducation />} />
+                  <Route path="housing" element={<StepHousing />} />
+                  <Route path="health" element={<StepHealth />} />
+                  <Route path="review" element={<StepReview />} />
                 </Route>
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
+                <Route element={<RequireProfile />}>
+                  <Route element={<AppShell />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/path" element={<Path />} />
+                    <Route path="/benefits" element={<Benefits />} />
+                    <Route path="/navigator" element={<Navigator />} />
+                    <Route path="/vault" element={<Vault />} />
+                    <Route path="/emergency" element={<Emergency />} />
+                  </Route>
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </BrowserRouter>
       </TooltipProvider>
     </MotionConfig>
