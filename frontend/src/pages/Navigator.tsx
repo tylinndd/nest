@@ -366,6 +366,10 @@ const Navigator = () => {
 
       <div
         ref={scrollRef}
+        role="log"
+        aria-live="polite"
+        aria-atomic="false"
+        aria-label="Chat messages"
         className="flex-1 overflow-y-auto px-5 py-4 space-y-3 no-scrollbar"
       >
         <AnimatePresence initial={false}>
