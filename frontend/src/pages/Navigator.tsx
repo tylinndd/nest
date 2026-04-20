@@ -419,11 +419,16 @@ const Navigator = () => {
             <Plus className="h-5 w-5" />
           </button>
           <input
+            type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
             aria-label="Ask Nest anything"
             placeholder={listening ? "Listening…" : "Ask Nest anything…"}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint="send"
             className="flex-1 bg-transparent outline-none text-base placeholder:text-muted-foreground"
           />
           {voiceSupported && (
@@ -443,6 +448,7 @@ const Navigator = () => {
             </button>
           )}
           <button
+            type="button"
             onClick={() => send()}
             aria-label="Send"
             disabled={!input.trim()}
