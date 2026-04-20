@@ -121,7 +121,7 @@ const HeroCard = ({
       />
       <div className="relative">
         <p className="text-xs font-semibold uppercase tracking-widest opacity-80">
-          Your 90-day plan
+          Your countdown
         </p>
         <div className="mt-3 flex items-baseline gap-2">
           <motion.span className="font-display text-[5rem] leading-none tabular-nums">
@@ -131,7 +131,7 @@ const HeroCard = ({
         </div>
         <div
           role="progressbar"
-          aria-label="90-day plan progress"
+          aria-label="Your plan progress"
           aria-valuenow={progress}
           aria-valuemin={0}
           aria-valuemax={100}
@@ -145,7 +145,7 @@ const HeroCard = ({
           />
         </div>
         <p className="mt-2 text-xs opacity-80">
-          {progress}% of week-one checklist complete
+          {progress}% of your plan complete
         </p>
       </div>
     </div>
@@ -169,7 +169,7 @@ const UnknownAgeCard = ({ progress }: { progress: number }) => (
     </Link>
     <div
       role="progressbar"
-      aria-label="Week-one checklist progress"
+      aria-label="Your plan progress"
       aria-valuenow={progress}
       aria-valuemin={0}
       aria-valuemax={100}
@@ -183,7 +183,7 @@ const UnknownAgeCard = ({ progress }: { progress: number }) => (
       />
     </div>
     <p className="mt-2 text-xs opacity-80">
-      {progress}% of week-one checklist complete
+      {progress}% of your plan complete
     </p>
   </div>
 );
