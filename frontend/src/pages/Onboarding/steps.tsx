@@ -326,7 +326,11 @@ export const StepDocuments = () => {
       subtitle="We'll build a checklist for the ones still missing."
       next="/onboarding/education"
     >
-      <div className="space-y-3">
+      <div
+        role="group"
+        aria-label="Documents you already have"
+        className="space-y-3"
+      >
         {DOCUMENT_OPTIONS.map((d) => {
           const active = have.includes(d.id);
           return (
@@ -407,7 +411,11 @@ export const StepEducation = () => {
       next="/onboarding/housing"
       disabled={!pick}
     >
-      <div className="space-y-3">
+      <div
+        role="group"
+        aria-label="Education plan"
+        className="space-y-3"
+      >
         {EDUCATION_OPTIONS.map(({ id, label, description, Icon }) => {
           const active = pick === id;
           return (
@@ -462,7 +470,11 @@ export const StepHousing = () => {
       next="/onboarding/health"
       disabled={!pick}
     >
-      <div className="space-y-3">
+      <div
+        role="group"
+        aria-label="Current housing"
+        className="space-y-3"
+      >
         {HOUSING_OPTIONS.map((o) => (
           <Choice
             key={o}
@@ -487,7 +499,11 @@ export const StepHealth = () => {
       subtitle="Pick any that apply. Nothing is shared without your permission."
       next="/onboarding/review"
     >
-      <div className="space-y-3">
+      <div
+        role="group"
+        aria-label="Health needs"
+        className="space-y-3"
+      >
         {HEALTH_OPTIONS.map((o) => (
           <Choice
             key={o}
