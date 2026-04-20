@@ -1,10 +1,6 @@
 import { create } from "zustand";
-import {
-  persist,
-  createJSONStorage,
-  type StateStorage,
-} from "zustand/middleware";
-import { usePersistHealth } from "./persistHealth";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { safeStorage } from "@/lib/safeStorage";
 
 export type EducationPlan = "college" | "trade" | "working";
 
@@ -100,38 +96,6 @@ const sanitizeHousing = (value: unknown): HousingOption | "" =>
 
 const sanitizeStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
-
-const safeStorage: StateStorage = {
-  getItem: (key) => {
-    try {
-      return localStorage.getItem(key);
-    } catch (err) {
-      console.warn("[nest.profile] read failed:", err);
-      usePersistHealth.getState().markFailed();
-      return null;
-    }
-  },
-  setItem: (key, value) => {
-    try {
-      localStorage.setItem(key, value);
-      usePersistHealth.getState().markOk();
-    } catch (err) {
-      console.warn(
-        "[nest.profile] write failed — answers will not persist this session:",
-        err,
-      );
-      usePersistHealth.getState().markFailed();
-    }
-  },
-  removeItem: (key) => {
-    try {
-      localStorage.removeItem(key);
-    } catch (err) {
-      console.warn("[nest.profile] remove failed:", err);
-      usePersistHealth.getState().markFailed();
-    }
-  },
-};
 
 export const useProfile = create<Profile & ProfileActions>()(
   persist(

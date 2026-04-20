@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { useProfile } from "@/store/profile";
+import { safeStorage } from "@/lib/safeStorage";
 import { cn } from "@/lib/utils";
 
 const FIRST_TASK_KEY = "nest.first-task-fired";
@@ -433,15 +434,9 @@ const Home = () => {
     if (task.status === "done") return;
     markTaskDone(task.id);
     setCompletedId(task.id);
-    if (!reduceMotion) {
-      try {
-        if (!localStorage.getItem(FIRST_TASK_KEY)) {
-          fireFirstTaskConfetti();
-          localStorage.setItem(FIRST_TASK_KEY, "1");
-        }
-      } catch {
-        // storage unavailable; skip persistence, still no re-fire this session
-      }
+    if (!reduceMotion && !safeStorage.getItem(FIRST_TASK_KEY)) {
+      fireFirstTaskConfetti();
+      safeStorage.setItem(FIRST_TASK_KEY, "1");
     }
     if (completedTimerRef.current !== null) {
       window.clearTimeout(completedTimerRef.current);
