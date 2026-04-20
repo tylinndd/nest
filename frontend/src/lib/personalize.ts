@@ -222,6 +222,7 @@ export const derivePersonalizedTasks = (profile: Profile): Task[] => {
   const derived: Task[] = [];
   const have = new Set(profile.documentsHave);
   const health = new Set(profile.health);
+  const completed = new Set(profile.completedTaskIds);
   const age = profile.age ?? 0;
 
   if (!have.has("birth")) {
@@ -269,7 +270,11 @@ export const derivePersonalizedTasks = (profile: Profile): Task[] => {
     derived.push(buildTask("find-pcp", "Find a primary care doctor", "Due this week", "week", "amber"));
   }
 
-  return derived;
+  return derived.map((task) =>
+    completed.has(task.id)
+      ? { ...task, status: "done" as const, tone: "sage" as const, due: "Completed", help: undefined }
+      : task,
+  );
 };
 
 export const computeDaysUntilAgeOut = (age: number | null): number | null => {

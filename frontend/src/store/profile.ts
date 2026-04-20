@@ -44,6 +44,7 @@ export type Profile = {
   education: EducationPlan | null;
   housing: HousingOption | "";
   health: HealthFlag[];
+  completedTaskIds: string[];
 };
 
 type ProfileActions = {
@@ -58,6 +59,7 @@ type ProfileActions = {
   setHousing: (housing: HousingOption) => void;
   setHealth: (items: HealthFlag[]) => void;
   toggleHealth: (option: HealthFlag) => void;
+  markTaskDone: (id: string) => void;
   reset: () => void;
 };
 
@@ -70,6 +72,7 @@ const emptyProfile: Profile = {
   education: null,
   housing: "",
   health: [],
+  completedTaskIds: [],
 };
 
 const DOCUMENT_ID_SET = new Set<string>(DOCUMENT_IDS);
@@ -94,6 +97,9 @@ const sanitizeHousing = (value: unknown): HousingOption | "" =>
   typeof value === "string" && HOUSING_SET.has(value)
     ? (value as HousingOption)
     : "";
+
+const sanitizeStringArray = (value: unknown): string[] =>
+  Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
 
 const safeStorage: StateStorage = {
   getItem: (key) => {
@@ -160,11 +166,17 @@ export const useProfile = create<Profile & ProfileActions>()(
             ? s.health.filter((x) => x !== option)
             : [...s.health, option],
         })),
+      markTaskDone: (id) =>
+        set((s) =>
+          s.completedTaskIds.includes(id)
+            ? s
+            : { completedTaskIds: [...s.completedTaskIds, id] },
+        ),
       reset: () => set({ ...emptyProfile }),
     }),
     {
       name: "nest.profile",
-      version: 3,
+      version: 4,
       storage: createJSONStorage(() => safeStorage),
       migrate: (persisted, version) => {
         const base = (persisted ?? {}) as Record<string, unknown>;
@@ -183,6 +195,7 @@ export const useProfile = create<Profile & ProfileActions>()(
               : null,
           housing: sanitizeHousing(base.housing),
           health: sanitizeHealth(base.health),
+          completedTaskIds: sanitizeStringArray(base.completedTaskIds),
         };
         void version;
         return merged;

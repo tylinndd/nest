@@ -361,19 +361,11 @@ const TaskRow = ({
 
 const Home = () => {
   const profile = useProfile();
-  const derivedTasks = useMemo(() => derivePersonalizedTasks(profile), [profile]);
-  const [taskList, setTaskList] = useState<Task[]>(derivedTasks);
+  const markTaskDone = useProfile((s) => s.markTaskDone);
+  const taskList = useMemo(() => derivePersonalizedTasks(profile), [profile]);
   const [completedId, setCompletedId] = useState<string | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const completedTimerRef = useRef<number | null>(null);
-  const profileSignature = useMemo(
-    () => derivedTasks.map((t) => t.id).join("|"),
-    [derivedTasks],
-  );
-
-  useEffect(() => {
-    setTaskList(derivedTasks);
-  }, [profileSignature, derivedTasks]);
 
   useEffect(
     () => () => {
@@ -439,13 +431,7 @@ const Home = () => {
 
   const completeTask = (task: Task) => {
     if (task.status === "done") return;
-    setTaskList((prev) =>
-      prev.map((t) =>
-        t.id === task.id
-          ? { ...t, status: "done" as const, tone: "sage" as const, due: "Completed" }
-          : t,
-      ),
-    );
+    markTaskDone(task.id);
     setCompletedId(task.id);
     if (!reduceMotion) {
       try {
