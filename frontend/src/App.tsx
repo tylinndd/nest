@@ -13,6 +13,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/layout/AppShell";
 import { RequireProfile } from "@/components/guards/RequireProfile";
 import { PersistenceBanner } from "@/components/PersistenceBanner";
+import { UpdatePrompt } from "@/components/UpdatePrompt";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -101,6 +102,7 @@ const App = () => (
         <BrowserRouter>
           <RouteTitle />
           <PersistenceBanner />
+          <UpdatePrompt />
           <ErrorBoundary>
             <Suspense fallback={<RouteFallback />}>
               <Routes>
