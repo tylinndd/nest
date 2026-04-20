@@ -1,14 +1,18 @@
-import os
-from dotenv import load_dotenv
+"""Question-answering chain for the Nest backend.
 
-from langchain_openai import ChatOpenAI
+The LLM client is created lazily on first use so importing this module
+(or hitting ``/health``) never crashes when ``GROQ_API_KEY`` is unset.
+"""
 
-from app.rag.prompt import SYSTEM_PROMPT
-from app.rag.retriever import retrieve_documents, rerank_for_profile
+from __future__ import annotations
 
-load_dotenv()
+from app.config import ConfigError, get_settings
+from rag.prompt import SYSTEM_PROMPT
+from rag.retreiver import retrieve_documents, rerank_for_profile
 
-FALLBACK_TEXT = "I don't have that specific information. Please call 211 Georgia: dial 2-1-1."
+FALLBACK_TEXT = (
+    "I don't have that specific information. Please call 211 Georgia: dial 2-1-1."
+)
 
 CRISIS_KEYWORDS = [
     "suicide",
@@ -51,16 +55,38 @@ def extract_sources(docs) -> list[str]:
     return seen
 
 
-llm = ChatOpenAI(
-    model="gpt-4o-mini",
-    temperature=0
-)
+_llm = None
+
+
+def get_llm():
+    """Construct the Groq chat client on first use.
+
+    Kept lazy so module import (and ``/health``) succeeds even when the
+    key is missing. Raises :class:`ConfigError` with an actionable message
+    when the key truly is needed.
+    """
+    global _llm
+    if _llm is None:
+        from langchain_groq import ChatGroq
+
+        settings = get_settings()
+        _llm = ChatGroq(
+            model=settings.model_name,
+            api_key=settings.groq_api_key,
+            temperature=0,
+            max_retries=2,
+        )
+    return _llm
 
 
 def answer_question(query: str, user_profile):
     if is_crisis(query):
         return {
-            "answer": "You deserve immediate human support right now. Please call 988 for crisis help or 211 Georgia for urgent housing, food, and support.",
+            "answer": (
+                "You deserve immediate human support right now. "
+                "Please call 988 for crisis help or 211 Georgia for urgent "
+                "housing, food, and support."
+            ),
             "sources": ["988", "211 Georgia"],
             "fallback": True,
             "route_to_emergency": True,
@@ -100,10 +126,12 @@ Question:
 {query}
 """.strip()
 
-    response = llm.invoke([
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": user_prompt},
-    ])
+    response = get_llm().invoke(
+        [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_prompt},
+        ]
+    )
 
     answer = response.content.strip()
     sources = extract_sources(docs)
@@ -122,3 +150,16 @@ Question:
         "fallback": False,
         "route_to_emergency": False,
     }
+
+
+__all__ = [
+    "FALLBACK_TEXT",
+    "CRISIS_KEYWORDS",
+    "ConfigError",
+    "answer_question",
+    "format_context",
+    "extract_sources",
+    "get_llm",
+    "is_crisis",
+    "retrieve_documents",
+]

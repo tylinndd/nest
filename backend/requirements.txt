@@ -8,5 +8,6 @@ langchain-chroma
 langchain-huggingface
 chromadb
 sentence-transformers
-langchain-openai
+langchain-groq
 python-dotenv
+pytest
