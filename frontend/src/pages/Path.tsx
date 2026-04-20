@@ -3,7 +3,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   CheckCircle2,
   Circle,
-  Lock,
   FileText,
   HeartPulse,
   Home as HomeIcon,
@@ -18,7 +17,7 @@ import {
 } from "@/store/profile";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 
-type ZoneState = "active" | "locked" | "done";
+type ZoneState = "active" | "done";
 
 type Zone = {
   id: string;
@@ -140,11 +139,6 @@ const stateStyle: Record<ZoneState, { ring: string; icon: string; badge: string 
     icon: "bg-nest-amber text-white",
     badge: "bg-nest-amber/15 text-nest-amber",
   },
-  locked: {
-    ring: "border-border bg-card",
-    icon: "bg-muted text-muted-foreground",
-    badge: "bg-muted text-muted-foreground",
-  },
   done: {
     ring: "border-nest-sage bg-card",
     icon: "bg-nest-sage text-white",
@@ -177,8 +171,7 @@ const Path = () => {
         />
         {zones.map((z, i) => {
           const s = stateStyle[z.state];
-          const StatusIcon =
-            z.state === "done" ? CheckCircle2 : z.state === "locked" ? Lock : Circle;
+          const StatusIcon = z.state === "done" ? CheckCircle2 : Circle;
           return (
             <motion.li
               key={z.id}
@@ -228,28 +221,19 @@ const Path = () => {
                     )}
                   >
                     <StatusIcon className="mr-1 h-3 w-3" />
-                    {z.state === "active" ? "In progress" : z.state === "locked" ? "Locked" : "Done"}
+                    {z.state === "done" ? "Done" : "In progress"}
                   </span>
                 </div>
                 <ul className="mt-4 space-y-2">
                   {z.items.map((item) => (
                     <li
                       key={item}
-                      className={cn(
-                        "flex items-start gap-2 text-sm",
-                        z.state === "locked"
-                          ? "text-muted-foreground"
-                          : "text-foreground",
-                      )}
+                      className="flex items-start gap-2 text-sm text-foreground"
                     >
                       <span
                         className={cn(
                           "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full",
-                          z.state === "active"
-                            ? "bg-nest-amber"
-                            : z.state === "done"
-                              ? "bg-nest-sage"
-                              : "bg-border",
+                          z.state === "done" ? "bg-nest-sage" : "bg-nest-amber",
                         )}
                       />
                       {item}
