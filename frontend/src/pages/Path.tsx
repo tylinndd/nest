@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   CheckCircle2,
@@ -10,6 +11,8 @@ import {
   Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useProfile, type Profile } from "@/store/profile";
+import { DOCUMENT_CATALOG } from "@/lib/personalize";
 
 type ZoneState = "active" | "locked" | "done";
 
@@ -23,73 +26,105 @@ type Zone = {
   items: string[];
 };
 
-const zones: Zone[] = [
-  {
-    id: "documents",
-    number: 1,
-    title: "Stabilize documents",
-    subtitle: "Prove who you are so everything else works.",
-    state: "active",
-    Icon: FileText,
-    items: [
-      "Request birth certificate",
-      "Social Security card replacement",
-      "Georgia state ID or permit",
-    ],
-  },
-  {
-    id: "health",
-    number: 2,
-    title: "Health & coverage",
-    subtitle: "Extended Medicaid, primary care, mental health.",
-    state: "locked",
-    Icon: HeartPulse,
-    items: [
-      "Confirm Former Foster Medicaid",
-      "Find a primary care doctor",
-      "Connect with a therapist",
-    ],
-  },
-  {
-    id: "housing",
-    number: 3,
-    title: "Housing plan",
-    subtitle: "Transitional, shared, or campus — secure a bed.",
-    state: "locked",
-    Icon: HomeIcon,
-    items: [
-      "Apply for HUD FYI voucher",
-      "Tour a transitional living program",
-      "Line up emergency shelter backup",
-    ],
-  },
-  {
-    id: "education",
-    number: 4,
-    title: "Education or career",
-    subtitle: "School, trade, or work — with the right funding.",
-    state: "locked",
-    Icon: GraduationCap,
-    items: [
-      "Submit Chafee ETV application",
-      "Check HB 136 tuition waiver",
-      "Book KSU ASCEND intake call",
-    ],
-  },
-  {
-    id: "money",
-    number: 5,
-    title: "Money & independence",
-    subtitle: "Banking, budgeting, first credit.",
-    state: "locked",
-    Icon: Wallet,
-    items: [
-      "Open a checking + savings account",
-      "Build a first monthly budget",
-      "Claim EYSS monthly stipend",
-    ],
-  },
-];
+const STABLE_HOUSING = new Set([
+  "Foster home",
+  "Group home",
+  "Independent living program",
+  "With a relative",
+]);
+
+const buildZones = (profile: Profile): Zone[] => {
+  const uploadedCount = profile.uploadedDocs.length;
+  const totalDocs = DOCUMENT_CATALOG.length;
+  const docsDone = uploadedCount >= totalDocs;
+
+  const hasMedicaid = profile.health.includes("I have Medicaid right now");
+  const needsPcp = profile.health.includes("I need a primary care doctor");
+  const healthDone = hasMedicaid && !needsPcp;
+
+  const housingDone = STABLE_HOUSING.has(profile.housing);
+  const educationDone = profile.education !== null;
+
+  return [
+    {
+      id: "documents",
+      number: 1,
+      title: "Stabilize documents",
+      subtitle: docsDone
+        ? `All ${totalDocs} documents secured in your vault.`
+        : `${uploadedCount} of ${totalDocs} secured — keep going.`,
+      state: docsDone ? "done" : "active",
+      Icon: FileText,
+      items: [
+        "Request birth certificate",
+        "Social Security card replacement",
+        "Georgia state ID or permit",
+      ],
+    },
+    {
+      id: "health",
+      number: 2,
+      title: "Health & coverage",
+      subtitle: healthDone
+        ? "Medicaid confirmed and PCP in place."
+        : "Extended Medicaid, primary care, mental health.",
+      state: healthDone ? "done" : "active",
+      Icon: HeartPulse,
+      items: [
+        "Confirm Former Foster Medicaid",
+        "Find a primary care doctor",
+        "Connect with a therapist",
+      ],
+    },
+    {
+      id: "housing",
+      number: 3,
+      title: "Housing plan",
+      subtitle: housingDone
+        ? `Living in a ${profile.housing.toLowerCase()} — keep your backup plan current.`
+        : "Transitional, shared, or campus — secure a bed.",
+      state: housingDone ? "done" : "active",
+      Icon: HomeIcon,
+      items: [
+        "Apply for HUD FYI voucher",
+        "Tour a transitional living program",
+        "Line up emergency shelter backup",
+      ],
+    },
+    {
+      id: "education",
+      number: 4,
+      title: "Education or career",
+      subtitle: educationDone
+        ? profile.education === "college"
+          ? "College-bound — Chafee ETV + KSU ASCEND on your task list."
+          : profile.education === "trade"
+            ? "Trade track — tuition waiver on your task list."
+            : "Working — we'll surface employment supports as you go."
+        : "School, trade, or work — with the right funding.",
+      state: educationDone ? "done" : "active",
+      Icon: GraduationCap,
+      items: [
+        "Submit Chafee ETV application",
+        "Check Georgia Post-Secondary Tuition Waiver",
+        "Book KSU ASCEND intake call",
+      ],
+    },
+    {
+      id: "money",
+      number: 5,
+      title: "Money & independence",
+      subtitle: "Banking, budgeting, first credit.",
+      state: "active",
+      Icon: Wallet,
+      items: [
+        "Open a checking + savings account",
+        "Build a first monthly budget",
+        "Claim EYSS monthly stipend",
+      ],
+    },
+  ];
+};
 
 const stateStyle: Record<ZoneState, { ring: string; icon: string; badge: string }> = {
   active: {
@@ -111,13 +146,20 @@ const stateStyle: Record<ZoneState, { ring: string; icon: string; badge: string 
 
 const Path = () => {
   const prefersReducedMotion = useReducedMotion();
+  const profile = useProfile();
+  const zones = useMemo(() => buildZones(profile), [profile]);
+  const doneCount = zones.filter((z) => z.state === "done").length;
 
   return (
     <div className="px-5 pt-5 pb-4">
       <p className="text-sm text-muted-foreground">Overview</p>
       <h1 className="font-display text-3xl text-primary">The Path</h1>
       <p className="mt-2 text-muted-foreground">
-        Five zones, in order. Finish one to unlock the next.
+        {doneCount === 0
+          ? "Five zones to stabilize your transition. Start anywhere."
+          : doneCount === zones.length
+            ? "All five zones are in a good place — keep it that way."
+            : `${doneCount} of ${zones.length} zones in a good place.`}
       </p>
 
       <ol className="relative mt-8 pl-4">
