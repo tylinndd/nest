@@ -88,7 +88,8 @@ const readError = async (res: Response): Promise<unknown> => {
 const post = async <T>(
   path: string,
   body: unknown,
-  signal?: AbortSignal,
+  signal: AbortSignal | undefined,
+  validate: (value: unknown) => value is T,
 ): Promise<T> => {
   const res = await fetch(`${API_BASE}${path}`, {
     method: "POST",
@@ -103,7 +104,35 @@ const post = async <T>(
       await readError(res),
     );
   }
-  return (await res.json()) as T;
+  const parsed: unknown = await res.json();
+  if (!validate(parsed)) {
+    throw new ApiError(`POST ${path} returned unexpected shape`, 502, parsed);
+  }
+  return parsed;
+};
+
+const isChatResponse = (v: unknown): v is ChatResponse => {
+  if (typeof v !== "object" || v === null) return false;
+  const r = v as Record<string, unknown>;
+  return (
+    typeof r.answer === "string" &&
+    Array.isArray(r.sources) &&
+    r.sources.every((s) => typeof s === "string") &&
+    typeof r.fallback === "boolean" &&
+    typeof r.route_to_emergency === "boolean"
+  );
+};
+
+const isIntakeResponse = (v: unknown): v is IntakeResponse => {
+  if (typeof v !== "object" || v === null) return false;
+  const r = v as Record<string, unknown>;
+  return (
+    typeof r.normalized_profile === "object" &&
+    Array.isArray(r.eligibility) &&
+    Array.isArray(r.tasks) &&
+    (r.bestfit_url === null || typeof r.bestfit_url === "string") &&
+    (r.days_remaining === null || typeof r.days_remaining === "number")
+  );
 };
 
 export const postChat = (
@@ -111,13 +140,13 @@ export const postChat = (
   user_profile: BackendUserProfile,
   signal?: AbortSignal,
 ): Promise<ChatResponse> =>
-  post<ChatResponse>("/chat", { query, user_profile }, signal);
+  post("/chat", { query, user_profile }, signal, isChatResponse);
 
 export const postIntake = (
   user_profile: BackendUserProfile,
   signal?: AbortSignal,
 ): Promise<IntakeResponse> =>
-  post<IntakeResponse>("/intake", { user_profile }, signal);
+  post("/intake", { user_profile }, signal, isIntakeResponse);
 
 export const getHealth = async (signal?: AbortSignal): Promise<HealthResponse> => {
   const res = await fetch(`${API_BASE}/health`, { signal });
