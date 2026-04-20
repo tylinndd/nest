@@ -185,7 +185,7 @@ export const StepAge = () => {
       stepIndex={2}
       Icon={Calendar}
       title="How old are you?"
-      subtitle="Your age unlocks the right benefits and programs."
+      subtitle="We use your age to show the right benefits and programs."
       next="/onboarding/county"
       disabled={!valid}
     >

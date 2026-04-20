@@ -253,6 +253,8 @@ const Vault = () => {
         type="file"
         accept="image/*"
         capture="environment"
+        aria-label="Take a photo of your document"
+        tabIndex={-1}
         className="sr-only"
         onChange={(e) => {
           const file = e.target.files?.[0] ?? null;
@@ -264,6 +266,8 @@ const Vault = () => {
         ref={fileInputRef}
         type="file"
         accept="image/*,application/pdf"
+        aria-label="Choose a document file to upload"
+        tabIndex={-1}
         className="sr-only"
         onChange={(e) => {
           const file = e.target.files?.[0] ?? null;

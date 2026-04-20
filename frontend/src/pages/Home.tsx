@@ -158,7 +158,7 @@ const UnknownAgeCard = ({ progress }: { progress: number }) => (
       Your plan
     </p>
     <p className="mt-3 font-display text-3xl leading-tight">
-      Tell us your age to unlock the countdown.
+      Add your age to see your countdown.
     </p>
     <Link
       to="/onboarding/age"
@@ -574,7 +574,7 @@ const Home = () => {
           <MessageCircle className="h-6 w-6 text-primary" />
           <p className="mt-3 font-semibold">Ask Navigator</p>
           <p className="text-xs text-muted-foreground mt-1">
-            24/7 RAG assistant
+            Private Q&amp;A, 24/7
           </p>
         </Link>
       </section>
