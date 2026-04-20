@@ -4,6 +4,7 @@ import {
   createJSONStorage,
   type StateStorage,
 } from "zustand/middleware";
+import { usePersistHealth } from "./persistHealth";
 
 export type EducationPlan = "college" | "trade" | "working";
 
@@ -100,17 +101,20 @@ const safeStorage: StateStorage = {
       return localStorage.getItem(key);
     } catch (err) {
       console.warn("[nest.profile] read failed:", err);
+      usePersistHealth.getState().markFailed();
       return null;
     }
   },
   setItem: (key, value) => {
     try {
       localStorage.setItem(key, value);
+      usePersistHealth.getState().markOk();
     } catch (err) {
       console.warn(
         "[nest.profile] write failed — answers will not persist this session:",
         err,
       );
+      usePersistHealth.getState().markFailed();
     }
   },
   removeItem: (key) => {
@@ -118,6 +122,7 @@ const safeStorage: StateStorage = {
       localStorage.removeItem(key);
     } catch (err) {
       console.warn("[nest.profile] remove failed:", err);
+      usePersistHealth.getState().markFailed();
     }
   },
 };

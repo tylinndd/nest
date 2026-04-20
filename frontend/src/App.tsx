@@ -12,6 +12,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/layout/AppShell";
 import { RequireProfile } from "@/components/guards/RequireProfile";
+import { PersistenceBanner } from "@/components/PersistenceBanner";
 import Home from "./pages/Home";
 
 const Path = lazy(() => import("./pages/Path"));
@@ -98,6 +99,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <RouteTitle />
+          <PersistenceBanner />
           <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/onboarding" element={<OnboardingLayout />}>
