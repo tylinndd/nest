@@ -1,5 +1,5 @@
 import type { Profile } from "@/store/profile";
-import { tasks as fallbackTasks, type Task } from "@/data/placeholder";
+import { type Task } from "@/data/placeholder";
 
 export const DOCUMENT_CATALOG: Array<{
   id: string;
@@ -47,16 +47,6 @@ export type VaultDoc = {
 };
 
 export const derivePersonalizedVault = (profile: Profile): VaultDoc[] => {
-  if (!profile.name.trim()) {
-    return [
-      { id: "ssc", title: "Social Security card", detail: "Uploaded Apr 2, 2026", state: "uploaded" },
-      { id: "medicaid", title: "Medicaid card", detail: "Uploaded Apr 10, 2026", state: "uploaded" },
-      { id: "birth", title: "Birth certificate", detail: "Vital Records request filed", state: "requested" },
-      { id: "id", title: "Georgia state ID", detail: "Missing — we'll guide you", state: "missing" },
-      { id: "transcript", title: "High school transcript", detail: "Missing — we'll guide you", state: "missing" },
-    ];
-  }
-
   const have = new Set(profile.documentsHave);
   const uploaded = new Set(profile.uploadedDocs);
 
@@ -227,8 +217,6 @@ const buildTask = (
 });
 
 export const derivePersonalizedTasks = (profile: Profile): Task[] => {
-  if (!profile.name.trim()) return fallbackTasks;
-
   const derived: Task[] = [];
   const have = new Set(profile.documentsHave);
   const health = new Set(profile.health);
