@@ -46,10 +46,7 @@ export type VaultDoc = {
   state: "uploaded" | "missing" | "requested";
 };
 
-export const derivePersonalizedVault = (
-  profile: Profile,
-  uploadedIds: string[] = [],
-): VaultDoc[] => {
+export const derivePersonalizedVault = (profile: Profile): VaultDoc[] => {
   if (!profile.name.trim()) {
     return [
       { id: "ssc", title: "Social Security card", detail: "Uploaded Apr 2, 2026", state: "uploaded" },
@@ -61,15 +58,23 @@ export const derivePersonalizedVault = (
   }
 
   const have = new Set(profile.documentsHave);
-  const uploaded = new Set(uploadedIds);
+  const uploaded = new Set(profile.uploadedDocs);
 
   return DOCUMENT_CATALOG.map((entry) => {
-    if (uploaded.has(entry.id) || have.has(entry.id)) {
+    if (uploaded.has(entry.id)) {
       return {
         id: entry.id,
         title: entry.title,
         detail: "Secured in your vault",
         state: "uploaded" as const,
+      };
+    }
+    if (have.has(entry.id)) {
+      return {
+        id: entry.id,
+        title: entry.title,
+        detail: "You have this — add a photo to secure it",
+        state: "missing" as const,
       };
     }
     return {

@@ -12,6 +12,7 @@ export type Profile = {
   age: number | null;
   county: string;
   documentsHave: string[];
+  uploadedDocs: string[];
   education: EducationPlan | null;
   housing: string;
   health: string[];
@@ -23,6 +24,8 @@ type ProfileActions = {
   setCounty: (county: string) => void;
   setDocuments: (docs: string[]) => void;
   toggleDocument: (id: string) => void;
+  markUploaded: (id: string) => void;
+  unmarkUploaded: (id: string) => void;
   setEducation: (choice: EducationPlan) => void;
   setHousing: (housing: string) => void;
   setHealth: (items: string[]) => void;
@@ -35,6 +38,7 @@ const emptyProfile: Profile = {
   age: null,
   county: "",
   documentsHave: [],
+  uploadedDocs: [],
   education: null,
   housing: "",
   health: [],
@@ -82,6 +86,16 @@ export const useProfile = create<Profile & ProfileActions>()(
             ? s.documentsHave.filter((x) => x !== id)
             : [...s.documentsHave, id],
         })),
+      markUploaded: (id) =>
+        set((s) => ({
+          uploadedDocs: s.uploadedDocs.includes(id)
+            ? s.uploadedDocs
+            : [...s.uploadedDocs, id],
+        })),
+      unmarkUploaded: (id) =>
+        set((s) => ({
+          uploadedDocs: s.uploadedDocs.filter((x) => x !== id),
+        })),
       setEducation: (education) => set({ education }),
       setHousing: (housing) => set({ housing }),
       setHealth: (health) => set({ health }),
@@ -95,8 +109,15 @@ export const useProfile = create<Profile & ProfileActions>()(
     }),
     {
       name: "nest.profile",
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => safeStorage),
+      migrate: (persisted, version) => {
+        const base = (persisted ?? {}) as Partial<Profile>;
+        if (version < 2) {
+          return { ...emptyProfile, ...base, uploadedDocs: base.uploadedDocs ?? [] };
+        }
+        return base as Profile;
+      },
       onRehydrateStorage: () => (_state, error) => {
         if (error) {
           console.warn(
