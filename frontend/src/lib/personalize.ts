@@ -208,15 +208,18 @@ const buildTask = (
   status: Task["status"],
   tone: Task["tone"],
   help = "Help me do this",
-): Task => ({
-  id,
-  title,
-  due,
-  status,
-  tone,
-  help: status === "done" ? undefined : help,
-  guide: documentTaskGuides[id],
-});
+): Task => {
+  const guide = documentTaskGuides[id];
+  return {
+    id,
+    title,
+    due,
+    status,
+    ...(tone ? { tone } : {}),
+    ...(status === "done" ? {} : { help }),
+    ...(guide ? { guide } : {}),
+  };
+};
 
 export const derivePersonalizedTasks = (profile: Profile): Task[] => {
   const derived: Task[] = [];
@@ -270,11 +273,12 @@ export const derivePersonalizedTasks = (profile: Profile): Task[] => {
     derived.push(buildTask("find-pcp", "Find a primary care doctor", "Due this week", "week", "amber"));
   }
 
-  return derived.map((task) =>
-    completed.has(task.id)
-      ? { ...task, status: "done" as const, tone: "sage" as const, due: "Completed", help: undefined }
-      : task,
-  );
+  return derived.map((task) => {
+    if (!completed.has(task.id)) return task;
+    const { help: _unused, ...rest } = task;
+    void _unused;
+    return { ...rest, status: "done" as const, tone: "sage" as const, due: "Completed" };
+  });
 };
 
 export const computeDaysUntilAgeOut = (age: number | null): number | null => {

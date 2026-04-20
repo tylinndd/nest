@@ -31,7 +31,7 @@ export const BottomNav = () => (
             <li key={to} className="flex-1">
               <NavLink
                 to={to}
-                end={end}
+                end={end ?? false}
                 aria-label={label}
                 className={({ isActive }) =>
                   cn(

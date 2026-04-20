@@ -306,8 +306,8 @@ const Navigator = () => {
       id: safeId(),
       role: "assistant",
       text: canned.text,
-      source: canned.source,
-      followUps: canned.followUps,
+      ...(canned.source !== undefined ? { source: canned.source } : {}),
+      ...(canned.followUps !== undefined ? { followUps: canned.followUps } : {}),
     };
     addMessage(userMsg);
     setInput("");

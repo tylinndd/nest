@@ -525,7 +525,7 @@ const Home = () => {
         <SuccessCard
           show={!!completedTask}
           title="Logged"
-          detail={completedTask ? completedTask.title : undefined}
+          {...(completedTask ? { detail: completedTask.title } : {})}
         />
       </div>
 
