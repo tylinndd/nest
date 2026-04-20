@@ -113,6 +113,17 @@ const matchCanned = (input: string): CannedReply => {
       ],
     };
   }
+  if (/(transcript|high school|diploma|graduation)/.test(q)) {
+    return {
+      text:
+        "For an official transcript, contact your high school's registrar or guidance office. Georgia foster youth often qualify for a fee waiver — ask whether your DFCS letter covers it. Most schools can send sealed transcripts electronically in 3–5 business days.",
+      source: "Your school registrar",
+      followUps: [
+        "How do I reach my old high school?",
+        "What if I got my GED instead?",
+      ],
+    };
+  }
   if (/(birth certificate|\bid\b|ssn|social security|document|docs|vital records)/.test(q)) {
     return {
       text:
