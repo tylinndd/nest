@@ -215,10 +215,10 @@ export const hotlines = [
     kind: "text" as const,
   },
   {
-    id: "wellroot",
-    name: "Wellroot Family Services",
-    number: "(404) 876-6878",
-    subtitle: "GA youth crisis · transitional housing",
+    id: "gcal",
+    name: "Georgia Crisis & Access Line",
+    number: "1-800-715-4225",
+    subtitle: "Mental health & substance use · 24/7",
     kind: "call" as const,
   },
 ];
