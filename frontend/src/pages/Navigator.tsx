@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { FolderLock, Mic, Paperclip, Plus, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -8,6 +8,8 @@ import { useProfile } from "@/store/profile";
 import { useChat, type ChatMsg } from "@/store/chat";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { linkify } from "@/lib/linkify";
+import { postChat, ApiError } from "@/lib/api";
+import { toBackendProfile } from "@/lib/profileMap";
 import {
   Drawer,
   DrawerClose,
@@ -28,85 +30,19 @@ const suggestionChips = [
   "Can I keep Medicaid after I turn 18?",
 ];
 
-type CannedReply = { text: string; source?: string; followUps?: string[] };
+const CLIENT_CRISIS_RE =
+  /(suicide|kill myself|hurt myself|self harm|\bunsafe\b|\babuse\b|homeless tonight|need help right now|i am not safe)/i;
 
-const matchCanned = (input: string): CannedReply => {
-  const q = input.toLowerCase();
-  if (/(couch|shelter|homeless|housing|bed tonight|211|tlp|transitional)/.test(q)) {
-    return {
-      text:
-        "211 Georgia can find you a bed tonight — call or text 211 for shelter, food, or utilities. For a longer stay, ask your DFCS worker about approved transitional living programs (TLPs) in your county. Tour at least two before you pick one.",
-      source: "211 Georgia · Georgia DFCS",
-      followUps: [
-        "How do I find a TLP near me?",
-        "What if I just need one night?",
-      ],
-    };
-  }
-  if (/(ascend|kennesaw|ksu)/.test(q)) {
-    return {
-      text:
-        "KSU ASCEND supports foster, former foster, and unstably housed students with housing, books, and a coach. Email careservices@kennesaw.edu or call 470-578-6777 to schedule an intake. Bring any foster-care documentation you have.",
-      source: "Kennesaw State University · CARE Services",
-      followUps: [
-        "What documents will ASCEND need?",
-        "Does ASCEND cover housing year-round?",
-      ],
-    };
-  }
-  if (/(chafee|etv|tuition|scholarship|hb\s*136|college)/.test(q)) {
-    return {
-      text:
-        "Chafee ETV covers up to $5,000 a year through age 26 for tuition, books, housing, or transportation. Your DFCS worker or ILP coordinator submits it for you with proof of enrollment. The Georgia Post-Secondary Tuition Waiver (from HB 136) also covers tuition and fees at eligible public colleges and tech schools.",
-      source: "Georgia DFCS · Chafee ETV · Post-Secondary Tuition Waiver",
-      followUps: [
-        "How do I prove enrollment?",
-        "Can I use Chafee for a trade school?",
-      ],
-    };
-  }
-  if (/(medicaid|health|insurance|doctor|therapist|medical)/.test(q)) {
-    return {
-      text:
-        "You're still covered — Georgia automatically keeps former foster youth on Medicaid until age 26 with no income test. If your card hasn't arrived, call the Georgia Gateway helpline at 877-423-4746 and ask for your Former Foster Care member ID.",
-      source: "Georgia DFCS · Former Foster Care Medicaid",
-      followUps: [
-        "Find me a Medicaid doctor",
-        "What if I move out of Georgia?",
-      ],
-    };
-  }
-  if (/(transcript|high school|diploma|graduation)/.test(q)) {
-    return {
-      text:
-        "For an official transcript, contact your high school's registrar or guidance office. Georgia foster youth often qualify for a fee waiver — ask whether your DFCS letter covers it. Most schools can send sealed transcripts electronically in 3–5 business days.",
-      source: "Your school registrar",
-      followUps: [
-        "How do I reach my old high school?",
-        "What if I got my GED instead?",
-      ],
-    };
-  }
-  if (/(birth certificate|\bid\b|ssn|social security|document|docs|vital records)/.test(q)) {
-    return {
-      text:
-        "For a Georgia birth certificate, ask your DFCS caseworker for the foster-care fee-waiver letter, then apply through Vital Records with your photo ID. Social Security cards are free — your caseworker can start that request with you.",
-      source: "Georgia DPH · Vital Records",
-      followUps: [
-        "I don't have a caseworker anymore",
-        "How long does Vital Records take?",
-      ],
-    };
-  }
-  return {
-    text:
-      "I can help with housing, benefits, school, health, or documents. Tell me what's most urgent.",
-    followUps: [
-      "I might be couch-surfing this weekend",
-      "Can I keep Medicaid after I turn 18?",
-      "What docs do I need for KSU ASCEND?",
-    ],
-  };
+const CRISIS_REPLY = {
+  text:
+    "You deserve immediate human support right now. Call 988 for crisis help, or 211 Georgia for urgent housing, food, and support.",
+  source: "988 · 211 Georgia",
+};
+
+const NETWORK_FALLBACK = {
+  text:
+    "I'm having trouble reaching Navigator right now. For urgent help, call 211 Georgia: dial 2-1-1.",
+  source: "211 Georgia",
 };
 
 type SRConstructor = new () => SpeechRecognition;
@@ -181,6 +117,7 @@ const TypingDots = () => (
 );
 
 const Navigator = () => {
+  const navigate = useNavigate();
   const profileName = useProfile((s) => s.name);
   const uploadedDocs = useProfile((s) => s.uploadedDocs);
   const messages = useChat((s) => s.messages);
@@ -201,7 +138,7 @@ const Navigator = () => {
     [uploadedDocs],
   );
   const scrollRef = useRef<HTMLDivElement>(null);
-  const pendingTimers = useRef<Set<number>>(new Set());
+  const abortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const voiceSupported = useMemo(() => getSpeechRecognition() !== null, []);
 
@@ -235,10 +172,9 @@ const Navigator = () => {
   }, [messages, typing]);
 
   useEffect(() => {
-    const timers = pendingTimers.current;
     return () => {
-      timers.forEach((id) => window.clearTimeout(id));
-      timers.clear();
+      abortRef.current?.abort();
+      abortRef.current = null;
       recognitionRef.current?.abort();
       recognitionRef.current = null;
     };
@@ -297,27 +233,71 @@ const Navigator = () => {
     send(`Looking at my ${title.toLowerCase()} — what do I do next?`);
   };
 
-  const send = (override?: string) => {
+  const send = async (override?: string) => {
     const text = (override ?? input).trim();
     if (!text) return;
+
     const userMsg: Msg = { id: safeId(), role: "user", text };
-    const canned = matchCanned(text);
-    const reply: Msg = {
-      id: safeId(),
-      role: "assistant",
-      text: canned.text,
-      ...(canned.source !== undefined ? { source: canned.source } : {}),
-      ...(canned.followUps !== undefined ? { followUps: canned.followUps } : {}),
-    };
     addMessage(userMsg);
     setInput("");
+
+    if (CLIENT_CRISIS_RE.test(text)) {
+      addMessage({
+        id: safeId(),
+        role: "assistant",
+        text: CRISIS_REPLY.text,
+        source: CRISIS_REPLY.source,
+      });
+      navigate("/emergency");
+      return;
+    }
+
     setTyping(true);
-    const id = window.setTimeout(() => {
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    try {
+      const backendProfile = toBackendProfile(useProfile.getState());
+      const res = await postChat(text, backendProfile, controller.signal);
+
+      const reply: Msg = {
+        id: safeId(),
+        role: "assistant",
+        text: res.answer,
+        ...(res.sources.length > 0
+          ? { source: res.sources.join(" · ") }
+          : {}),
+      };
       addMessage(reply);
-      pendingTimers.current.delete(id);
-      if (pendingTimers.current.size === 0) setTyping(false);
-    }, 750);
-    pendingTimers.current.add(id);
+
+      if (res.route_to_emergency) navigate("/emergency");
+    } catch (err) {
+      if (controller.signal.aborted) return;
+      if (err instanceof DOMException && err.name === "AbortError") return;
+
+      const detail =
+        err instanceof ApiError && err.status === 503
+          ? "The Navigator AI is not configured yet. Call 211 Georgia for urgent help."
+          : "Check your connection or call 211 Georgia: dial 2-1-1.";
+
+      toast.error("Can't reach Navigator right now", {
+        id: "navigator-api-error",
+        description: detail,
+      });
+
+      addMessage({
+        id: safeId(),
+        role: "assistant",
+        text: NETWORK_FALLBACK.text,
+        source: NETWORK_FALLBACK.source,
+      });
+    } finally {
+      if (abortRef.current === controller) {
+        abortRef.current = null;
+        setTyping(false);
+      }
+    }
   };
 
   return (
