@@ -87,7 +87,7 @@ export const tasks: Task[] = [
       subtitle: "Year-round housing, books, and a personal coach at Kennesaw State.",
       source: "Kennesaw State University · ASCEND",
       steps: [
-        "Email ascend@kennesaw.edu or call 470-578-5260 to request an intake.",
+        "Email careservices@kennesaw.edu or call 470-578-6777 to request an intake.",
         "Intake is about 30 minutes, in person or on Zoom.",
         "Bring your foster-care documentation if you have it.",
         "Program covers housing, books, and a personal coach year-round.",

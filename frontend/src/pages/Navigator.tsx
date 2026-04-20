@@ -69,13 +69,13 @@ type CannedReply = { text: string; source?: string; followUps?: string[] };
 
 const matchCanned = (input: string): CannedReply => {
   const q = input.toLowerCase();
-  if (/(couch|shelter|homeless|housing|bed tonight|211|wellroot)/.test(q)) {
+  if (/(couch|shelter|homeless|housing|bed tonight|211|tlp|transitional)/.test(q)) {
     return {
       text:
-        "211 Georgia can find you a bed tonight — call or text 211 for shelter, food, or utilities. For a longer stay, Wellroot Family Services at (404) 876-6878 runs transitional housing for Georgia youth aging out.",
-      source: "211 Georgia · Wellroot Family Services",
+        "211 Georgia can find you a bed tonight — call or text 211 for shelter, food, or utilities. For a longer stay, ask your DFCS worker about approved transitional living programs (TLPs) in your county. Tour at least two before you pick one.",
+      source: "211 Georgia · Georgia DFCS",
       followUps: [
-        "How do I apply to Wellroot?",
+        "How do I find a TLP near me?",
         "What if I just need one night?",
       ],
     };
@@ -83,8 +83,8 @@ const matchCanned = (input: string): CannedReply => {
   if (/(ascend|kennesaw|ksu)/.test(q)) {
     return {
       text:
-        "KSU ASCEND supports foster, former foster, and unstably housed students with housing, books, and a coach. Email ascend@kennesaw.edu or call 470-578-5260 to schedule an intake. Bring any foster-care documentation you have.",
-      source: "Kennesaw State University · ASCEND",
+        "KSU ASCEND supports foster, former foster, and unstably housed students with housing, books, and a coach. Email careservices@kennesaw.edu or call 470-578-6777 to schedule an intake. Bring any foster-care documentation you have.",
+      source: "Kennesaw State University · CARE Services",
       followUps: [
         "What documents will ASCEND need?",
         "Does ASCEND cover housing year-round?",
