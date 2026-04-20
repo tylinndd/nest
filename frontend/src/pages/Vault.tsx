@@ -25,7 +25,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { useProfile } from "@/store/profile";
+import { useProfile, type DocumentId } from "@/store/profile";
 import { derivePersonalizedVault, type VaultDoc } from "@/lib/personalize";
 import {
   deleteDocument,
@@ -60,7 +60,12 @@ const stateMeta = {
   },
 } as const;
 
-type AddTarget = { mode: "doc"; doc: Doc } | { mode: "new" } | null;
+type AddTarget =
+  | { kind: "closed" }
+  | { kind: "pickDoc" }
+  | { kind: "addToDoc"; doc: Doc };
+
+const CLOSED: AddTarget = { kind: "closed" };
 
 const Option = ({
   Icon,
@@ -105,9 +110,9 @@ const formatUploadedAt = (iso: string): string => {
 };
 
 const Vault = () => {
-  const [target, setTarget] = useState<AddTarget>(null);
+  const [target, setTarget] = useState<AddTarget>(CLOSED);
   const [preview, setPreview] = useState<{
-    docId: string;
+    docId: DocumentId;
     title: string;
     stored: StoredDoc | null;
     previewUrl: string | null;
@@ -118,10 +123,10 @@ const Vault = () => {
   const unmarkUploaded = useProfile((s) => s.unmarkUploaded);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const pendingDocId = useRef<string | null>(null);
+  const pendingDocId = useRef<DocumentId | null>(null);
 
   const docs = useMemo(() => derivePersonalizedVault(profile), [profile]);
-  const isOpen = target !== null;
+  const isOpen = target.kind !== "closed";
   const secured = docs.filter((d) => d.state === "uploaded").length;
 
   useEffect(() => {
@@ -156,7 +161,7 @@ const Vault = () => {
       return;
     }
     if (doc.state === "missing") {
-      setTarget({ mode: "doc", doc });
+      setTarget({ kind: "addToDoc", doc });
       return;
     }
     toast.info("Request in progress", {
@@ -165,16 +170,8 @@ const Vault = () => {
     });
   };
 
-  const triggerInput = (which: "camera" | "file") => {
-    if (target?.mode !== "doc") {
-      setTarget(null);
-      toast.info("Pick a document first", {
-        id: "vault-action",
-        description: "Choose which document you're adding, then pick camera or upload.",
-      });
-      return;
-    }
-    pendingDocId.current = target.doc.id;
+  const triggerAttach = (which: "camera" | "file", docId: DocumentId) => {
+    pendingDocId.current = docId;
     const ref = which === "camera" ? cameraInputRef : fileInputRef;
     ref.current?.click();
   };
@@ -195,7 +192,7 @@ const Vault = () => {
     try {
       await saveDocument(docId, file);
       markUploaded(docId);
-      setTarget(null);
+      setTarget(CLOSED);
       toast.success("Secured in your vault", {
         id: "vault-action",
         description: file.name,
@@ -226,22 +223,25 @@ const Vault = () => {
   };
 
   const handleRequest = () => {
-    setTarget(null);
+    const description =
+      target.kind === "addToDoc"
+        ? `We'll ask for your ${target.doc.title.toLowerCase()}.`
+        : "Review and send from your email app.";
+    setTarget(CLOSED);
     toast("Drafting request to DFCS", {
       id: "vault-action",
-      description:
-        target?.mode === "doc"
-          ? `We'll ask for your ${target.doc.title.toLowerCase()}.`
-          : "Review and send from your email app.",
+      description,
     });
   };
 
   const drawerTitle =
-    target?.mode === "doc" ? `Add your ${target.doc.title}` : "Add a document";
+    target.kind === "addToDoc"
+      ? `Add your ${target.doc.title}`
+      : "Add a document";
   const drawerSubtitle =
-    target?.mode === "doc"
+    target.kind === "addToDoc"
       ? "Upload what you have, or we'll request it on your behalf."
-      : "Pick a document below first, then choose camera or upload.";
+      : "Tap any missing document in the list to attach a photo or file.";
 
   const previewIsImage =
     preview?.stored?.mime.startsWith("image/") ?? false;
@@ -372,14 +372,14 @@ const Vault = () => {
 
       <button
         type="button"
-        onClick={() => setTarget({ mode: "new" })}
+        onClick={() => setTarget({ kind: "pickDoc" })}
         className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border-2 border-dashed border-border bg-card py-4 text-sm font-semibold text-primary min-h-[3.5rem] transition hover:border-primary/40"
       >
         <Plus className="h-4 w-4" />
         Add another document
       </button>
 
-      <Drawer open={isOpen} onOpenChange={(o) => !o && setTarget(null)}>
+      <Drawer open={isOpen} onOpenChange={(o) => !o && setTarget(CLOSED)}>
         <DrawerContent className="max-w-md mx-auto">
           <DrawerHeader className="text-left">
             <DrawerTitle className="font-display text-xl text-primary">
@@ -388,20 +388,22 @@ const Vault = () => {
             <DrawerDescription>{drawerSubtitle}</DrawerDescription>
           </DrawerHeader>
           <div className="px-4 pb-2 space-y-3">
-            <Option
-              Icon={Camera}
-              title="Take a photo"
-              detail="Snap the front and back with your camera."
-              onClick={() => triggerInput("camera")}
-              disabled={target?.mode !== "doc"}
-            />
-            <Option
-              Icon={Upload}
-              title="Upload from files"
-              detail="PDF, JPG, PNG, or HEIC up to 20MB."
-              onClick={() => triggerInput("file")}
-              disabled={target?.mode !== "doc"}
-            />
+            {target.kind === "addToDoc" && (
+              <>
+                <Option
+                  Icon={Camera}
+                  title="Take a photo"
+                  detail="Snap the front and back with your camera."
+                  onClick={() => triggerAttach("camera", target.doc.id)}
+                />
+                <Option
+                  Icon={Upload}
+                  title="Upload from files"
+                  detail="PDF, JPG, PNG, or HEIC up to 20MB."
+                  onClick={() => triggerAttach("file", target.doc.id)}
+                />
+              </>
+            )}
             <Option
               Icon={Send}
               title="Request from Georgia DFCS"
