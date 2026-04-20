@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck, ShieldCheck, ExternalLink } from "lucide-react";
+import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck, ShieldCheck, ExternalLink, Compass } from "lucide-react";
 import { toast } from "sonner";
 import { benefits, type Benefit, type BenefitStatus } from "@/data/placeholder";
+import { useProfile, hasProfile } from "@/store/profile";
+import { useIntake } from "@/store/intake";
 import { cn } from "@/lib/utils";
 
 const formatVerified = (iso: string) => {
@@ -114,9 +117,52 @@ const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
   );
 };
 
+const BestFitCard = ({ url }: { url: string }) => (
+  <motion.a
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    whileHover={{ y: -3 }}
+    transition={{ duration: 0.28, ease: "easeOut" }}
+    className="nest-card block p-5 border-primary/25 bg-primary/[0.04] transition-shadow duration-200 hover:shadow-lg"
+  >
+    <div className="flex items-start gap-3">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <Compass className="h-5 w-5" />
+      </span>
+      <div className="flex-1">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-primary/70">
+          More Georgia benefits
+        </p>
+        <h2 className="mt-1 font-display text-lg text-foreground leading-tight">
+          Explore SNAP, cash assistance, and more on BestFit
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Georgia's public benefits screener, pre-filled to your county.
+        </p>
+        <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary">
+          Open BestFit
+          <ExternalLink className="h-4 w-4" />
+        </span>
+      </div>
+    </div>
+  </motion.a>
+);
+
 const Benefits = () => {
+  const profile = useProfile();
+  const fetchIntake = useIntake((s) => s.fetchIntake);
+  const bestfitUrl = useIntake((s) => s.bestfitUrl);
   const qualifyCount = benefits.filter((b) => b.status === "qualify").length;
   const actionCount = benefits.filter((b) => b.status === "action").length;
+
+  useEffect(() => {
+    if (!hasProfile(profile)) return;
+    void fetchIntake(profile);
+  }, [fetchIntake, profile]);
+
   return (
     <div className="px-5 pt-5 pb-4">
       <p className="text-sm text-muted-foreground">Matched to your profile</p>
@@ -138,6 +184,7 @@ const Benefits = () => {
         {benefits.map((b, i) => (
           <BenefitCard key={b.id} b={b} index={i} />
         ))}
+        {bestfitUrl && <BestFitCard url={bestfitUrl} />}
       </div>
     </div>
   );
