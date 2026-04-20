@@ -37,7 +37,7 @@ Demo persona: **Maria, 18, Cobb County**, aging out of a group home, no birth ce
 
 **Frontend** (`frontend/`): React 18, Vite 5, TypeScript, Tailwind 3, shadcn/ui, framer-motion, zustand, react-router, sonner, react-hook-form + zod.
 
-**Backend** (`backend/`): FastAPI, LangChain, ChromaDB, HuggingFace sentence-transformers (`all-MiniLM-L6-v2`) for embeddings, OpenAI `gpt-4o-mini` for generation.
+**Backend** (`backend/`): FastAPI, LangChain, ChromaDB, HuggingFace sentence-transformers (`all-MiniLM-L6-v2`) for embeddings, Groq `llama-3.3-70b-versatile` for generation.
 
 **RAG corpus:** Georgia DFCS Transitional Living handbook + curated county-level resource JSON.
 
