@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import {
   BrowserRouter,
   Navigate,
@@ -13,6 +13,7 @@ import { RequireProfile } from "@/components/guards/RequireProfile";
 import { PersistenceBanner } from "@/components/PersistenceBanner";
 import { UpdatePrompt } from "@/components/UpdatePrompt";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { probeHealth } from "@/lib/health";
 
 const Home = lazy(() => import("./pages/Home"));
 const Path = lazy(() => import("./pages/Path"));
@@ -90,13 +91,40 @@ const RouteFallback = () => (
   </div>
 );
 
-const App = () => (
+const BackendOfflineDot = () => (
+  <span
+    aria-label="Backend offline"
+    role="status"
+    className="fixed bottom-2 left-2 z-50 h-2 w-2 rounded-full bg-nest-coral"
+  />
+);
+
+const App = () => {
+  const [backendOffline, setBackendOffline] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    probeHealth().then((res) => {
+      if (cancelled || res.ok) return;
+      if (import.meta.env.DEV) {
+        setBackendOffline(true);
+      } else {
+        console.warn("Nest backend health probe failed", res.detail);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
   <MotionConfig reducedMotion="user">
     <Sonner />
     <BrowserRouter>
       <RouteTitle />
       <PersistenceBanner />
       <UpdatePrompt />
+      {backendOffline && <BackendOfflineDot />}
       <ErrorBoundary>
         <Suspense fallback={<RouteFallback />}>
           <Routes>
@@ -127,6 +155,7 @@ const App = () => (
       </ErrorBoundary>
     </BrowserRouter>
   </MotionConfig>
-);
+  );
+};
 
 export default App;

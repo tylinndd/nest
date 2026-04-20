@@ -1,5 +1,7 @@
 const API_BASE = (
-  (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:8000"
+  (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
+  (import.meta.env.VITE_API_URL as string | undefined) ??
+  "http://localhost:8000"
 ).replace(/\/+$/, "");
 
 export type BackendUserProfile = {
@@ -148,10 +150,29 @@ export const postIntake = (
 ): Promise<IntakeResponse> =>
   post("/intake", { user_profile }, signal, isIntakeResponse);
 
+const isHealthResponse = (v: unknown): v is HealthResponse => {
+  if (typeof v !== "object" || v === null) return false;
+  const r = v as Record<string, unknown>;
+  return (
+    typeof r.ok === "boolean" &&
+    typeof r.environment === "string" &&
+    typeof r.model === "string" &&
+    typeof r.groq_api_key_configured === "boolean"
+  );
+};
+
 export const getHealth = async (signal?: AbortSignal): Promise<HealthResponse> => {
   const res = await fetch(`${API_BASE}/health`, { signal });
   if (!res.ok) {
-    throw new ApiError(`GET /health failed (${res.status})`, res.status);
+    throw new ApiError(
+      `GET /health failed (${res.status})`,
+      res.status,
+      await readError(res),
+    );
   }
-  return (await res.json()) as HealthResponse;
+  const parsed: unknown = await res.json();
+  if (!isHealthResponse(parsed)) {
+    throw new ApiError("GET /health returned unexpected shape", 502, parsed);
+  }
+  return parsed;
 };

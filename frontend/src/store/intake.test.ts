@@ -27,8 +27,30 @@ const intakePayload = {
     in_foster_care_at_18: null,
     documents: {},
   },
-  eligibility: [],
-  tasks: [],
+  eligibility: [
+    {
+      program: "Chafee ETV",
+      qualified: true,
+      reason: "Age 18 and aged out of care.",
+      what_it_provides: "Up to $5,000/year for education.",
+      documents_needed: ["ssc"],
+      next_step: "Apply via DFCS ILP.",
+      apply_url: "https://example.com/chafee",
+    },
+  ],
+  tasks: [
+    {
+      id: "bc-request",
+      title: "Request birth certificate",
+      description: "Order from Vital Records.",
+      urgency: "this_week",
+      due_label: "This week",
+      action_label: "Start",
+      action_type: "link",
+      action_target: "https://example.com/bc",
+      completed: false,
+    },
+  ],
   bestfit_url: "https://bestfit.example/?county=Cobb",
   days_remaining: 365,
 };
@@ -71,6 +93,16 @@ describe("useIntake store", () => {
     expect(s.daysRemaining).toBe(365);
     expect(s.loading).toBe(false);
     expect(s.error).toBeNull();
+  });
+
+  it("fetchIntake caches eligibility[] and tasks[] on success", async () => {
+    mockFetchOk();
+    await useIntake.getState().fetchIntake(maria);
+    const s = useIntake.getState();
+    expect(s.eligibility).toHaveLength(1);
+    expect(s.eligibility[0]?.program).toBe("Chafee ETV");
+    expect(s.tasks).toHaveLength(1);
+    expect(s.tasks[0]?.id).toBe("bc-request");
   });
 
   it("fetchIntake dedupes identical hashes after success", async () => {
@@ -136,6 +168,8 @@ describe("useIntake store", () => {
     const s = useIntake.getState();
     expect(s.bestfitUrl).toBeNull();
     expect(s.daysRemaining).toBeNull();
+    expect(s.eligibility).toEqual([]);
+    expect(s.tasks).toEqual([]);
     expect(s.profileHash).toBeNull();
     expect(s.error).toBeNull();
   });

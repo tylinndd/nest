@@ -1,11 +1,18 @@
 import { create } from "zustand";
-import { postIntake, ApiError } from "@/lib/api";
+import {
+  postIntake,
+  ApiError,
+  type BackendTask,
+  type EligibilityResult,
+} from "@/lib/api";
 import { toBackendProfile } from "@/lib/profileMap";
 import type { Profile } from "@/store/profile";
 
 type IntakeState = {
   bestfitUrl: string | null;
   daysRemaining: number | null;
+  eligibility: EligibilityResult[];
+  tasks: BackendTask[];
   loading: boolean;
   error: string | null;
   profileHash: string | null;
@@ -19,6 +26,8 @@ type IntakeActions = {
 const initialState: IntakeState = {
   bestfitUrl: null,
   daysRemaining: null,
+  eligibility: [],
+  tasks: [],
   loading: false,
   error: null,
   profileHash: null,
@@ -49,6 +58,8 @@ export const useIntake = create<IntakeState & IntakeActions>()((set, get) => ({
       set({
         bestfitUrl: res.bestfit_url,
         daysRemaining: res.days_remaining,
+        eligibility: res.eligibility,
+        tasks: res.tasks,
         loading: false,
         error: null,
       });

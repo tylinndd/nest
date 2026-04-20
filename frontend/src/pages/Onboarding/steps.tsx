@@ -40,6 +40,7 @@ import {
   type DocumentId,
   type EducationPlan,
 } from "@/store/profile";
+import { useIntake } from "@/store/intake";
 
 type StepIcon = typeof Check;
 
@@ -55,6 +56,7 @@ const StepShell = ({
   next,
   cta = "Continue",
   disabled = false,
+  onBeforeNext,
 }: {
   stepIndex?: number;
   eyebrow?: string;
@@ -65,6 +67,7 @@ const StepShell = ({
   next: string;
   cta?: string;
   disabled?: boolean;
+  onBeforeNext?: () => void;
 }) => {
   const navigate = useNavigate();
   const derivedEyebrow = stepIndex
@@ -99,7 +102,10 @@ const StepShell = ({
         size="lg"
         disabled={disabled}
         className="mt-8 h-14 min-h-[3.5rem] rounded-full text-base font-semibold"
-        onClick={() => navigate(next)}
+        onClick={() => {
+          onBeforeNext?.();
+          navigate(next);
+        }}
       >
         {cta}
       </Button>
@@ -541,6 +547,10 @@ export const StepReview = () => {
   const county = useProfile((s) => s.county);
   const [destination] = useState(readAndClearReturn);
   const descriptor = describeProfile(name, age, county);
+  const submitIntake = () => {
+    const profile = useProfile.getState();
+    void useIntake.getState().fetchIntake(profile);
+  };
   const highlights = [
     {
       Icon: FileText,
@@ -566,6 +576,7 @@ export const StepReview = () => {
       subtitle="Update any of this later from Home."
       next={destination}
       cta="See my plan"
+      onBeforeNext={submitIntake}
     >
       <div className="space-y-3">
         {highlights.map(({ Icon, title, note }) => (

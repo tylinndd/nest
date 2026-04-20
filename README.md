@@ -46,6 +46,7 @@ Demo persona: **Maria, 18, Cobb County**, aging out of a group home, no birth ce
 **Frontend:**
 ```bash
 cd frontend
+cp .env.example .env    # VITE_API_BASE_URL=http://localhost:8000
 npm install
 npm run dev        # http://localhost:8080
 npm run build      # production bundle
@@ -60,6 +61,8 @@ pip install -r requirements.txt
 cp .env.example .env        # then paste your Groq key (console.groq.com/keys)
 uvicorn app.main:app --reload --port 8000
 ```
+
+Local CORS: the root `.env` sets `CORS_ORIGINS=http://localhost:8080,http://localhost:5173` so the Vite dev server (port 8080) can hit the backend without a preflight failure. If you run Vite on a different port, add it here.
 
 API surface:
 

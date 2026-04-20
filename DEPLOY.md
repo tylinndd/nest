@@ -77,7 +77,7 @@ If `/health` returns but `/chat` fails → Groq key is wrong or missing. Check e
 
    | Key | Value |
    |-----|-------|
-   | `VITE_API_URL` | `https://nest-backend-xxxx.onrender.com` *(your Render URL from Step 1)* |
+   | `VITE_API_BASE_URL` | `https://nest-backend-xxxx.onrender.com` *(your Render URL from Step 1)* — legacy `VITE_API_URL` still works as a fallback |
 
 5. Click **Deploy**. Build takes **~1–2 minutes**.
 6. When live, copy the Vercel URL (e.g. `https://nest-xxxx.vercel.app`).
@@ -153,7 +153,10 @@ For C-Day: Option A is fine. Set it up the morning of the event so the backend i
 - Open browser devtools Network tab, click a chat send, inspect the `/chat` request.
 - If it's `net::ERR_FAILED` or `CORS error` → `CORS_ORIGINS` on Render doesn't include your Vercel host. Update and resave.
 - If it's a 5xx → backend issue, check Render logs.
-- If the request never fires → frontend `VITE_API_URL` is wrong or wasn't rebuilt. Vercel → Deployments → latest → **Redeploy**.
+- If the request never fires → frontend `VITE_API_BASE_URL` (or legacy `VITE_API_URL`) is wrong or wasn't rebuilt. Vercel → Deployments → latest → **Redeploy**.
+
+**Local dev: `/chat` or `/intake` fails with CORS**
+- Vite dev server runs on port **8080**. Root `.env` must include it — `CORS_ORIGINS=http://localhost:8080,http://localhost:5173`. Restart `uvicorn` after edits.
 
 ---
 
