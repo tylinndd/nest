@@ -407,7 +407,7 @@ const Navigator = () => {
                 </div>
                 {showFollowUps && (
                   <div className="flex max-w-[85%] gap-2 overflow-x-auto no-scrollbar">
-                    {m.followUps!.map((f) => (
+                    {(m.followUps ?? []).map((f) => (
                       <button
                         key={f}
                         onClick={() => send(f)}

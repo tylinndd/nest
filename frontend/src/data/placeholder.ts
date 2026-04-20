@@ -1,4 +1,4 @@
-export type TaskGuide = {
+type TaskGuide = {
   subtitle: string;
   source: string;
   steps: string[];
