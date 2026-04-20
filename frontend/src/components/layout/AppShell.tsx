@@ -9,9 +9,18 @@ export const AppShell = () => {
   const isEmergency = location.pathname.startsWith("/emergency");
   return (
     <div className="min-h-full bg-background">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       <div className="mx-auto max-w-md min-h-screen flex flex-col">
         {!isEmergency && <TopBar />}
-        <main className={isEmergency ? "flex-1" : "flex-1 pb-28"}>
+        <main
+          id="main-content"
+          className={isEmergency ? "flex-1" : "flex-1 pb-28"}
+        >
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={location.pathname}

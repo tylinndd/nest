@@ -20,6 +20,12 @@ export const OnboardingLayout = () => {
 
   return (
     <div className="min-h-full bg-background">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       <div className="mx-auto max-w-md min-h-screen flex flex-col">
         <TopBar showSaveExit />
         <div className="px-5 pt-2 flex items-center gap-3">
@@ -55,7 +61,7 @@ export const OnboardingLayout = () => {
           </div>
           <div className="h-11 w-11" />
         </div>
-        <main className="flex-1 px-6 py-8">
+        <main id="main-content" className="flex-1 px-6 py-8">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={activeSlug}
