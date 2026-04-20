@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ONBOARDING_RETURN_KEY } from "@/components/guards/RequireProfile";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -497,10 +498,22 @@ const describeProfile = (name: string, age: number | null, county: string) => {
   return parts.join(", ");
 };
 
+const readAndClearReturn = (): string => {
+  try {
+    const stored = sessionStorage.getItem(ONBOARDING_RETURN_KEY);
+    sessionStorage.removeItem(ONBOARDING_RETURN_KEY);
+    if (stored && !stored.startsWith("/onboarding")) return stored;
+  } catch {
+    // sessionStorage unavailable — fall through
+  }
+  return "/";
+};
+
 export const StepReview = () => {
   const name = useProfile((s) => s.name);
   const age = useProfile((s) => s.age);
   const county = useProfile((s) => s.county);
+  const [destination] = useState(readAndClearReturn);
   const descriptor = describeProfile(name, age, county);
   const highlights = [
     {
@@ -525,7 +538,7 @@ export const StepReview = () => {
       Icon={ListChecks}
       title="Here's your starting plan."
       subtitle="Update any of this later from Home."
-      next="/"
+      next={destination}
       cta="See my plan"
     >
       <div className="space-y-3">
