@@ -97,6 +97,27 @@ const sanitizeHousing = (value: unknown): HousingOption | "" =>
 const sanitizeStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
 
+export const migrateProfile = (persisted: unknown): Profile => {
+  const base = (persisted ?? {}) as Record<string, unknown>;
+  return {
+    ...emptyProfile,
+    name: typeof base.name === "string" ? base.name : "",
+    age: typeof base.age === "number" ? base.age : null,
+    county: typeof base.county === "string" ? base.county : "",
+    documentsHave: sanitizeDocs(base.documentsHave),
+    uploadedDocs: sanitizeDocs(base.uploadedDocs),
+    education:
+      base.education === "college" ||
+      base.education === "trade" ||
+      base.education === "working"
+        ? base.education
+        : null,
+    housing: sanitizeHousing(base.housing),
+    health: sanitizeHealth(base.health),
+    completedTaskIds: sanitizeStringArray(base.completedTaskIds),
+  };
+};
+
 export const useProfile = create<Profile & ProfileActions>()(
   persist(
     (set) => ({
@@ -142,28 +163,7 @@ export const useProfile = create<Profile & ProfileActions>()(
       name: "nest.profile",
       version: 4,
       storage: createJSONStorage(() => safeStorage),
-      migrate: (persisted, version) => {
-        const base = (persisted ?? {}) as Record<string, unknown>;
-        const merged: Profile = {
-          ...emptyProfile,
-          name: typeof base.name === "string" ? base.name : "",
-          age: typeof base.age === "number" ? base.age : null,
-          county: typeof base.county === "string" ? base.county : "",
-          documentsHave: sanitizeDocs(base.documentsHave),
-          uploadedDocs: sanitizeDocs(base.uploadedDocs),
-          education:
-            base.education === "college" ||
-            base.education === "trade" ||
-            base.education === "working"
-              ? base.education
-              : null,
-          housing: sanitizeHousing(base.housing),
-          health: sanitizeHealth(base.health),
-          completedTaskIds: sanitizeStringArray(base.completedTaskIds),
-        };
-        void version;
-        return merged;
-      },
+      migrate: (persisted) => migrateProfile(persisted),
       onRehydrateStorage: () => (_state, error) => {
         if (error) {
           console.warn(
