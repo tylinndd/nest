@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { toast } from "sonner";
 import {
@@ -23,22 +23,11 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { useProfile } from "@/store/profile";
+import { derivePersonalizedVault, type VaultDoc } from "@/lib/personalize";
 import { cn } from "@/lib/utils";
 
-type Doc = {
-  id: string;
-  title: string;
-  detail: string;
-  state: "uploaded" | "missing" | "requested";
-};
-
-const docs: Doc[] = [
-  { id: "ssc", title: "Social Security card", detail: "Uploaded Apr 2, 2026", state: "uploaded" },
-  { id: "medicaid", title: "Medicaid card", detail: "Uploaded Apr 10, 2026", state: "uploaded" },
-  { id: "birth", title: "Birth certificate", detail: "Vital Records request filed", state: "requested" },
-  { id: "id", title: "Georgia state ID", detail: "Missing — we'll guide you", state: "missing" },
-  { id: "transcript", title: "High school transcript", detail: "Missing — we'll guide you", state: "missing" },
-];
+type Doc = VaultDoc;
 
 const stateMeta = {
   uploaded: {
@@ -93,6 +82,8 @@ const Option = ({
 const Vault = () => {
   const [target, setTarget] = useState<AddTarget>(null);
   const prefersReducedMotion = useReducedMotion();
+  const profile = useProfile();
+  const docs = useMemo(() => derivePersonalizedVault(profile), [profile]);
   const isOpen = target !== null;
   const secured = docs.filter((d) => d.state === "uploaded").length;
 

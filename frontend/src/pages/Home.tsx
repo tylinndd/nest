@@ -22,7 +22,8 @@ import {
   LifeBuoy,
   Pencil,
 } from "lucide-react";
-import { user, tasks, type Task } from "@/data/placeholder";
+import { user, type Task } from "@/data/placeholder";
+import { derivePersonalizedTasks, computeDaysUntilAgeOut } from "@/lib/personalize";
 import { SuccessCard } from "@/components/ui/SuccessCard";
 import {
   Drawer,
@@ -323,10 +324,20 @@ const TaskRow = ({
 };
 
 const Home = () => {
-  const [taskList, setTaskList] = useState<Task[]>(tasks);
+  const profile = useProfile();
+  const derivedTasks = useMemo(() => derivePersonalizedTasks(profile), [profile]);
+  const [taskList, setTaskList] = useState<Task[]>(derivedTasks);
   const [completedId, setCompletedId] = useState<string | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const completedTimerRef = useRef<number | null>(null);
+  const profileSignature = useMemo(
+    () => derivedTasks.map((t) => t.id).join("|"),
+    [derivedTasks],
+  );
+
+  useEffect(() => {
+    setTaskList(derivedTasks);
+  }, [profileSignature, derivedTasks]);
 
   useEffect(
     () => () => {
@@ -336,13 +347,11 @@ const Home = () => {
     },
     [],
   );
-  const profileName = useProfile((s) => s.name);
-  const profileAge = useProfile((s) => s.age);
-  const profileCounty = useProfile((s) => s.county);
 
-  const displayName = profileName.trim() || user.name;
-  const displayAge = profileAge ?? user.age;
-  const displayCounty = profileCounty ? `${profileCounty} County` : user.county;
+  const displayName = profile.name.trim() || user.name;
+  const displayAge = profile.age ?? user.age;
+  const displayCounty = profile.county ? `${profile.county} County` : user.county;
+  const daysUntilExit = profile.age !== null ? computeDaysUntilAgeOut(profile.age) : user.daysUntilExit;
 
   const greeting = useMemo(() => {
     const h = new Date().getHours();
@@ -370,16 +379,19 @@ const Home = () => {
   const progress = Math.round((done.length / taskList.length) * 100);
 
   const reduceMotion = useReducedMotion();
-  const daysCount = useMotionValue(reduceMotion ? user.daysUntilExit : 0);
+  const daysCount = useMotionValue(reduceMotion ? daysUntilExit : 0);
   const daysRounded = useTransform(daysCount, (v) => Math.round(v));
   useEffect(() => {
-    if (reduceMotion) return;
-    const controls = animate(daysCount, user.daysUntilExit, {
+    if (reduceMotion) {
+      daysCount.set(daysUntilExit);
+      return;
+    }
+    const controls = animate(daysCount, daysUntilExit, {
       duration: 1.1,
       ease: "easeOut",
     });
     return () => controls.stop();
-  }, [daysCount, reduceMotion]);
+  }, [daysCount, daysUntilExit, reduceMotion]);
 
   const openTask = (task: Task) => setActiveTask(task);
 
