@@ -21,6 +21,7 @@ const Benefits = lazy(() => import("./pages/Benefits"));
 const Navigator = lazy(() => import("./pages/Navigator"));
 const Emergency = lazy(() => import("./pages/Emergency"));
 const Vault = lazy(() => import("./pages/Vault"));
+const Reset = lazy(() => import("./pages/Reset"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const OnboardingLayout = lazy(() =>
   import("./pages/Onboarding/OnboardingLayout").then((m) => ({
@@ -149,6 +150,7 @@ const App = () => {
                 <Route path="/emergency" element={<Emergency />} />
               </Route>
             </Route>
+            <Route path="/reset" element={<Reset />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

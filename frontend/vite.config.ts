@@ -29,7 +29,7 @@ export default defineConfig(() => ({
         template: "raw-data",
       }),
     VitePWA({
-      registerType: "prompt",
+      registerType: "autoUpdate",
       injectRegister: false,
       manifest: false,
       includeAssets: [
@@ -49,6 +49,8 @@ export default defineConfig(() => ({
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api/, /^\/_/],
         cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
       },
     }),
   ],
