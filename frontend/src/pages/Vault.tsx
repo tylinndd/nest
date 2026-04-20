@@ -131,9 +131,18 @@ const Vault = () => {
   }, [preview?.previewUrl]);
 
   const openPreview = async (doc: Doc) => {
-    const stored = await getDocument(doc.id);
-    const previewUrl = stored ? URL.createObjectURL(stored.blob) : null;
-    setPreview({ docId: doc.id, title: doc.title, stored, previewUrl });
+    try {
+      const stored = await getDocument(doc.id);
+      const previewUrl = stored ? URL.createObjectURL(stored.blob) : null;
+      setPreview({ docId: doc.id, title: doc.title, stored, previewUrl });
+    } catch (err) {
+      console.warn("[vault] read failed:", err);
+      toast.error("Couldn't open this file", {
+        id: "vault-action",
+        description:
+          "Your browser blocked secure storage — try disabling private mode.",
+      });
+    }
   };
 
   const closePreview = () => {
