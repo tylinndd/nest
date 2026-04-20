@@ -7,29 +7,56 @@ import {
 
 export type EducationPlan = "college" | "trade" | "working";
 
+export const DOCUMENT_IDS = [
+  "ssc",
+  "birth",
+  "id",
+  "medicaid",
+  "transcript",
+] as const;
+export type DocumentId = (typeof DOCUMENT_IDS)[number];
+
+export const HOUSING_OPTIONS = [
+  "Foster home",
+  "Group home",
+  "Independent living program",
+  "With a relative",
+  "Unsure / something else",
+] as const;
+export type HousingOption = (typeof HOUSING_OPTIONS)[number];
+
+export const HEALTH_OPTIONS = [
+  "I have Medicaid right now",
+  "I take prescriptions",
+  "I see a therapist or counselor",
+  "I need a primary care doctor",
+  "None of these apply",
+] as const;
+export type HealthFlag = (typeof HEALTH_OPTIONS)[number];
+
 export type Profile = {
   name: string;
   age: number | null;
   county: string;
-  documentsHave: string[];
-  uploadedDocs: string[];
+  documentsHave: DocumentId[];
+  uploadedDocs: DocumentId[];
   education: EducationPlan | null;
-  housing: string;
-  health: string[];
+  housing: HousingOption | "";
+  health: HealthFlag[];
 };
 
 type ProfileActions = {
   setName: (name: string) => void;
   setAge: (age: number | null) => void;
   setCounty: (county: string) => void;
-  setDocuments: (docs: string[]) => void;
-  toggleDocument: (id: string) => void;
-  markUploaded: (id: string) => void;
-  unmarkUploaded: (id: string) => void;
+  setDocuments: (docs: DocumentId[]) => void;
+  toggleDocument: (id: DocumentId) => void;
+  markUploaded: (id: DocumentId) => void;
+  unmarkUploaded: (id: DocumentId) => void;
   setEducation: (choice: EducationPlan) => void;
-  setHousing: (housing: string) => void;
-  setHealth: (items: string[]) => void;
-  toggleHealth: (option: string) => void;
+  setHousing: (housing: HousingOption) => void;
+  setHealth: (items: HealthFlag[]) => void;
+  toggleHealth: (option: HealthFlag) => void;
   reset: () => void;
 };
 
@@ -43,6 +70,29 @@ const emptyProfile: Profile = {
   housing: "",
   health: [],
 };
+
+const DOCUMENT_ID_SET = new Set<string>(DOCUMENT_IDS);
+const HOUSING_SET = new Set<string>(HOUSING_OPTIONS);
+const HEALTH_SET = new Set<string>(HEALTH_OPTIONS);
+
+const sanitizeDocs = (value: unknown): DocumentId[] =>
+  Array.isArray(value)
+    ? (value.filter(
+        (v): v is DocumentId => typeof v === "string" && DOCUMENT_ID_SET.has(v),
+      ) as DocumentId[])
+    : [];
+
+const sanitizeHealth = (value: unknown): HealthFlag[] =>
+  Array.isArray(value)
+    ? (value.filter(
+        (v): v is HealthFlag => typeof v === "string" && HEALTH_SET.has(v),
+      ) as HealthFlag[])
+    : [];
+
+const sanitizeHousing = (value: unknown): HousingOption | "" =>
+  typeof value === "string" && HOUSING_SET.has(value)
+    ? (value as HousingOption)
+    : "";
 
 const safeStorage: StateStorage = {
   getItem: (key) => {
@@ -109,14 +159,28 @@ export const useProfile = create<Profile & ProfileActions>()(
     }),
     {
       name: "nest.profile",
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => safeStorage),
       migrate: (persisted, version) => {
-        const base = (persisted ?? {}) as Partial<Profile>;
-        if (version < 2) {
-          return { ...emptyProfile, ...base, uploadedDocs: base.uploadedDocs ?? [] };
-        }
-        return base as Profile;
+        const base = (persisted ?? {}) as Record<string, unknown>;
+        const merged: Profile = {
+          ...emptyProfile,
+          name: typeof base.name === "string" ? base.name : "",
+          age: typeof base.age === "number" ? base.age : null,
+          county: typeof base.county === "string" ? base.county : "",
+          documentsHave: sanitizeDocs(base.documentsHave),
+          uploadedDocs: sanitizeDocs(base.uploadedDocs),
+          education:
+            base.education === "college" ||
+            base.education === "trade" ||
+            base.education === "working"
+              ? base.education
+              : null,
+          housing: sanitizeHousing(base.housing),
+          health: sanitizeHealth(base.health),
+        };
+        void version;
+        return merged;
       },
       onRehydrateStorage: () => (_state, error) => {
         if (error) {

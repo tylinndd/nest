@@ -1,8 +1,8 @@
-import type { Profile } from "@/store/profile";
+import type { DocumentId, Profile } from "@/store/profile";
 import { type Task } from "@/data/placeholder";
 
 export const DOCUMENT_CATALOG: Array<{
-  id: string;
+  id: DocumentId;
   title: string;
   requestedDetail: string;
   missingDetail: string;
@@ -40,7 +40,7 @@ export const DOCUMENT_CATALOG: Array<{
 ];
 
 export type VaultDoc = {
-  id: string;
+  id: DocumentId;
   title: string;
   detail: string;
   state: "uploaded" | "missing" | "requested";

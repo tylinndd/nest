@@ -11,7 +11,11 @@ import {
   Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useProfile, type Profile } from "@/store/profile";
+import {
+  useProfile,
+  type HousingOption,
+  type Profile,
+} from "@/store/profile";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 
 type ZoneState = "active" | "locked" | "done";
@@ -26,7 +30,7 @@ type Zone = {
   items: string[];
 };
 
-const STABLE_HOUSING = new Set([
+const STABLE_HOUSING: Set<HousingOption> = new Set([
   "Foster home",
   "Group home",
   "Independent living program",
@@ -45,7 +49,8 @@ const buildZones = (profile: Profile): Zone[] => {
   const needsPcp = profile.health.includes("I need a primary care doctor");
   const healthDone = hasMedicaid && !needsPcp;
 
-  const housingDone = STABLE_HOUSING.has(profile.housing);
+  const housingDone =
+    profile.housing !== "" && STABLE_HOUSING.has(profile.housing);
   const educationDone = profile.education !== null;
 
   return [

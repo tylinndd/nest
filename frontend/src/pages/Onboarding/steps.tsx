@@ -33,7 +33,13 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useProfile, type EducationPlan } from "@/store/profile";
+import {
+  useProfile,
+  HOUSING_OPTIONS,
+  HEALTH_OPTIONS,
+  type DocumentId,
+  type EducationPlan,
+} from "@/store/profile";
 
 type StepIcon = typeof Check;
 
@@ -285,7 +291,7 @@ export const StepCounty = () => {
   );
 };
 
-const DOCUMENT_OPTIONS = [
+const DOCUMENT_OPTIONS: { id: DocumentId; label: string }[] = [
   { id: "ssc", label: "Social Security card" },
   { id: "birth", label: "Birth certificate" },
   { id: "id", label: "State ID or driver's license" },
@@ -429,13 +435,6 @@ export const StepEducation = () => {
 export const StepHousing = () => {
   const pick = useProfile((s) => s.housing);
   const setHousing = useProfile((s) => s.setHousing);
-  const options = [
-    "Foster home",
-    "Group home",
-    "Independent living program",
-    "With a relative",
-    "Unsure / something else",
-  ];
   return (
     <StepShell
       stepIndex={6}
@@ -446,7 +445,7 @@ export const StepHousing = () => {
       disabled={!pick}
     >
       <div className="space-y-3">
-        {options.map((o) => (
+        {HOUSING_OPTIONS.map((o) => (
           <Choice
             key={o}
             label={o}
@@ -462,13 +461,6 @@ export const StepHousing = () => {
 export const StepHealth = () => {
   const picks = useProfile((s) => s.health);
   const toggle = useProfile((s) => s.toggleHealth);
-  const options = [
-    "I have Medicaid right now",
-    "I take prescriptions",
-    "I see a therapist or counselor",
-    "I need a primary care doctor",
-    "None of these apply",
-  ];
   return (
     <StepShell
       stepIndex={7}
@@ -478,7 +470,7 @@ export const StepHealth = () => {
       next="/onboarding/review"
     >
       <div className="space-y-3">
-        {options.map((o) => (
+        {HEALTH_OPTIONS.map((o) => (
           <Choice
             key={o}
             label={o}
