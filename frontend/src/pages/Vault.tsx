@@ -157,7 +157,6 @@ const Vault = () => {
   };
 
   const closePreview = () => {
-    if (preview?.previewUrl) URL.revokeObjectURL(preview.previewUrl);
     setPreview(null);
   };
 
