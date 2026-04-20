@@ -36,7 +36,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked
 | 2.3 | ChromaDB indexing of 250-page DFCS PDF | `backend/data/`, `backend/rag/ingest.py` | Tylin | ✅ | — | Verified 2026-04-20 — corpus indexed, retrieval returns real chunks |
 | 2.4 | Rules engine for 6 benefit programs | `backend/rules/` | Tylin | ✅ | — | Verified 2026-04-20 — `/intake` returns eligibility[] + tasks[] for Maria persona |
 | 3.1 | Wire Navigator → `/chat` | `frontend/src/pages/Navigator.tsx` | Stephen | ✅ | 2.1 | Wired via `lib/api.ts` + `lib/profileMap.ts`; `route_to_emergency` navigates to `/emergency`; verified in browser 2026-04-20 |
-| 3.2 | Wire Benefits → rules JSON | `frontend/src/data/benefits.json` | Stephen | ⬜ | 2.4 | Replace placeholder.ts shape with rules output |
+| 3.2 | Wire Benefits → `/intake` bestfit deep link | `frontend/src/store/intake.ts`, `frontend/src/pages/Benefits.tsx` | Stephen | ✅ | 2.4 | BestFit CTA card wired per D1 (link-out, not full screener). Static benefit copy retained — richer drawer guides than `/intake.eligibility` would return. Intake store: fetch/dedupe/abort + 8 tests. |
 | 4.1 | Poster PDF | `/deliverables/poster.pdf` | Brenden | ⬜ | 1.* | 8-feature layout + demo persona Maria |
 | 4.2 | 30-sec flash video | `/deliverables/flash.mp4` | Brenden + Stephen | ⬜ | 1.* | Optional, targets C-Day loop |
 | 4.3 | CMT submission (cmt3.research.microsoft.com/CDAY2026) | — | Stephen | ⬜ | 4.1 | Title/abstract/authors confirmed |
