@@ -376,7 +376,10 @@ const Home = () => {
     [week, nextMove],
   );
 
-  const progress = Math.round((done.length / taskList.length) * 100);
+  const progress =
+    taskList.length === 0
+      ? 100
+      : Math.round((done.length / taskList.length) * 100);
 
   const reduceMotion = useReducedMotion();
   const daysCount = useMotionValue(reduceMotion ? daysUntilExit : 0);
