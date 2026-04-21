@@ -351,8 +351,18 @@ const Navigator = () => {
   return (
     <div className="flex h-[calc(100dvh-7rem)] flex-col">
       <div className="px-5 pt-5">
-        <p className="text-sm text-muted-foreground">Always on · private</p>
-        <h1 className="font-display text-3xl text-primary">Ask Navigator</h1>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-sm text-muted-foreground">Always on · private</p>
+            <h1 className="font-display text-3xl text-primary">Ask Navigator</h1>
+          </div>
+          <Link
+            to="/how-it-works"
+            className="shrink-0 mt-1 rounded-full border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+          >
+            How does Nest answer?
+          </Link>
+        </div>
       </div>
 
       <div
