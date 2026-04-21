@@ -252,6 +252,16 @@ const Settings = () => {
             here on your device.
           </p>
         </div>
+        <p className="text-xs text-muted-foreground">
+          More on who built Nest and how it answers{" "}
+          <Link
+            to="/about"
+            className="font-semibold text-primary hover:underline"
+          >
+            on the About page
+          </Link>
+          .
+        </p>
       </section>
 
       <section className="space-y-3">
