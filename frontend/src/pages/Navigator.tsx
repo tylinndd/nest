@@ -398,7 +398,13 @@ const Navigator = () => {
                     <SourceReveal source={m.source} showProfile={!m.fallback} />
                   )}
                 </div>
-                {!isUser && <ChatMessageActions text={m.text} />}
+                {!isUser && (
+                  <ChatMessageActions
+                    text={m.text}
+                    source={m.source}
+                    share={!m.fallback}
+                  />
+                )}
                 {showFollowUps && (
                   <div className="flex max-w-[85%] gap-2 overflow-x-auto no-scrollbar">
                     {(m.followUps ?? []).map((f) => (
