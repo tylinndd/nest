@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { SourceReveal } from "@/components/SourceReveal";
+import { ChatMessageActions } from "@/components/ChatMessageActions";
 import { cn } from "@/lib/utils";
 
 type Msg = ChatMsg;
@@ -373,6 +374,7 @@ const Navigator = () => {
                     <SourceReveal source={m.source} showProfile={!m.fallback} />
                   )}
                 </div>
+                {!isUser && <ChatMessageActions text={m.text} />}
                 {showFollowUps && (
                   <div className="flex max-w-[85%] gap-2 overflow-x-auto no-scrollbar">
                     {(m.followUps ?? []).map((f) => (
