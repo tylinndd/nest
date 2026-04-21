@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useProfile } from "@/store/profile";
 import { useChat } from "@/store/chat";
-import { isDemoPersona, profileFor } from "@/lib/demo";
+import { DEMO_SESSION_KEY, isDemoPersona, profileFor } from "@/lib/demo";
 
 export default function Reset() {
   useEffect(() => {
@@ -25,13 +25,25 @@ export default function Reset() {
       if (isDemoPersona(persona)) {
         // Seeding after the clear writes a fresh persisted snapshot; the
         // reload below rehydrates from it. Chat is left empty so Navigator
-        // seeds its greeting against the freshly-named profile.
+        // seeds its greeting against the freshly-named profile. The
+        // sessionStorage flag drives the demo badge in TopBar — scoped to
+        // this tab so real users never see it.
         useProfile.setState(profileFor(persona));
         useChat.setState({ messages: [] });
+        try {
+          window.sessionStorage.setItem(DEMO_SESSION_KEY, persona);
+        } catch (err) {
+          console.warn("[nest.reset] session flag failed:", err);
+        }
         window.location.replace("/navigator");
         return;
       }
 
+      try {
+        window.sessionStorage.removeItem(DEMO_SESSION_KEY);
+      } catch {
+        // ignore
+      }
       window.location.replace("/");
     })();
   }, []);

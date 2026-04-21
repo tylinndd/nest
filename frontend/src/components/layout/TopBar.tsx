@@ -6,6 +6,8 @@ import { useProfile } from "@/store/profile";
 import { useChat } from "@/store/chat";
 import { useTheme } from "@/store/theme";
 import { safeStorage } from "@/lib/safeStorage";
+import { DEMO_SESSION_KEY } from "@/lib/demo";
+import { DemoBadge } from "@/components/DemoBadge";
 
 type Props = {
   showSaveExit?: boolean;
@@ -35,6 +37,11 @@ export const TopBar = ({ showSaveExit }: Props) => {
     useProfile.persist.clearStorage();
     useChat.getState().clear();
     safeStorage.removeItem("nest.first-task-fired");
+    try {
+      window.sessionStorage.removeItem(DEMO_SESSION_KEY);
+    } catch {
+      // ignore
+    }
     navigate("/onboarding/name");
     toast.success("Demo reset", {
       id: "demo-reset",
@@ -89,6 +96,7 @@ export const TopBar = ({ showSaveExit }: Props) => {
           </Link>
         ) : (
           <div className="flex items-center gap-2">
+            <DemoBadge />
             <button
               type="button"
               onClick={toggleTheme}
