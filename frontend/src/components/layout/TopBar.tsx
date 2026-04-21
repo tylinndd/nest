@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Settings as SettingsIcon, Sun } from "lucide-react";
 import { useProfile } from "@/store/profile";
 import { useChat } from "@/store/chat";
 import { useTheme } from "@/store/theme";
@@ -97,6 +97,13 @@ export const TopBar = ({ showSaveExit }: Props) => {
         ) : (
           <div className="flex items-center gap-2">
             <DemoBadge />
+            <Link
+              to="/settings"
+              aria-label="Settings and your data"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-primary transition hover:bg-secondary/80"
+            >
+              <SettingsIcon className="h-4 w-4" />
+            </Link>
             <button
               type="button"
               onClick={toggleTheme}

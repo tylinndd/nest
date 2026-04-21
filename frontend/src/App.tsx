@@ -21,6 +21,7 @@ const Benefits = lazy(() => import("./pages/Benefits"));
 const Navigator = lazy(() => import("./pages/Navigator"));
 const Emergency = lazy(() => import("./pages/Emergency"));
 const Vault = lazy(() => import("./pages/Vault"));
+const Settings = lazy(() => import("./pages/Settings"));
 const Reset = lazy(() => import("./pages/Reset"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const OnboardingLayout = lazy(() =>
@@ -63,6 +64,7 @@ const ROUTE_TITLES: Array<[string, string]> = [
   ["/benefits", "Benefits · Nest"],
   ["/navigator", "Ask Navigator · Nest"],
   ["/vault", "Document Vault · Nest"],
+  ["/settings", "Settings · Nest"],
   ["/emergency", "Emergency · Nest"],
 ];
 
@@ -147,6 +149,7 @@ const App = () => {
                 <Route path="/benefits" element={<Benefits />} />
                 <Route path="/navigator" element={<Navigator />} />
                 <Route path="/vault" element={<Vault />} />
+                <Route path="/settings" element={<Settings />} />
                 <Route path="/emergency" element={<Emergency />} />
               </Route>
             </Route>
