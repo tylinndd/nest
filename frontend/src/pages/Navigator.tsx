@@ -7,6 +7,7 @@ import { buildChatSeed } from "@/data/placeholder";
 import { useProfile } from "@/store/profile";
 import { useChat, type ChatMsg } from "@/store/chat";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
+import { pickStarterChips } from "@/lib/starterChips";
 import { linkify } from "@/lib/linkify";
 import { postChat, ApiError } from "@/lib/api";
 import { toBackendProfile } from "@/lib/profileMap";
@@ -26,11 +27,6 @@ import { cn } from "@/lib/utils";
 
 type Msg = ChatMsg;
 
-const suggestionChips = [
-  "I might be couch-surfing this weekend",
-  "What docs do I need for KSU ASCEND?",
-  "Can I keep Medicaid after I turn 18?",
-];
 
 const CLIENT_CRISIS_RE =
   /(suicide|kill myself|hurt myself|self harm|\bunsafe\b|\babuse\b|homeless tonight|need help right now|i am not safe)/i;
@@ -121,6 +117,11 @@ const TypingDots = () => (
 const Navigator = () => {
   const navigate = useNavigate();
   const profileName = useProfile((s) => s.name);
+  const profileAge = useProfile((s) => s.age);
+  const profileHousing = useProfile((s) => s.housing);
+  const profileEducation = useProfile((s) => s.education);
+  const profileDocs = useProfile((s) => s.documentsHave);
+  const profileHealth = useProfile((s) => s.health);
   const uploadedDocs = useProfile((s) => s.uploadedDocs);
   const messages = useChat((s) => s.messages);
   const setMessages = useChat((s) => s.setMessages);
@@ -138,6 +139,29 @@ const Navigator = () => {
         title: d.title,
       })),
     [uploadedDocs],
+  );
+  const suggestionChips = useMemo(
+    () =>
+      pickStarterChips({
+        name: profileName,
+        age: profileAge,
+        county: "",
+        documentsHave: profileDocs,
+        uploadedDocs,
+        education: profileEducation,
+        housing: profileHousing,
+        health: profileHealth,
+        completedTaskIds: [],
+      }),
+    [
+      profileName,
+      profileAge,
+      profileHousing,
+      profileEducation,
+      profileDocs,
+      profileHealth,
+      uploadedDocs,
+    ],
   );
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
