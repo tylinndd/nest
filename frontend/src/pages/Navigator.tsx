@@ -20,6 +20,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { SourceReveal } from "@/components/SourceReveal";
 import { cn } from "@/lib/utils";
 
 type Msg = ChatMsg;
@@ -366,11 +367,7 @@ const Navigator = () => {
                   )}
                 >
                   <p className="leading-relaxed">{linkify(m.text)}</p>
-                  {m.source && (
-                    <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-                      Source · {m.source}
-                    </span>
-                  )}
+                  {m.source && <SourceReveal source={m.source} />}
                 </div>
                 {showFollowUps && (
                   <div className="flex max-w-[85%] gap-2 overflow-x-auto no-scrollbar">
