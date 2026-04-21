@@ -1,4 +1,7 @@
 import { useEffect } from "react";
+import { useProfile } from "@/store/profile";
+import { useChat } from "@/store/chat";
+import { isDemoPersona, profileFor } from "@/lib/demo";
 
 export default function Reset() {
   useEffect(() => {
@@ -17,6 +20,18 @@ export default function Reset() {
       } catch (err) {
         console.warn("[nest.reset] cleanup failed:", err);
       }
+
+      const persona = new URLSearchParams(window.location.search).get("as");
+      if (isDemoPersona(persona)) {
+        // Seeding after the clear writes a fresh persisted snapshot; the
+        // reload below rehydrates from it. Chat is left empty so Navigator
+        // seeds its greeting against the freshly-named profile.
+        useProfile.setState(profileFor(persona));
+        useChat.setState({ messages: [] });
+        window.location.replace("/navigator");
+        return;
+      }
+
       window.location.replace("/");
     })();
   }, []);
