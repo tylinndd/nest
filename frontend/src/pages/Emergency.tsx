@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -10,7 +10,13 @@ import {
 import { hotlines } from "@/data/placeholder";
 import { cn } from "@/lib/utils";
 
-const Emergency = () => (
+type EmergencyLocationState = { fromCrisis?: boolean } | null;
+
+const Emergency = () => {
+  const { state } = useLocation();
+  const fromCrisis = Boolean((state as EmergencyLocationState)?.fromCrisis);
+
+  return (
   <div className="min-h-screen bg-primary text-primary-foreground flex flex-col">
     <div
       className="pt-[calc(env(safe-area-inset-top)+1.25rem)] px-5 pb-6"
@@ -29,6 +35,16 @@ const Emergency = () => (
         </span>
         <div className="h-11 w-11" />
       </div>
+
+      {fromCrisis && (
+        <p
+          role="status"
+          className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary-foreground/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-primary-foreground/90"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-nest-amber" />
+          Routed by Nest · no AI on this screen
+        </p>
+      )}
 
       <motion.h1
         initial={{ opacity: 0, y: 8 }}
@@ -127,6 +143,7 @@ const Emergency = () => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export default Emergency;

@@ -140,7 +140,23 @@ const Navigator = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const crisisRedirectRef = useRef<number | null>(null);
   const voiceSupported = useMemo(() => getSpeechRecognition() !== null, []);
+
+  // Crisis route handoff. Delay ~1.8s so the CRISIS_REPLY message lands on
+  // screen before we swap to /emergency — otherwise the router change
+  // eats the only moment the user sees the "call 988 / 211" text, and the
+  // hand-off feels like the app flinched instead of routing them.
+  const CRISIS_HANDOFF_MS = 1800;
+  const scheduleCrisisHandoff = () => {
+    if (crisisRedirectRef.current !== null) {
+      window.clearTimeout(crisisRedirectRef.current);
+    }
+    crisisRedirectRef.current = window.setTimeout(() => {
+      crisisRedirectRef.current = null;
+      navigate("/emergency", { state: { fromCrisis: true } });
+    }, CRISIS_HANDOFF_MS);
+  };
 
   useEffect(() => {
     if (hydrated) return;
@@ -177,6 +193,10 @@ const Navigator = () => {
       abortRef.current = null;
       recognitionRef.current?.abort();
       recognitionRef.current = null;
+      if (crisisRedirectRef.current !== null) {
+        window.clearTimeout(crisisRedirectRef.current);
+        crisisRedirectRef.current = null;
+      }
     };
   }, []);
 
@@ -248,7 +268,7 @@ const Navigator = () => {
         text: CRISIS_REPLY.text,
         source: CRISIS_REPLY.source,
       });
-      navigate("/emergency");
+      scheduleCrisisHandoff();
       return;
     }
 
@@ -271,7 +291,7 @@ const Navigator = () => {
       };
       addMessage(reply);
 
-      if (res.route_to_emergency) navigate("/emergency");
+      if (res.route_to_emergency) scheduleCrisisHandoff();
     } catch (err) {
       if (controller.signal.aborted) return;
       if (err instanceof DOMException && err.name === "AbortError") return;
