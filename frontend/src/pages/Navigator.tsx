@@ -268,6 +268,7 @@ const Navigator = () => {
         role: "assistant",
         text: CRISIS_REPLY.text,
         source: CRISIS_REPLY.source,
+        fallback: true,
       });
       scheduleCrisisHandoff();
       return;
@@ -312,6 +313,7 @@ const Navigator = () => {
         role: "assistant",
         text: NETWORK_FALLBACK.text,
         source: NETWORK_FALLBACK.source,
+        fallback: true,
       });
     } finally {
       if (abortRef.current === controller) {
@@ -367,7 +369,9 @@ const Navigator = () => {
                   )}
                 >
                   <p className="leading-relaxed">{linkify(m.text)}</p>
-                  {m.source && <SourceReveal source={m.source} />}
+                  {m.source && (
+                    <SourceReveal source={m.source} showProfile={!m.fallback} />
+                  )}
                 </div>
                 {showFollowUps && (
                   <div className="flex max-w-[85%] gap-2 overflow-x-auto no-scrollbar">

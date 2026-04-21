@@ -8,6 +8,7 @@ export type ChatMsg = {
   text: string;
   source?: string;
   followUps?: string[];
+  fallback?: boolean;
 };
 
 export const CHAT_MESSAGE_CAP = 200;
