@@ -28,6 +28,7 @@ export type Benefit = {
   verifiedOn?: string;
 };
 
+// Offline fallback for GET /benefits — keep in sync with backend/app/services/benefits.py
 export const benefits: Benefit[] = [
   {
     id: "chafee-etv",

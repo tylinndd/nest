@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { benefits, type Benefit, type BenefitStatus } from "@/data/placeholder";
 import { useProfile, hasProfile } from "@/store/profile";
 import { useIntake } from "@/store/intake";
+import { useBenefitsCatalog } from "@/store/benefits";
 import { cn } from "@/lib/utils";
 
 const formatVerified = (iso: string) => {
@@ -220,20 +221,28 @@ const Benefits = () => {
   const profile = useProfile();
   const fetchIntake = useIntake((s) => s.fetchIntake);
   const bestfitUrl = useIntake((s) => s.bestfitUrl);
-  const qualifyCount = benefits.filter((b) => b.status === "qualify").length;
-  const actionCount = benefits.filter((b) => b.status === "action").length;
+  const remoteBenefits = useBenefitsCatalog((s) => s.items);
+  const fetchCatalog = useBenefitsCatalog((s) => s.fetchCatalog);
+
+  useEffect(() => {
+    void fetchCatalog();
+  }, [fetchCatalog]);
 
   useEffect(() => {
     if (!hasProfile(profile)) return;
     void fetchIntake(profile);
   }, [fetchIntake, profile]);
 
+  const list: Benefit[] = remoteBenefits ?? benefits;
+  const qualifyCount = list.filter((b) => b.status === "qualify").length;
+  const actionCount = list.filter((b) => b.status === "action").length;
+
   return (
     <div className="px-5 pt-5 pb-4">
       <p className="text-sm text-muted-foreground">Matched to your profile</p>
       <h1 className="font-display text-3xl text-primary">Benefits</h1>
       <p className="mt-2 text-muted-foreground">
-        {benefits.length} Georgia programs, sorted by what to do first.
+        {list.length} Georgia programs, sorted by what to do first.
       </p>
 
       <div className="mt-4 flex gap-2 text-xs font-semibold">
@@ -246,7 +255,7 @@ const Benefits = () => {
       </div>
 
       <div className="mt-6 space-y-3">
-        {benefits.map((b, i) => (
+        {list.map((b, i) => (
           <BenefitCard key={b.id} b={b} index={i} />
         ))}
         {bestfitUrl && <BestFitCard url={bestfitUrl} />}
