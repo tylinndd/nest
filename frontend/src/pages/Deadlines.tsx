@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -23,6 +23,7 @@ import {
 import { deadlineToIcs, downloadIcs } from "@/lib/ics";
 import { glossify } from "@/lib/linkify";
 import { cn } from "@/lib/utils";
+import { DeadlineTimeline } from "@/components/DeadlineTimeline";
 
 const CATEGORY_ICON: Record<DeadlineCategory, typeof CalendarClock> = {
   benefits: Landmark,
@@ -93,6 +94,20 @@ const Deadlines = () => {
     downloadIcs(ics, `nest-${d.id}`);
   };
 
+  const cardRefs = useRef<Record<string, HTMLLIElement | null>>({});
+  const scrollToDeadline = (d: Deadline) => {
+    const el = cardRefs.current[d.id];
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.animate(
+      [
+        { boxShadow: "0 0 0 0 rgba(201, 138, 40, 0.5)" },
+        { boxShadow: "0 0 0 6px rgba(201, 138, 40, 0)" },
+      ],
+      { duration: 900, easing: "ease-out" },
+    );
+  };
+
   return (
     <div className="px-5 pt-5 pb-6">
       <p className="text-sm text-muted-foreground">Timeline</p>
@@ -125,6 +140,14 @@ const Deadlines = () => {
         </div>
       )}
 
+      {hasAny && (
+        <DeadlineTimeline
+          profile={profile}
+          deadlines={deadlines}
+          onSelect={scrollToDeadline}
+        />
+      )}
+
       {URGENCY_GROUPS.map((urgency) => {
         const items = byUrgency[urgency];
         if (items.length === 0) return null;
@@ -146,6 +169,9 @@ const Deadlines = () => {
                 return (
                   <motion.li
                     key={d.id}
+                    ref={(el) => {
+                      cardRefs.current[d.id] = el;
+                    }}
                     initial={
                       prefersReducedMotion
                         ? { opacity: 1 }
