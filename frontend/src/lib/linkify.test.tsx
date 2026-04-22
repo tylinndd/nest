@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
-import { linkify } from "./linkify";
+import { glossify, linkify } from "./linkify";
 
 const renderLinkify = (text: string) => render(<div>{linkify(text)}</div>);
+const renderGlossify = (text: string) => render(<div>{glossify(text)}</div>);
 
 describe("linkify", () => {
   it("returns plain text when no patterns match", () => {
@@ -91,5 +92,33 @@ describe("linkify", () => {
     const { container } = renderLinkify("Call (470) 578-6777 about your DFCS case");
     expect(container.querySelectorAll("a")).toHaveLength(1);
     expect(container.querySelectorAll("button").length).toBeGreaterThanOrEqual(1);
+  });
+});
+
+describe("glossify", () => {
+  it("returns plain text when no acronyms match", () => {
+    const { container } = renderGlossify("just some plain words");
+    expect(container.querySelectorAll("button")).toHaveLength(0);
+    expect(container.textContent).toBe("just some plain words");
+  });
+
+  it("wraps known acronyms in a popover trigger", () => {
+    const { container } = renderGlossify("Your ILP coordinator handles this.");
+    const buttons = container.querySelectorAll("button");
+    expect(buttons.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("does NOT linkify phone numbers or emails", () => {
+    const { container } = renderGlossify(
+      "Call 211 or email help@example.com for DFCS questions.",
+    );
+    expect(container.querySelectorAll("a")).toHaveLength(0);
+    expect(container.querySelectorAll("button").length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("ignores unknown acronyms", () => {
+    const { container } = renderGlossify("Look at RANDOMACR today");
+    expect(container.querySelectorAll("button")).toHaveLength(0);
+    expect(container.textContent).toBe("Look at RANDOMACR today");
   });
 });

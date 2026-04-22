@@ -25,6 +25,9 @@ const acronymize = (text: string, keyPrefix: string): ReactNode[] => {
   return nodes;
 };
 
+export const glossify = (text: string, keyPrefix = "g"): ReactNode[] =>
+  acronymize(text, keyPrefix);
+
 export const linkify = (text: string): ReactNode[] => {
   const nodes: ReactNode[] = [];
   let lastIdx = 0;

@@ -23,6 +23,7 @@ import {
   type Profile,
 } from "@/store/profile";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
+import { glossify } from "@/lib/linkify";
 import { printPath, profileToPathData } from "@/lib/pathExport";
 import {
   printWorkerHandoff,
@@ -339,7 +340,9 @@ const Path = () => {
                     <h2 className="mt-1 font-display text-lg text-foreground">
                       {z.title}
                     </h2>
-                    <p className="mt-1 text-sm text-muted-foreground">{z.subtitle}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {glossify(z.subtitle, `zs-${z.id}`)}
+                    </p>
                   </div>
                   <span
                     className={cn(
@@ -384,7 +387,7 @@ const Path = () => {
                             )}
                           />
                           <span className="flex-1">
-                            {item.label}
+                            {glossify(item.label, `zi-${z.id}-${item.label.slice(0, 12)}`)}
                             <span className="block text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 group-hover:text-muted-foreground">
                               {hint}
                             </span>

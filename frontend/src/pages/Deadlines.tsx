@@ -21,6 +21,7 @@ import {
   type DeadlineUrgency,
 } from "@/lib/deadlines";
 import { deadlineToIcs, downloadIcs } from "@/lib/ics";
+import { glossify } from "@/lib/linkify";
 import { cn } from "@/lib/utils";
 
 const CATEGORY_ICON: Record<DeadlineCategory, typeof CalendarClock> = {
@@ -168,7 +169,7 @@ const Deadlines = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="font-display text-base text-foreground leading-tight">
-                            {d.title}
+                            {glossify(d.title, `dt-${d.id}`)}
                           </h3>
                           <span
                             className={cn(
@@ -180,7 +181,7 @@ const Deadlines = () => {
                           </span>
                         </div>
                         <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                          {d.description}
+                          {glossify(d.description, `dd-${d.id}`)}
                         </p>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {d.askPrompt && (
@@ -213,9 +214,10 @@ const Deadlines = () => {
       })}
 
       <p className="mt-10 text-[11px] text-muted-foreground leading-relaxed">
-        Rules for EYSS, Chafee ETV, and the tuition waiver change. Nothing on
-        this page replaces your caseworker or a Georgia DFCS benefits
-        specialist. If anything looks off, ask Navigator or call 211.
+        {glossify(
+          "Rules for EYSS, Chafee ETV, and the tuition waiver change. Nothing on this page replaces your caseworker or a Georgia DFCS benefits specialist. If anything looks off, ask Navigator or call 211.",
+          "d-footer",
+        )}
       </p>
     </div>
   );
