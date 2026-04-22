@@ -182,4 +182,32 @@ describe("migrateProfile", () => {
     });
     expect(result.completedTaskIds).toEqual(["a", "b"]);
   });
+
+  it("caps oversized name at 80 chars", () => {
+    const huge = "a".repeat(10_000);
+    expect(migrateProfile({ name: huge }).name).toBe("a".repeat(80));
+  });
+
+  it("caps oversized county at 40 chars", () => {
+    const huge = "b".repeat(500);
+    expect(migrateProfile({ county: huge }).county).toBe("b".repeat(40));
+  });
+
+  it("coerces non-string name/county to empty string", () => {
+    expect(migrateProfile({ name: { foo: "bar" } }).name).toBe("");
+    expect(migrateProfile({ county: [1, 2, 3] }).county).toBe("");
+  });
+
+  it("caps trustedAdult name at 80 chars and phone at 40", () => {
+    const result = migrateProfile({
+      trustedAdult: {
+        name: "c".repeat(500),
+        phone: "d".repeat(500),
+      },
+    });
+    expect(result.trustedAdult).toEqual({
+      name: "c".repeat(80),
+      phone: "d".repeat(40),
+    });
+  });
 });

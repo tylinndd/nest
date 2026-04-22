@@ -102,11 +102,14 @@ const sanitizeHousing = (value: unknown): HousingOption | "" =>
 const sanitizeStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
 
+const clampString = (value: unknown, max: number): string =>
+  typeof value === "string" ? value.slice(0, max) : "";
+
 const sanitizeTrustedAdult = (value: unknown): TrustedAdult | null => {
   if (!value || typeof value !== "object") return null;
   const raw = value as Record<string, unknown>;
-  const name = typeof raw.name === "string" ? raw.name.trim() : "";
-  const phone = typeof raw.phone === "string" ? raw.phone.trim() : "";
+  const name = typeof raw.name === "string" ? raw.name.trim().slice(0, 80) : "";
+  const phone = typeof raw.phone === "string" ? raw.phone.trim().slice(0, 40) : "";
   if (!name || !phone) return null;
   return { name, phone };
 };
@@ -115,9 +118,9 @@ export const migrateProfile = (persisted: unknown): Profile => {
   const base = (persisted ?? {}) as Record<string, unknown>;
   return {
     ...emptyProfile,
-    name: typeof base.name === "string" ? base.name : "",
+    name: clampString(base.name, 80),
     age: typeof base.age === "number" ? base.age : null,
-    county: typeof base.county === "string" ? base.county : "",
+    county: clampString(base.county, 40),
     documentsHave: sanitizeDocs(base.documentsHave),
     uploadedDocs: sanitizeDocs(base.uploadedDocs),
     education:
