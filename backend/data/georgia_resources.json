@@ -460,6 +460,72 @@
     "last_verified": "2026-04-22"
   },
   {
+    "id": "ga-tuition-waiver-foster-001",
+    "name": "Georgia Tuition and Fee Waiver for Foster Youth",
+    "category": "education",
+    "county": "statewide",
+    "audience": ["former foster youth", "youth in foster care", "students"],
+    "summary": "Georgia state law authorizes a Tuition and Fee Waiver program that waives tuition and mandatory fees at any University System of Georgia (USG) institution — including Kennesaw State, Georgia State, UGA, Georgia Tech, and every other USG college or university — and at any Technical College System of Georgia (TCSG) institution for eligible current and former foster youth. Typical eligibility: you were in Georgia foster care at age 14 or older, you were adopted from Georgia foster care at age 14 or older, or you left foster care through a permanency outcome after age 14. You generally must enroll by age 26, meet the school's regular admission requirements, and maintain Satisfactory Academic Progress. The waiver covers tuition and mandatory fees only — books, housing, food, and transportation are not covered, and most students stack Chafee ETV, Pell Grant, HOPE, Zell Miller, and other aid on top. Coverage typically runs up to a first bachelor's degree or five academic years, whichever comes first. To apply: (1) apply and get admitted to a Georgia public college or university, (2) complete the FAFSA, (3) contact that school's financial aid office to request the tuition waiver, and (4) provide documentation of your foster-care history — a verification letter from a DFCS case manager is the standard document. Embark Georgia campus coordinators at many Georgia public institutions help youth navigate the waiver and stack the rest of the aid package. Exact eligibility rules and documentation can shift year to year — confirm current rules with the Georgia Student Finance Commission (GSFC) and the financial aid office at your school.",
+    "eligibility": "Current or former Georgia foster youth, typically with foster-care involvement at age 14 or older. Must enroll by age 26 at a public Georgia college or university. Must meet admission requirements and maintain Satisfactory Academic Progress. Confirm current rules with GSFC and your school's financial aid office.",
+    "services": [
+      "tuition waiver at public Georgia colleges and universities",
+      "mandatory fee waiver",
+      "financial aid office application support",
+      "DFCS verification letter assistance",
+      "coordination with FAFSA, Pell Grant, and Chafee ETV"
+    ],
+    "contact_phone": "",
+    "contact_url": "https://gsfc.georgia.gov/",
+    "address": "Georgia",
+    "source_name": "Georgia Student Finance Commission",
+    "last_verified": "2026-04-22"
+  },
+  {
+    "id": "fafsa-foster-youth-001",
+    "name": "FAFSA for Foster Youth in Georgia",
+    "category": "education",
+    "county": "statewide",
+    "audience": ["former foster youth", "youth in foster care", "students"],
+    "summary": "The FAFSA (Free Application for Federal Student Aid) at studentaid.gov is the single form that unlocks federal Pell Grants, subsidized and unsubsidized student loans, work-study, and most Georgia state aid — including the HOPE Scholarship, Zell Miller, and the Georgia Tuition and Fee Waiver for foster youth. Foster youth get a major advantage: you file as an INDEPENDENT STUDENT, which means you do not list any parent information on the form — not your biological parents, not your foster parents, not an adoptive parent, not a guardian. When the FAFSA asks whether at any time since you turned 13 you were in foster care, a dependent or ward of the court, or both your parents were deceased, answer YES. That single answer makes you independent for federal aid purposes, and only your own income (typically low or zero for a transition-age youth) counts in the aid formula — which usually produces a full or near-full Pell Grant. The FAFSA opens each year for the following academic year — in recent years the form has opened in October or December, so check studentaid.gov for the current year's open date. Georgia priority deadlines are school-specific but often fall in winter or early spring, so file as soon as the form opens. To complete the FAFSA you need your Social Security number, a Federal Student Aid ID (FSA ID, created at studentaid.gov), and any tax or income records you have; most foster youth have little or no income to report. If you do not have all your documents yet, your DFCS case manager, an Embark Georgia campus coordinator, KSU ASCEND staff, or the financial aid office at your school can walk you through the form — do not try to do it alone if you hit a question you are unsure about.",
+    "eligibility": "Anyone applying for federal or Georgia student aid. Foster youth qualify as independent students and do not list parent information.",
+    "services": [
+      "federal Pell Grant application",
+      "federal student loan eligibility",
+      "work-study eligibility",
+      "Georgia HOPE and Zell Miller qualification",
+      "gateway to Georgia Tuition and Fee Waiver",
+      "independent student filing guidance",
+      "FSA ID creation"
+    ],
+    "contact_phone": "1-800-433-3243",
+    "contact_url": "https://studentaid.gov/h/apply-for-aid/fafsa",
+    "address": "United States",
+    "source_name": "U.S. Department of Education Federal Student Aid",
+    "last_verified": "2026-04-22"
+  },
+  {
+    "id": "hud-fyi-voucher-001",
+    "name": "HUD Foster Youth to Independence (FYI) Voucher",
+    "category": "housing",
+    "county": "statewide",
+    "audience": ["former foster youth", "youth in foster care", "transition-age youth"],
+    "summary": "The Foster Youth to Independence (FYI) voucher is a federal HUD program that provides rental assistance for youth leaving or aging out of foster care. FYI uses the Housing Choice Voucher framework — the federal government pays a portion of your rent in the private market while you work toward stable income. Eligibility: you must be at least 18 and under 25, you must have left foster care at age 16 or older (or be about to leave at 16+), and you must be homeless or at risk of homelessness. You cannot apply directly to HUD — FYI vouchers are referred to local Public Housing Authorities (PHAs) by the Public Child Welfare Agency, which in Georgia is DFCS. Start the process by telling your DFCS case manager or Independent Living Program specialist that you want an FYI referral; they will contact a participating Georgia PHA on your behalf. Vouchers typically last up to 36 months under current HUD rules and can be paired with self-sufficiency services like employment coaching. Not every Georgia PHA has an active FYI partnership at any given time — availability depends on local HUD, PHA, and DFCS agreements. Georgia PHAs that have historically participated include Atlanta Housing Authority, Marietta Housing Authority (Cobb), DeKalb Housing Authority, and several metro and mid-sized county PHAs. If the PHA in your county is not currently accepting FYI referrals, Connected By 21, Wellroot, and other DFCS-partnered transitional living programs can bridge you to stable housing while you wait.",
+    "eligibility": "Age 18 to under 25. Left foster care at age 16 or older (or leaving at 16+). Homeless or at risk of homelessness. Must be referred by DFCS — youth cannot self-apply to HUD.",
+    "services": [
+      "time-limited rental assistance voucher",
+      "referral through DFCS case manager",
+      "housing support up to 36 months",
+      "fair market rent coverage",
+      "self-sufficiency services pairing",
+      "PHA coordination"
+    ],
+    "contact_phone": "",
+    "contact_url": "https://www.hud.gov/program_offices/public_indian_housing/programs/hcv/fyi",
+    "address": "United States",
+    "source_name": "U.S. Department of Housing and Urban Development",
+    "last_verified": "2026-04-22"
+  },
+  {
     "id": "fdic-money-smart-001",
     "name": "FDIC Money Smart for Young People",
     "category": "financial",
