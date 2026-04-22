@@ -20,12 +20,6 @@ type Props = {
   passages?: Passage[];
 };
 
-const countSources = (source: string) =>
-  source
-    .split(" · ")
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0).length;
-
 /**
  * Backend-supplied URLs flow from the RAG corpus into an <a href>. Block any
  * scheme except http(s) so a poisoned corpus or compromised backend can't
@@ -68,13 +62,12 @@ export function SourceReveal({
   if (housing) facts.push({ label: "Living now", value: housing });
 
   const renderProfileCard = showProfile && facts.length > 0;
-  const sourceCount = countSources(source);
   const confidence =
-    !showProfile || sourceCount === 0
+    passages.length === 0
       ? null
-      : sourceCount >= 3
+      : passages.length >= 3
         ? {
-            label: `Strong · ${sourceCount} sources`,
+            label: `Strong · ${passages.length} sources`,
             tone: "bg-nest-sage/15 text-[#2E7D5B]",
             Icon: BadgeCheck,
           }

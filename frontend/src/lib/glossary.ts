@@ -108,6 +108,55 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
       "KSU's support program for students with foster-care backgrounds — mentoring, housing guidance, and financial aid navigation.",
     source: "Kennesaw State University",
   },
+  DPH: {
+    term: "DPH",
+    expansion: "Georgia Department of Public Health",
+    definition:
+      "Georgia's public health agency. Their Vital Records office issues birth certificates, death certificates, and other state records — this is where you replace a lost birth certificate.",
+    source: "Georgia DPH · Vital Records",
+  },
+  DHS: {
+    term: "DHS",
+    expansion: "Georgia Department of Human Services",
+    definition:
+      "The state agency that houses DFCS (foster care), DFCS is one of its divisions. DHS also runs aging services and child support enforcement.",
+    source: "Georgia DHS",
+  },
+  Medicaid: {
+    term: "Medicaid",
+    expansion: "Medicaid",
+    definition:
+      "Government health coverage for low-income people. Foster youth keep Medicaid until age 26 under the 'Former Foster Care' category — no income cap, no re-application.",
+    source: "Georgia Medicaid · ACA §2004",
+  },
+  "Pell Grant": {
+    term: "Pell Grant",
+    expansion: "Federal Pell Grant",
+    definition:
+      "Federal need-based college grant you don't pay back. Max award is set yearly (check studentaid.gov). Foster youth are independent for FAFSA, which usually maxes Pell eligibility.",
+    source: "U.S. Department of Education",
+  },
+  "HOPE Scholarship": {
+    term: "HOPE Scholarship",
+    expansion: "Georgia HOPE Scholarship",
+    definition:
+      "Georgia's merit-based scholarship for in-state public/private college. Requires a 3.0 GPA and Georgia residency for 24 months before high school graduation.",
+    source: "Georgia Student Finance Commission",
+  },
+  WIC: {
+    term: "WIC",
+    expansion: "Women, Infants, and Children",
+    definition:
+      "USDA nutrition program for pregnant/postpartum people, infants, and kids under 5. Provides food, formula, and breastfeeding support.",
+    source: "Georgia DPH · USDA",
+  },
+  SSI: {
+    term: "SSI",
+    expansion: "Supplemental Security Income",
+    definition:
+      "Federal monthly cash benefit for people with disabilities or who are 65+ with limited income. Different from SSDI — SSI is needs-based, SSDI is work-history-based.",
+    source: "Social Security Administration",
+  },
 };
 
 const ESCAPED_KEYS = Object.keys(GLOSSARY)
