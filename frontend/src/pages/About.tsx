@@ -37,6 +37,40 @@ const SOURCES = [
   "Embark Georgia statewide foster-youth network (Chafee ETV coordinator)",
 ];
 
+type Stat = {
+  value: string;
+  label: string;
+  source: string;
+  href: string;
+};
+
+const IMPACT: Stat[] = [
+  {
+    value: "~12,000",
+    label: "Georgia children in foster care",
+    source: "AFCARS · FY2022",
+    href: "https://www.acf.hhs.gov/cb/data-research/foster-care",
+  },
+  {
+    value: "~23,000",
+    label: "Youth age out of U.S. foster care each year",
+    source: "AFCARS",
+    href: "https://www.acf.hhs.gov/cb/data-research/foster-care",
+  },
+  {
+    value: "1 in 4",
+    label: "Experience homelessness within 18 months",
+    source: "Casey Family Programs",
+    href: "https://www.casey.org/",
+  },
+  {
+    value: "<3%",
+    label: "Earn a 4-year degree by age 26",
+    source: "NWG on Foster Care & Education",
+    href: "https://www.fostercareandeducation.org/",
+  },
+];
+
 const TECH = [
   { label: "React 19 · Vite · TypeScript", icon: Code2 },
   { label: "FastAPI · LangChain · ChromaDB", icon: Database },
@@ -79,6 +113,38 @@ const About = () => (
           answers questions with the actual Georgia rules behind the answer.
         </p>
       </motion.div>
+
+      <section className="space-y-3">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          Why this exists
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {IMPACT.map((s) => (
+            <a
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noreferrer"
+              className="nest-card p-4 transition hover:border-primary/40"
+            >
+              <p className="font-display text-2xl leading-none text-primary">
+                {s.value}
+              </p>
+              <p className="mt-2 text-xs text-foreground leading-snug">
+                {s.label}
+              </p>
+              <p className="mt-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                {s.source}
+              </p>
+            </a>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Each number links to its primary source. Tap any card to verify —
+          Nest won't make the case for itself without telling you where the
+          case comes from.
+        </p>
+      </section>
 
       <section className="space-y-3">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
