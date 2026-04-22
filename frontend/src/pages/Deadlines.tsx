@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   BookOpen,
   CalendarClock,
+  CalendarPlus,
   ChevronRight,
   FileHeart,
   HeartPulse,
@@ -19,6 +20,7 @@ import {
   type DeadlineCategory,
   type DeadlineUrgency,
 } from "@/lib/deadlines";
+import { deadlineToIcs, downloadIcs } from "@/lib/ics";
 import { cn } from "@/lib/utils";
 
 const CATEGORY_ICON: Record<DeadlineCategory, typeof CalendarClock> = {
@@ -83,6 +85,11 @@ const Deadlines = () => {
 
   const ask = (prompt: string) => {
     navigate("/navigator", { state: { askPrompt: prompt } });
+  };
+
+  const handleAddToCalendar = (d: Deadline) => {
+    const ics = deadlineToIcs(d, profile);
+    downloadIcs(ics, `nest-${d.id}`);
   };
 
   return (
@@ -175,16 +182,26 @@ const Deadlines = () => {
                         <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                           {d.description}
                         </p>
-                        {d.askPrompt && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {d.askPrompt && (
+                            <button
+                              type="button"
+                              onClick={() => ask(d.askPrompt!)}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            >
+                              <MessageSquare className="h-3.5 w-3.5" />
+                              Ask Navigator
+                            </button>
+                          )}
                           <button
                             type="button"
-                            onClick={() => ask(d.askPrompt!)}
-                            className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            onClick={() => handleAddToCalendar(d)}
+                            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                           >
-                            <MessageSquare className="h-3.5 w-3.5" />
-                            Ask Navigator
+                            <CalendarPlus className="h-3.5 w-3.5" />
+                            Add to calendar
                           </button>
-                        )}
+                        </div>
                       </div>
                     </div>
                   </motion.li>

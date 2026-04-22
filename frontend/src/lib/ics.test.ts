@@ -1,8 +1,13 @@
 import { describe, it, expect } from "vitest";
 import type { Task } from "@/data/placeholder";
+import type { Profile } from "@/store/profile";
+import type { Deadline } from "./deadlines";
 import {
   computeTaskDate,
+  deadlineToIcs,
+  deadlineToIcsEvent,
   escapeIcsText,
+  resolveDeadlineDate,
   taskToIcsEvent,
   tasksToIcs,
 } from "./ics";
@@ -114,5 +119,127 @@ describe("tasksToIcs", () => {
     const ics = tasksToIcs([doneTask], { now: FIXED_NOW });
     expect(ics.includes("BEGIN:VEVENT")).toBe(false);
     expect(ics.includes("BEGIN:VCALENDAR")).toBe(true);
+  });
+});
+
+const makeProfile = (partial: Partial<Profile> = {}): Profile => ({
+  name: "Maria",
+  age: 17,
+  county: "Cobb",
+  documentsHave: [],
+  uploadedDocs: [],
+  education: null,
+  housing: "",
+  health: [],
+  completedTaskIds: [],
+  trustedAdult: null,
+  ...partial,
+});
+
+const fafsaDeadline: Deadline = {
+  id: "fafsa",
+  title: "FAFSA",
+  when: "Opens October 1 · Georgia priority March 1",
+  urgency: "soon",
+  category: "education",
+  description: "Federal aid application.",
+};
+
+const turning18Deadline: Deadline = {
+  id: "turning-18",
+  title: "Your 18th birthday",
+  when: "Within a year",
+  urgency: "now",
+  category: "planning",
+  description: "The hardest day to be unprepared.",
+};
+
+const ffcmDeadline: Deadline = {
+  id: "ffcm",
+  title: "Former Foster Care Medicaid (FFCM)",
+  when: "Coverage until age 26",
+  urgency: "later",
+  category: "health",
+  description: "Coverage until 26.",
+};
+
+const eyssDeadline: Deadline = {
+  id: "eyss",
+  title: "EYSS",
+  when: "Sign up before 18",
+  urgency: "now",
+  category: "benefits",
+  description: "Georgia's extended foster-care program.",
+};
+
+describe("resolveDeadlineDate", () => {
+  it("picks the next Oct 1 for FAFSA when today is before Oct 1", () => {
+    const now = new Date("2026-04-21T12:00:00Z");
+    const d = resolveDeadlineDate(fafsaDeadline, makeProfile(), now);
+    expect(d.getFullYear()).toBe(2026);
+    expect(d.getMonth()).toBe(9);
+    expect(d.getDate()).toBe(1);
+  });
+
+  it("picks the next Mar 1 for FAFSA when today is after Oct 1", () => {
+    const now = new Date("2026-11-15T12:00:00Z");
+    const d = resolveDeadlineDate(fafsaDeadline, makeProfile(), now);
+    expect(d.getFullYear()).toBe(2027);
+    expect(d.getMonth()).toBe(2);
+    expect(d.getDate()).toBe(1);
+  });
+
+  it("schedules turning-18 at today + (18 - age) years", () => {
+    const now = new Date("2026-04-21T12:00:00Z");
+    const d = resolveDeadlineDate(turning18Deadline, makeProfile({ age: 16 }), now);
+    expect(d.getFullYear()).toBe(2028);
+  });
+
+  it("schedules ffcm at today + (26 - age) years", () => {
+    const now = new Date("2026-04-21T12:00:00Z");
+    const d = resolveDeadlineDate(ffcmDeadline, makeProfile({ age: 20 }), now);
+    expect(d.getFullYear()).toBe(2032);
+  });
+
+  it("uses urgency-based offsets as a fallback", () => {
+    const now = new Date("2026-04-21T12:00:00Z");
+    const d = resolveDeadlineDate(eyssDeadline, makeProfile(), now);
+    const expected = new Date(now);
+    expected.setHours(0, 0, 0, 0);
+    expected.setDate(expected.getDate() + 30);
+    expect(d.getTime()).toBe(expected.getTime());
+  });
+});
+
+describe("deadlineToIcsEvent / deadlineToIcs", () => {
+  const now = new Date("2026-04-21T12:00:00Z");
+
+  it("produces a VEVENT with the deadline title + (Nest) suffix", () => {
+    const out = deadlineToIcsEvent(eyssDeadline, makeProfile(), now);
+    const lines = out.split("\r\n");
+    expect(lines[0]).toBe("BEGIN:VEVENT");
+    expect(lines[lines.length - 1]).toBe("END:VEVENT");
+    expect(lines.some((l) => l.includes("SUMMARY:EYSS (Nest)"))).toBe(true);
+  });
+
+  it("includes the when-text in the DESCRIPTION for timeline context", () => {
+    const out = deadlineToIcsEvent(eyssDeadline, makeProfile(), now);
+    expect(out).toContain("When: Sign up before 18");
+  });
+
+  it("wraps the event in a VCALENDAR envelope", () => {
+    const ics = deadlineToIcs(eyssDeadline, makeProfile(), now);
+    expect(ics.startsWith("BEGIN:VCALENDAR\r\n")).toBe(true);
+    expect(ics.trimEnd().endsWith("END:VCALENDAR")).toBe(true);
+    expect((ics.match(/BEGIN:VEVENT/g) ?? []).length).toBe(1);
+  });
+
+  it("uses the profile name (slugified) in the UID", () => {
+    const ics = deadlineToIcs(
+      eyssDeadline,
+      makeProfile({ name: "Ana Luiza" }),
+      now,
+    );
+    expect(ics).toContain("UID:nest-deadline-eyss-ana-luiza@");
   });
 });
