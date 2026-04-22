@@ -6,7 +6,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import ConfigError, get_settings
-from app.schemas import ChatRequest, ChatResponse, IntakeRequest, IntakeResponse
+from app.schemas import Benefit, ChatRequest, ChatResponse, IntakeRequest, IntakeResponse
+from app.services.benefits import get_benefits_catalog
 from app.services.intake import build_intake_response
 from rag.chain import answer_question
 from rag.retreiver import retrieve_documents
@@ -59,3 +60,8 @@ async def chat(request: ChatRequest):
 @app.post("/intake", response_model=IntakeResponse)
 async def intake(request: IntakeRequest):
     return build_intake_response(request.user_profile)
+
+
+@app.get("/benefits", response_model=list[Benefit])
+async def benefits():
+    return get_benefits_catalog()

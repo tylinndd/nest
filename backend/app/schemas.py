@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 from pydantic import BaseModel, Field
 
 
@@ -66,3 +66,18 @@ class IntakeResponse(BaseModel):
     tasks: List[TaskItem] = Field(default_factory=list)
     bestfit_url: Optional[str] = None
     days_remaining: Optional[int] = None
+
+
+BenefitStatus = Literal["qualify", "action", "auto"]
+
+
+class Benefit(BaseModel):
+    id: str
+    title: str
+    eligibility: str
+    summary: str
+    source: str
+    status: BenefitStatus
+    cta: Optional[str] = None
+    href: Optional[str] = None
+    verified_on: Optional[str] = None
