@@ -7,6 +7,7 @@ import {
   Search,
   ShieldCheck,
 } from "lucide-react";
+import { CORPUS_SIZE, formatVerifiedDate } from "@/lib/corpus";
 
 const STEPS = [
   {
@@ -97,6 +98,32 @@ const HowItWorks = () => (
           </motion.li>
         ))}
       </ol>
+
+      <section className="space-y-3">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          The numbers
+        </p>
+        <div className="nest-card p-4 space-y-2 text-sm text-foreground leading-relaxed">
+          <p>
+            <span className="font-semibold">· {CORPUS_SIZE} verified Georgia
+            resources</span>{" "}
+            in Navigator's retrieval corpus — vetted entries from DFCS, Georgia
+            Medicaid, Chafee ETV, KSU ASCEND, HopeMap GA, Embark GA, GA Vital
+            Records, and federal programs (FAFSA, HUD, FDIC).
+          </p>
+          <p>
+            <span className="font-semibold">· Last verified{" "}
+            {formatVerifiedDate()}.</span>{" "}
+            Entries are re-checked before every public milestone and on a
+            rolling cadence after.
+          </p>
+          <p>
+            <span className="font-semibold">· When Navigator isn't sure,</span>{" "}
+            it refuses rather than guesses — and points you to 211 Georgia, a
+            human-staffed 24/7 help line.
+          </p>
+        </div>
+      </section>
 
       <section className="space-y-3">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">

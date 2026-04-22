@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useProfile, type EducationPlan } from "@/store/profile";
 import type { Passage } from "@/lib/api";
+import { formatVerifiedDate } from "@/lib/corpus";
 
 type Props = {
   source: string;
@@ -193,6 +194,9 @@ export function SourceReveal({
                 </dl>
               </div>
             )}
+            <p className="pt-1 text-[10px] text-muted-foreground">
+              Corpus last verified {formatVerifiedDate()}.
+            </p>
           </div>
           <DrawerFooter>
             <DrawerClose asChild>
