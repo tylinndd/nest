@@ -2,9 +2,11 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import {
   ArrowUpRight,
   CalendarClock,
+  Check,
   CheckCircle2,
   Circle,
   ClipboardCheck,
@@ -22,6 +24,7 @@ import {
   type HousingOption,
   type Profile,
 } from "@/store/profile";
+import { usePathProgress } from "@/store/pathProgress";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { glossify } from "@/lib/linkify";
 import { printPath, profileToPathData } from "@/lib/pathExport";
@@ -229,8 +232,32 @@ const Path = () => {
   const prefersReducedMotion = useReducedMotion();
   const navigate = useNavigate();
   const profile = useProfile();
-  const zones = useMemo(() => buildZones(profile), [profile]);
+  const completed = usePathProgress((s) => s.completed);
+  const toggleStep = usePathProgress((s) => s.toggle);
+  const baseZones = useMemo(() => buildZones(profile), [profile]);
+
+  const zones = useMemo(() => {
+    return baseZones.map((z) => {
+      const doneItems = z.items.filter((it) =>
+        completed.includes(`${z.id}:${it.label}`),
+      ).length;
+      const allStepsDone = doneItems === z.items.length;
+      return {
+        ...z,
+        state: (z.state === "done" || allStepsDone ? "done" : "active") as ZoneState,
+      };
+    });
+  }, [baseZones, completed]);
+
   const doneCount = zones.filter((z) => z.state === "done").length;
+  const totalItems = zones.reduce((n, z) => n + z.items.length, 0);
+  const doneItemsTotal = zones.reduce(
+    (n, z) =>
+      n + z.items.filter((it) => completed.includes(`${z.id}:${it.label}`)).length,
+    0,
+  );
+  const progressPct =
+    totalItems === 0 ? 0 : Math.round((doneItemsTotal / totalItems) * 100);
 
   const handleItem = (item: ZoneItem) => {
     if (item.action.kind === "ask") {
@@ -238,6 +265,15 @@ const Path = () => {
     } else {
       navigate(item.action.to);
     }
+  };
+
+  const handleToggle = (zoneId: string, itemLabel: string) => {
+    const wasDone = completed.includes(`${zoneId}:${itemLabel}`);
+    toggleStep(zoneId, itemLabel);
+    toast(wasDone ? "Reopened" : "Marked done", {
+      id: "path-toggle",
+      duration: 1200,
+    });
   };
 
   const handlePrint = () => {
@@ -259,6 +295,40 @@ const Path = () => {
             ? "All five zones are in a good place — keep it that way."
             : `${doneCount} of ${zones.length} zones in a good place.`}
       </p>
+
+      <div
+        className="mt-5 rounded-2xl border-2 border-border bg-card px-4 py-3"
+        role="group"
+        aria-label="Overall progress"
+      >
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+            Your progress
+          </p>
+          <p className="text-sm font-semibold text-foreground">
+            {doneItemsTotal}
+            <span className="text-muted-foreground"> / {totalItems}</span>
+            <span className="ml-2 text-xs font-semibold text-muted-foreground">
+              {progressPct}%
+            </span>
+          </p>
+        </div>
+        <div
+          className="mt-2 h-2 overflow-hidden rounded-full bg-muted"
+          role="progressbar"
+          aria-valuenow={progressPct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`${doneItemsTotal} of ${totalItems} steps complete`}
+        >
+          <motion.div
+            initial={false}
+            animate={{ width: `${progressPct}%` }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.45, ease: "easeOut" }}
+            className="h-full rounded-full bg-nest-sage"
+          />
+        </div>
+      </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
         <Link
@@ -373,21 +443,42 @@ const Path = () => {
                           ? `Go to ${item.action.to.replace("/", "")}`
                           : "Open"
                         : "Open";
+                    const stepDone = completed.includes(`${z.id}:${item.label}`);
                     return (
-                      <li key={item.label}>
+                      <li key={item.label} className="flex items-start gap-1">
+                        <button
+                          type="button"
+                          role="checkbox"
+                          aria-checked={stepDone}
+                          aria-label={
+                            stepDone
+                              ? `Mark "${item.label}" not done`
+                              : `Mark "${item.label}" done`
+                          }
+                          onClick={() => handleToggle(z.id, item.label)}
+                          className={cn(
+                            "mt-1.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                            stepDone
+                              ? "border-nest-sage bg-nest-sage text-white"
+                              : "border-border bg-card text-transparent hover:border-primary/50",
+                          )}
+                        >
+                          <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                        </button>
                         <button
                           type="button"
                           onClick={() => handleItem(item)}
-                          className="group flex w-full items-start gap-2 rounded-xl px-2 py-2 text-left text-sm text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          className="group flex flex-1 items-start gap-2 rounded-xl px-2 py-2 text-left text-sm text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
-                          <span
-                            className={cn(
-                              "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full",
-                              z.state === "done" ? "bg-nest-sage" : "bg-nest-amber",
-                            )}
-                          />
                           <span className="flex-1">
-                            {glossify(item.label, `zi-${z.id}-${item.label.slice(0, 12)}`)}
+                            <span
+                              className={cn(
+                                stepDone &&
+                                  "text-muted-foreground line-through decoration-nest-sage/60",
+                              )}
+                            >
+                              {glossify(item.label, `zi-${z.id}-${item.label.slice(0, 12)}`)}
+                            </span>
                             <span className="block text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 group-hover:text-muted-foreground">
                               {hint}
                             </span>
