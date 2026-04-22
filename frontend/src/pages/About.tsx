@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
+  ArrowRight,
   BookOpen,
   Code2,
   Database,
@@ -9,24 +10,7 @@ import {
   Lock,
   Sparkles,
 } from "lucide-react";
-
-const TEAM = [
-  {
-    name: "Stephen Sookra",
-    role: "Frontend & Pitch",
-    detail: "KSU CS · builds the user-facing Nest you see here.",
-  },
-  {
-    name: "Tylin Simon",
-    role: "Backend & AI",
-    detail: "Runs the FastAPI + LangChain retrieval that grounds every answer.",
-  },
-  {
-    name: "Brenden Harris",
-    role: "Engineering",
-    detail: "Pipelines the Georgia docs Nest draws its citations from.",
-  },
-];
+import { TEAM } from "@/data/team";
 
 const SOURCES = [
   "Georgia DFCS Division 5 policy manual",
@@ -163,6 +147,13 @@ const About = () => (
             </div>
           ))}
         </div>
+        <Link
+          to="/team"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+        >
+          Read the contribution breakdown
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
       </section>
 
       <section className="space-y-3">
