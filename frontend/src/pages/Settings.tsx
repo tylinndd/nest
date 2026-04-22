@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
+  Download,
   FileText,
   GraduationCap,
   Heart,
@@ -21,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { useProfile, type EducationPlan } from "@/store/profile";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { printNestCard, profileToCardData } from "@/lib/nestCard";
+import { exportUserData } from "@/lib/dataExport";
 import { cn } from "@/lib/utils";
 
 const EDUCATION_LABEL: Record<EducationPlan, string> = {
@@ -95,6 +97,10 @@ const Settings = () => {
 
   const handlePrintCard = () => {
     printNestCard(profileToCardData(profile));
+  };
+
+  const handleExportJson = () => {
+    exportUserData();
   };
 
   return (
@@ -389,6 +395,33 @@ const Settings = () => {
           >
             <Printer className="mr-2 h-4 w-4" />
             Print my Nest Card
+          </Button>
+        </div>
+
+        <div className="nest-card p-4 space-y-3">
+          <div className="flex items-start gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Download className="h-4 w-4" />
+            </span>
+            <div>
+              <p className="font-semibold text-foreground">
+                Download a JSON copy
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Everything this browser stores about you — profile, documents
+                checklist, chat history, theme — in one file you can save or
+                move to another device.
+              </p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            onClick={handleExportJson}
+            variant="outline"
+            className="w-full justify-center rounded-full min-h-[2.75rem]"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Download my data
           </Button>
         </div>
       </section>
