@@ -222,6 +222,28 @@ const About = () => (
 
       <section className="space-y-3">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          Privacy
+        </p>
+        <Link
+          to="/privacy"
+          className="nest-card flex items-center gap-3 p-4 transition hover:border-primary/40"
+        >
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Lock className="h-4 w-4" />
+          </span>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-foreground">
+              See the privacy label
+            </p>
+            <p className="text-xs text-muted-foreground">
+              What stays on your device, what's sent, what third parties see.
+            </p>
+          </div>
+        </Link>
+      </section>
+
+      <section className="space-y-3">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
           Project
         </p>
         <a

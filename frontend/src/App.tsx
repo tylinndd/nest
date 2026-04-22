@@ -29,6 +29,7 @@ const About = lazy(() => import("./pages/About"));
 const HowItWorks = lazy(() => import("./pages/HowItWorks"));
 const Glossary = lazy(() => import("./pages/Glossary"));
 const Demo = lazy(() => import("./pages/Demo"));
+const Privacy = lazy(() => import("./pages/Privacy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const OnboardingLayout = lazy(() =>
   import("./pages/Onboarding/OnboardingLayout").then((m) => ({
@@ -78,6 +79,7 @@ const ROUTE_TITLES: Array<[string, string]> = [
   ["/how-it-works", "How Nest answers · Nest"],
   ["/glossary", "Glossary · Nest"],
   ["/demo", "Demo · Nest"],
+  ["/privacy", "Privacy label · Nest"],
 ];
 
 const RouteTitle = () => {
@@ -172,6 +174,7 @@ const App = () => {
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/glossary" element={<Glossary />} />
             <Route path="/demo" element={<Demo />} />
+            <Route path="/privacy" element={<Privacy />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
