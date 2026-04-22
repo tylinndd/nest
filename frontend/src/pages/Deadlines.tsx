@@ -99,13 +99,17 @@ const Deadlines = () => {
     const el = cardRefs.current[d.id];
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "center" });
-    el.animate(
-      [
-        { boxShadow: "0 0 0 0 rgba(201, 138, 40, 0.5)" },
-        { boxShadow: "0 0 0 6px rgba(201, 138, 40, 0)" },
-      ],
-      { duration: 900, easing: "ease-out" },
-    );
+    try {
+      el.animate(
+        [
+          { boxShadow: "0 0 0 0 rgba(201, 138, 40, 0.5)" },
+          { boxShadow: "0 0 0 6px rgba(201, 138, 40, 0)" },
+        ],
+        { duration: 900, easing: "ease-out" },
+      );
+    } catch {
+      // Web Animations API isn't universal; the glow is cosmetic.
+    }
   };
 
   return (
