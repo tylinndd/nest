@@ -20,6 +20,7 @@ const Path = lazy(() => import("./pages/Path"));
 const Benefits = lazy(() => import("./pages/Benefits"));
 const Navigator = lazy(() => import("./pages/Navigator"));
 const Emergency = lazy(() => import("./pages/Emergency"));
+const Money = lazy(() => import("./pages/Money"));
 const Vault = lazy(() => import("./pages/Vault"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Reset = lazy(() => import("./pages/Reset"));
@@ -68,6 +69,7 @@ const ROUTE_TITLES: Array<[string, string]> = [
   ["/vault", "Document Vault · Nest"],
   ["/settings", "Settings · Nest"],
   ["/emergency", "Emergency · Nest"],
+  ["/money", "Money · Nest"],
   ["/about", "About · Nest"],
   ["/how-it-works", "How Nest answers · Nest"],
 ];
@@ -155,6 +157,7 @@ const App = () => {
                 <Route path="/vault" element={<Vault />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/emergency" element={<Emergency />} />
+                <Route path="/money" element={<Money />} />
               </Route>
             </Route>
             <Route path="/reset" element={<Reset />} />
