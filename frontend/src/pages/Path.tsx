@@ -10,6 +10,7 @@ import {
   Home as HomeIcon,
   GraduationCap,
   MessageSquare,
+  Printer,
   Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -19,6 +20,7 @@ import {
   type Profile,
 } from "@/store/profile";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
+import { printPath, profileToPathData } from "@/lib/pathExport";
 
 type ZoneState = "active" | "done";
 
@@ -229,6 +231,10 @@ const Path = () => {
     }
   };
 
+  const handlePrint = () => {
+    printPath(profileToPathData(profile));
+  };
+
   return (
     <div className="px-5 pt-5 pb-4">
       <p className="text-sm text-muted-foreground">Overview</p>
@@ -240,6 +246,18 @@ const Path = () => {
             ? "All five zones are in a good place — keep it that way."
             : `${doneCount} of ${zones.length} zones in a good place.`}
       </p>
+
+      <button
+        type="button"
+        onClick={handlePrint}
+        className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <Printer className="h-3.5 w-3.5" />
+        Print your path
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          One page
+        </span>
+      </button>
 
       <ol className="relative mt-8 pl-4">
         <span
