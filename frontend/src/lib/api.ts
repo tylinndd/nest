@@ -72,6 +72,20 @@ export type HealthResponse = {
   groq_api_key_configured: boolean;
 };
 
+export type BenefitStatus = "qualify" | "action" | "auto";
+
+export type BackendBenefit = {
+  id: string;
+  title: string;
+  eligibility: string;
+  summary: string;
+  source: string;
+  status: BenefitStatus;
+  cta: string | null;
+  href: string | null;
+  verified_on: string | null;
+};
+
 export class ApiError extends Error {
   readonly status: number;
   readonly detail: unknown;
@@ -235,6 +249,58 @@ export const getHealth = async (signal?: AbortSignal): Promise<HealthResponse> =
     const parsed: unknown = await res.json();
     if (!isHealthResponse(parsed)) {
       throw new ApiError("GET /health returned unexpected shape", 502, parsed);
+    }
+    return parsed;
+  } catch (err) {
+    if (!(err instanceof ApiError)) {
+      useNetworkLog
+        .getState()
+        .finish(entryId, { status: "network-error", ok: false });
+    }
+    throw err;
+  }
+};
+
+const isBackendBenefit = (v: unknown): v is BackendBenefit => {
+  if (typeof v !== "object" || v === null) return false;
+  const r = v as Record<string, unknown>;
+  const nullableStr = (x: unknown) =>
+    x === null || x === undefined || typeof x === "string";
+  return (
+    typeof r.id === "string" &&
+    typeof r.title === "string" &&
+    typeof r.eligibility === "string" &&
+    typeof r.summary === "string" &&
+    typeof r.source === "string" &&
+    (r.status === "qualify" || r.status === "action" || r.status === "auto") &&
+    nullableStr(r.cta) &&
+    nullableStr(r.href) &&
+    nullableStr(r.verified_on)
+  );
+};
+
+export const getBenefits = async (
+  signal?: AbortSignal,
+): Promise<BackendBenefit[]> => {
+  const log = useNetworkLog.getState();
+  const entryId = log.start({
+    method: "GET",
+    path: "/benefits",
+    purpose: "Benefits catalog",
+  });
+  try {
+    const res = await fetch(`${API_BASE}/benefits`, { signal });
+    useNetworkLog.getState().finish(entryId, { status: res.status, ok: res.ok });
+    if (!res.ok) {
+      throw new ApiError(
+        `GET /benefits failed (${res.status})`,
+        res.status,
+        await readError(res),
+      );
+    }
+    const parsed: unknown = await res.json();
+    if (!Array.isArray(parsed) || !parsed.every(isBackendBenefit)) {
+      throw new ApiError("GET /benefits returned unexpected shape", 502, parsed);
     }
     return parsed;
   } catch (err) {
