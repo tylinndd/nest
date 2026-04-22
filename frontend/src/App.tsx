@@ -17,6 +17,7 @@ import { TourOverlay } from "@/components/TourOverlay";
 import { PresenterPill } from "@/components/PresenterPill";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { probeHealth } from "@/lib/health";
+import "@/store/preferences";
 
 const Home = lazy(() => import("./pages/Home"));
 const Path = lazy(() => import("./pages/Path"));

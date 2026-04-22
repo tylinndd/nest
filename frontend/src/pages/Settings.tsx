@@ -13,6 +13,7 @@ import {
   Phone,
   Printer,
   Trash2,
+  Type,
   User as UserIcon,
   UserPlus,
 } from "lucide-react";
@@ -20,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useProfile, type EducationPlan } from "@/store/profile";
+import { usePreferences, TEXT_SIZES } from "@/store/preferences";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { printNestCard, profileToCardData } from "@/lib/nestCard";
 import { exportUserData } from "@/lib/dataExport";
@@ -34,6 +36,8 @@ const EDUCATION_LABEL: Record<EducationPlan, string> = {
 const Settings = () => {
   const navigate = useNavigate();
   const profile = useProfile();
+  const textSize = usePreferences((s) => s.textSize);
+  const setTextSize = usePreferences((s) => s.setTextSize);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [ageDraft, setAgeDraft] = useState<string>(
     profile.age !== null ? String(profile.age) : "",
@@ -367,6 +371,48 @@ const Settings = () => {
           </Link>
           .
         </p>
+      </section>
+
+      <section className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Type className="h-4 w-4 text-primary" />
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+            Reading
+          </p>
+        </div>
+        <div className="nest-card p-4">
+          <p className="text-sm font-semibold text-foreground">Text size</p>
+          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+            Scales every word in Nest. Your choice is saved to this device.
+          </p>
+          <div
+            className="mt-3 grid grid-cols-3 gap-2"
+            role="radiogroup"
+            aria-label="Text size"
+          >
+            {TEXT_SIZES.map((size) => {
+              const label = size === "sm" ? "A-" : size === "md" ? "A" : "A+";
+              const selected = textSize === size;
+              return (
+                <button
+                  key={size}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  onClick={() => setTextSize(size)}
+                  className={cn(
+                    "nest-pill justify-center py-2 text-base font-semibold",
+                    selected
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-primary hover:bg-secondary/80",
+                  )}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </section>
 
       <section className="space-y-3">
