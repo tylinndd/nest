@@ -7,6 +7,7 @@ import {
   deadlineToIcs,
   deadlineToIcsEvent,
   escapeIcsText,
+  foldLine,
   resolveDeadlineDate,
   taskToIcsEvent,
   tasksToIcs,
@@ -37,6 +38,31 @@ const doneTask: Task = {
   status: "done",
   tone: "sage",
 };
+
+describe("foldLine", () => {
+  it("leaves short lines untouched", () => {
+    expect(foldLine("UID:nest-doc-birth-maria@nestapp.local")).toBe(
+      "UID:nest-doc-birth-maria@nestapp.local",
+    );
+  });
+
+  it("folds long lines at 75 octets with CRLF + space", () => {
+    const long = "DESCRIPTION:" + "x".repeat(200);
+    const folded = foldLine(long);
+    expect(folded).toContain("\r\n ");
+    for (const piece of folded.split("\r\n ")) {
+      expect(new TextEncoder().encode(piece).length).toBeLessThanOrEqual(75);
+    }
+  });
+
+  it("never splits a multi-byte UTF-8 character mid-sequence", () => {
+    const long = "DESCRIPTION:" + "ñ".repeat(80);
+    const folded = foldLine(long);
+    expect(() => new TextDecoder("utf-8", { fatal: true }).decode(
+      new TextEncoder().encode(folded),
+    )).not.toThrow();
+  });
+});
 
 describe("escapeIcsText", () => {
   it("escapes commas, semicolons, backslashes, and newlines", () => {

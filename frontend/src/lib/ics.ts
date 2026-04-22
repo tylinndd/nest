@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import type { Task } from "@/data/placeholder";
 import type { Deadline } from "./deadlines";
 import type { Profile } from "@/store/profile";
@@ -5,6 +6,30 @@ import type { Profile } from "@/store/profile";
 const CRLF = "\r\n";
 
 const pad2 = (n: number) => n.toString().padStart(2, "0");
+
+const byteLength = (s: string) => new TextEncoder().encode(s).length;
+
+/**
+ * RFC 5545 §3.1 content-line folding. Lines > 75 octets must be split by
+ * inserting CRLF + a space. We fold at character boundaries (never mid
+ * UTF-8 sequence), which is stricter than the RFC but safe for every client.
+ */
+export const foldLine = (line: string): string => {
+  if (byteLength(line) <= 75) return line;
+  const parts: string[] = [];
+  let remaining = line;
+  let first = true;
+  while (remaining.length > 0) {
+    const limit = first ? 75 : 74;
+    let take = remaining.length;
+    while (take > 0 && byteLength(remaining.slice(0, take)) > limit) take--;
+    if (take === 0) take = 1;
+    parts.push(remaining.slice(0, take));
+    remaining = remaining.slice(take);
+    first = false;
+  }
+  return parts.join("\r\n ");
+};
 
 const fmtDate = (d: Date) =>
   `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}`;
@@ -64,12 +89,12 @@ export const taskToIcsEvent = (
   const description = escapeIcsText(descriptionParts.join("\n"));
   return [
     "BEGIN:VEVENT",
-    `UID:${uid}`,
-    `DTSTAMP:${fmtDateTimeUtc(stampSource)}`,
-    `DTSTART;VALUE=DATE:${fmtDate(date)}`,
-    `DTEND;VALUE=DATE:${fmtDate(next)}`,
-    `SUMMARY:${summary}`,
-    `DESCRIPTION:${description}`,
+    foldLine(`UID:${uid}`),
+    foldLine(`DTSTAMP:${fmtDateTimeUtc(stampSource)}`),
+    foldLine(`DTSTART;VALUE=DATE:${fmtDate(date)}`),
+    foldLine(`DTEND;VALUE=DATE:${fmtDate(next)}`),
+    foldLine(`SUMMARY:${summary}`),
+    foldLine(`DESCRIPTION:${description}`),
     "END:VEVENT",
   ].join(CRLF);
 };
@@ -92,15 +117,22 @@ export const tasksToIcs = (tasks: Task[], opts: IcsOptions = {}): string => {
 };
 
 export const downloadIcs = (ics: string, filename: string) => {
-  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename.endsWith(".ics") ? filename : `${filename}.ics`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  try {
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename.endsWith(".ics") ? filename : `${filename}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  } catch {
+    toast.error(
+      "Couldn't save the calendar file. Try again, or screenshot the deadline.",
+      { id: "ics-download" },
+    );
+  }
 };
 
 /**
@@ -179,12 +211,12 @@ export const deadlineToIcsEvent = (
   const description = escapeIcsText(descLines.join("\n"));
   return [
     "BEGIN:VEVENT",
-    `UID:${uid}`,
-    `DTSTAMP:${fmtDateTimeUtc(now)}`,
-    `DTSTART;VALUE=DATE:${fmtDate(date)}`,
-    `DTEND;VALUE=DATE:${fmtDate(next)}`,
-    `SUMMARY:${summary}`,
-    `DESCRIPTION:${description}`,
+    foldLine(`UID:${uid}`),
+    foldLine(`DTSTAMP:${fmtDateTimeUtc(now)}`),
+    foldLine(`DTSTART;VALUE=DATE:${fmtDate(date)}`),
+    foldLine(`DTEND;VALUE=DATE:${fmtDate(next)}`),
+    foldLine(`SUMMARY:${summary}`),
+    foldLine(`DESCRIPTION:${description}`),
     "END:VEVENT",
   ].join(CRLF);
 };
