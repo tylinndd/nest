@@ -15,6 +15,7 @@ import { UpdatePrompt } from "@/components/UpdatePrompt";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { TourOverlay } from "@/components/TourOverlay";
 import { PresenterPill } from "@/components/PresenterPill";
+import { OfflineBanner } from "@/components/OfflineBanner";
 import { probeHealth } from "@/lib/health";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -149,6 +150,7 @@ const App = () => {
       <UpdatePrompt />
       <TourOverlay />
       <PresenterPill />
+      <OfflineBanner />
       {backendOffline && <BackendOfflineDot />}
       <ErrorBoundary>
         <Suspense fallback={<RouteFallback />}>

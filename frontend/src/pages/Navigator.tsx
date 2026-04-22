@@ -44,6 +44,12 @@ const NETWORK_FALLBACK = {
   source: "211 Georgia",
 };
 
+const OFFLINE_FALLBACK = {
+  text:
+    "You're offline, so I can't look anything up right now — but Nest still works. Your task list is on the Path page. Your documents are in the Vault. For urgent help, the Emergency page has every number you need: 988 for crisis, 211 for Georgia help, 911 for emergencies. Reconnect and ask me again whenever you're ready.",
+  source: "Nest · offline mode",
+};
+
 type SRConstructor = new () => SpeechRecognition;
 type SpeechRecognition = {
   lang: string;
@@ -299,6 +305,17 @@ const Navigator = () => {
         fallback: true,
       });
       scheduleCrisisHandoff();
+      return;
+    }
+
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      addMessage({
+        id: safeId(),
+        role: "assistant",
+        text: OFFLINE_FALLBACK.text,
+        source: OFFLINE_FALLBACK.source,
+        fallback: true,
+      });
       return;
     }
 
