@@ -13,6 +13,7 @@ import { RequireProfile } from "@/components/guards/RequireProfile";
 import { PersistenceBanner } from "@/components/PersistenceBanner";
 import { UpdatePrompt } from "@/components/UpdatePrompt";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { TourOverlay } from "@/components/TourOverlay";
 import { probeHealth } from "@/lib/health";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -141,6 +142,7 @@ const App = () => {
       <RouteTitle />
       <PersistenceBanner />
       <UpdatePrompt />
+      <TourOverlay />
       {backendOffline && <BackendOfflineDot />}
       <ErrorBoundary>
         <Suspense fallback={<RouteFallback />}>

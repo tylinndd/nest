@@ -6,6 +6,7 @@ import {
   BookOpen,
   Briefcase,
   GraduationCap,
+  Play,
   Sparkles,
 } from "lucide-react";
 import {
@@ -14,6 +15,7 @@ import {
   profileFor,
   type DemoPersona,
 } from "@/lib/demo";
+import { useTour, TOUR_TOTAL_MS } from "@/store/tour";
 
 type PersonaCard = {
   id: DemoPersona;
@@ -63,7 +65,25 @@ const CARDS: PersonaCard[] = [
   },
 ];
 
-const Demo = () => (
+const TOUR_SECONDS = Math.round(TOUR_TOTAL_MS / 1000);
+
+const Demo = () => {
+  const startTour = useTour((s) => s.start);
+
+  const handleStartTour = async () => {
+    try {
+      await Promise.all([
+        import("@/pages/Home"),
+        import("@/pages/Navigator"),
+        import("@/pages/Vault"),
+      ]);
+    } catch (err) {
+      console.warn("[nest.tour] prefetch failed", err);
+    }
+    startTour();
+  };
+
+  return (
   <div className="min-h-full bg-background">
     <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-5">
       <div className="flex items-center justify-between">
@@ -97,6 +117,28 @@ const Demo = () => (
           Your real data is never touched — demo data lives in session only.
         </p>
       </motion.div>
+
+      <button
+        type="button"
+        onClick={handleStartTour}
+        className="nest-card flex items-center gap-3 p-4 text-left transition hover:border-primary/40 hover:bg-primary/5"
+      >
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <Play className="h-5 w-5" />
+        </span>
+        <div className="flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-primary/70">
+            Auto tour · ~{TOUR_SECONDS}s
+          </p>
+          <p className="mt-0.5 font-display text-base text-foreground leading-snug">
+            Watch all three Nests in one pass
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+            Space to pause · arrows to skip · Esc to exit. Your own profile is
+            saved and restored when the tour ends.
+          </p>
+        </div>
+      </button>
 
       <div className="space-y-4">
         {CARDS.map((c, i) => (
@@ -169,6 +211,7 @@ const Demo = () => (
       </p>
     </div>
   </div>
-);
+  );
+};
 
 export default Demo;
