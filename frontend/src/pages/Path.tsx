@@ -7,6 +7,7 @@ import {
   CalendarClock,
   CheckCircle2,
   Circle,
+  ClipboardCheck,
   FileText,
   HeartPulse,
   Home as HomeIcon,
@@ -23,6 +24,10 @@ import {
 } from "@/store/profile";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { printPath, profileToPathData } from "@/lib/pathExport";
+import {
+  printWorkerHandoff,
+  profileToHandoffData,
+} from "@/lib/workerHandoff";
 import { SpeakButton } from "@/components/SpeakButton";
 
 type ZoneState = "active" | "done";
@@ -238,6 +243,10 @@ const Path = () => {
     printPath(profileToPathData(profile));
   };
 
+  const handleWorkerHandoff = () => {
+    printWorkerHandoff(profileToHandoffData(profile));
+  };
+
   return (
     <div className="px-5 pt-5 pb-4">
       <p className="text-sm text-muted-foreground">Overview</p>
@@ -267,6 +276,17 @@ const Path = () => {
           Print your path
           <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
             One page
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={handleWorkerHandoff}
+          className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <ClipboardCheck className="h-3.5 w-3.5" />
+          Caseworker handoff
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+            For meetings
           </span>
         </button>
       </div>
