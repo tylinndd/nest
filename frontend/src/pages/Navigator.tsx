@@ -8,6 +8,7 @@ import { useProfile } from "@/store/profile";
 import { useChat, type ChatMsg } from "@/store/chat";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { pickStarterChips } from "@/lib/starterChips";
+import { suggestFollowUps } from "@/lib/followUps";
 import { linkify } from "@/lib/linkify";
 import { postChat, ApiError } from "@/lib/api";
 import { toBackendProfile } from "@/lib/profileMap";
@@ -310,6 +311,7 @@ const Navigator = () => {
       const backendProfile = toBackendProfile(useProfile.getState());
       const res = await postChat(text, backendProfile, controller.signal);
 
+      const followUps = suggestFollowUps(text, res.answer);
       const reply: Msg = {
         id: safeId(),
         role: "assistant",
@@ -318,6 +320,7 @@ const Navigator = () => {
           ? { source: res.sources.join(" · ") }
           : {}),
         ...(res.passages.length > 0 ? { passages: res.passages } : {}),
+        ...(followUps.length > 0 ? { followUps } : {}),
       };
       addMessage(reply);
 
