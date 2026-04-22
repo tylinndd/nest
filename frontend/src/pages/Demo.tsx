@@ -16,6 +16,7 @@ import {
   type DemoPersona,
 } from "@/lib/demo";
 import { useTour, TOUR_TOTAL_MS } from "@/store/tour";
+import { QRPanel } from "@/components/QRPanel";
 
 type PersonaCard = {
   id: DemoPersona;
@@ -117,6 +118,10 @@ const Demo = () => {
           Your real data is never touched — demo data lives in session only.
         </p>
       </motion.div>
+
+      <QRPanel
+        hint="Judges: point a phone camera here to open Nest yourself. No app install, no login, nothing sent to us."
+      />
 
       <button
         type="button"
