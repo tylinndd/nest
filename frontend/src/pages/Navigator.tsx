@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { SourceReveal } from "@/components/SourceReveal";
 import { ChatMessageActions } from "@/components/ChatMessageActions";
+import { SpeakButton } from "@/components/SpeakButton";
 import { cn } from "@/lib/utils";
 
 type Msg = ChatMsg;
@@ -454,12 +455,15 @@ const Navigator = () => {
                   )}
                 </div>
                 {!isUser && (
-                  <ChatMessageActions
-                    text={m.text}
-                    source={m.source}
-                    share={!m.fallback}
-                    question={priorUser}
-                  />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <SpeakButton id={`nav-${m.id}`} text={m.text} />
+                    <ChatMessageActions
+                      text={m.text}
+                      source={m.source}
+                      share={!m.fallback}
+                      question={priorUser}
+                    />
+                  </div>
                 )}
                 {showFollowUps && (
                   <div className="flex max-w-[85%] gap-2 overflow-x-auto no-scrollbar">

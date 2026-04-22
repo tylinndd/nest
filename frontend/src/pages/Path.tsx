@@ -23,6 +23,7 @@ import {
 } from "@/store/profile";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { printPath, profileToPathData } from "@/lib/pathExport";
+import { SpeakButton } from "@/components/SpeakButton";
 
 type ZoneState = "active" | "done";
 
@@ -329,6 +330,14 @@ const Path = () => {
                     <StatusIcon className="mr-1 h-3 w-3" />
                     {z.state === "done" ? "Done" : "In progress"}
                   </span>
+                </div>
+                <div className="mt-3">
+                  <SpeakButton
+                    id={`path-${z.id}`}
+                    text={`${z.title}. ${z.subtitle} ${z.items
+                      .map((it) => it.label)
+                      .join(". ")}.`}
+                  />
                 </div>
                 <ul className="mt-4 space-y-1.5">
                   {z.items.map((item) => {
