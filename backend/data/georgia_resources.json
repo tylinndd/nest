@@ -352,5 +352,69 @@
     "address": "Georgia",
     "source_name": "Georgia Gateway",
     "last_verified": "2026-04-19"
+  },
+  {
+    "id": "open-bank-guide-001",
+    "name": "Opening a Checking or Savings Account in Georgia",
+    "category": "financial",
+    "county": "statewide",
+    "audience": ["young adults", "former foster youth", "transition-age youth", "students"],
+    "summary": "To open a checking or savings account in Georgia you need a valid photo ID (Georgia state ID, driver's license, or US passport), your Social Security number or ITIN, and proof of current address such as a lease, utility bill, or mail from a government agency. Banks do not run a credit check to open a standard checking or savings account, so a limited or missing credit history does not block you. Credit unions such as Georgia's Own and Delta Community accept members with no credit history. Bank On certified accounts, available at many Georgia banks and credit unions, have no overdraft fees and a low minimum opening deposit (often $25 or less). If you do not have a current address on file, a DFCS case manager or transitional housing program can help you document a mailing address.",
+    "eligibility": "Anyone 18 or older with valid ID and a Social Security number or ITIN. Minors may open joint accounts with a trusted adult.",
+    "services": [
+      "checking account setup guidance",
+      "savings account setup guidance",
+      "document checklist for account opening",
+      "no-credit-check account options",
+      "Bank On certified account referral"
+    ],
+    "contact_phone": "",
+    "contact_url": "https://joinbankon.org/accounts/",
+    "address": "Georgia",
+    "source_name": "Bank On National Account Standards",
+    "last_verified": "2026-04-22"
+  },
+  {
+    "id": "georgias-own-cu-001",
+    "name": "Georgia's Own Credit Union",
+    "category": "financial",
+    "county": "statewide",
+    "audience": ["young adults", "students", "Georgia residents"],
+    "summary": "Georgia's Own is a member-owned credit union open to anyone who lives, works, worships, or attends school in Georgia. They offer student checking, basic checking, and savings accounts with no monthly fee for eligible accounts and no credit check required to open a standard account. Membership requires a $5 opening deposit into a savings account.",
+    "eligibility": "Anyone who lives, works, worships, or attends school in Georgia. $5 minimum opens membership.",
+    "services": [
+      "checking accounts",
+      "savings accounts",
+      "debit cards",
+      "direct deposit",
+      "no-credit-check account opening",
+      "financial education"
+    ],
+    "contact_phone": "404-874-1166",
+    "contact_url": "https://www.georgiasown.org/",
+    "address": "Georgia",
+    "source_name": "Georgia's Own Credit Union",
+    "last_verified": "2026-04-22"
+  },
+  {
+    "id": "fdic-money-smart-001",
+    "name": "FDIC Money Smart for Young People",
+    "category": "financial",
+    "county": "statewide",
+    "audience": ["young adults", "students", "transition-age youth"],
+    "summary": "FDIC Money Smart for Young People is a free, plain-language curriculum with modules on earning, spending, saving, borrowing, and protecting money. It does not require an account or sign-up. Topics include how to build a monthly budget, how to track spending against income, how checking and savings accounts work, how to read a bank statement, and how to avoid common financial scams. It is the federal government's standard financial-literacy resource for teens and young adults.",
+    "eligibility": "Free and open to anyone. No account required.",
+    "services": [
+      "budgeting curriculum",
+      "spending and saving modules",
+      "banking basics",
+      "credit and borrowing basics",
+      "financial education"
+    ],
+    "contact_phone": "",
+    "contact_url": "https://www.fdic.gov/resources/consumers/money-smart/money-smart-for-young-people/index.html",
+    "address": "United States",
+    "source_name": "FDIC",
+    "last_verified": "2026-04-22"
   }
 ]
