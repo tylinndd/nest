@@ -25,6 +25,23 @@ const countSources = (source: string) =>
     .map((s) => s.trim())
     .filter((s) => s.length > 0).length;
 
+/**
+ * Backend-supplied URLs flow from the RAG corpus into an <a href>. Block any
+ * scheme except http(s) so a poisoned corpus or compromised backend can't
+ * return `javascript:…` and land XSS on click.
+ */
+const safeHttpUrl = (url: string | null): string | null => {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url, window.location.href);
+    return parsed.protocol === "http:" || parsed.protocol === "https:"
+      ? parsed.toString()
+      : null;
+  } catch {
+    return null;
+  }
+};
+
 const EDUCATION_LABEL: Record<EducationPlan, string> = {
   college: "Heading to college",
   trade: "Heading to trade school",
@@ -116,30 +133,33 @@ export function SourceReveal({
                   From the actual source{passages.length > 1 ? "s" : ""}
                 </p>
                 <ul className="mt-2 space-y-3">
-                  {passages.map((p, i) => (
-                    <li
-                      key={`${p.source_name}-${i}`}
-                      className="border-l-2 border-primary/40 pl-3"
-                    >
-                      <p className="text-[11px] font-semibold text-primary">
-                        {p.source_name}
-                      </p>
-                      <p className="mt-1 text-sm text-foreground leading-relaxed">
-                        {p.snippet}
-                      </p>
-                      {p.url && (
-                        <a
-                          href={p.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline"
-                        >
-                          Open document
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                      )}
-                    </li>
-                  ))}
+                  {passages.map((p, i) => {
+                    const safeUrl = safeHttpUrl(p.url);
+                    return (
+                      <li
+                        key={`${p.source_name}-${i}`}
+                        className="border-l-2 border-primary/40 pl-3"
+                      >
+                        <p className="text-[11px] font-semibold text-primary">
+                          {p.source_name}
+                        </p>
+                        <p className="mt-1 text-sm text-foreground leading-relaxed">
+                          {p.snippet}
+                        </p>
+                        {safeUrl && (
+                          <a
+                            href={safeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline"
+                          >
+                            Open document
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
                 <p className="mt-3 text-[10px] text-muted-foreground leading-relaxed">
                   This is the exact text Navigator's retriever pulled from the
