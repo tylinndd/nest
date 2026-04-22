@@ -373,6 +373,20 @@ const Settings = () => {
         <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
           Offline backup
         </p>
+        <Link
+          to="/your-data"
+          className="nest-card flex items-center justify-between gap-3 p-4 transition hover:border-primary/40"
+        >
+          <div>
+            <p className="text-sm font-semibold text-foreground">
+              See everything on this device
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Counts, storage keys, and byte sizes in one place.
+            </p>
+          </div>
+          <span className="text-xs font-semibold text-primary">Open →</span>
+        </Link>
         <div className="nest-card p-4 space-y-3">
           <div className="flex items-start gap-3">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">

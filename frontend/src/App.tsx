@@ -27,6 +27,7 @@ const Emergency = lazy(() => import("./pages/Emergency"));
 const Money = lazy(() => import("./pages/Money"));
 const NearMe = lazy(() => import("./pages/NearMe"));
 const Saved = lazy(() => import("./pages/Saved"));
+const YourData = lazy(() => import("./pages/YourData"));
 const Vault = lazy(() => import("./pages/Vault"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Reset = lazy(() => import("./pages/Reset"));
@@ -83,6 +84,7 @@ const ROUTE_TITLES: Array<[string, string]> = [
   ["/money", "Money · Nest"],
   ["/near-me", "Near you · Nest"],
   ["/saved", "Saved · Nest"],
+  ["/your-data", "Your data · Nest"],
   ["/about", "About · Nest"],
   ["/team", "The team · Nest"],
   ["/how-it-works", "How Nest answers · Nest"],
@@ -181,6 +183,7 @@ const App = () => {
                 <Route path="/money" element={<Money />} />
                 <Route path="/near-me" element={<NearMe />} />
                 <Route path="/saved" element={<Saved />} />
+                <Route path="/your-data" element={<YourData />} />
               </Route>
             </Route>
             <Route path="/reset" element={<Reset />} />
