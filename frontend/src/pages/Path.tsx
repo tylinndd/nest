@@ -1,12 +1,15 @@
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import {
+  ArrowUpRight,
   CheckCircle2,
   Circle,
   FileText,
   HeartPulse,
   Home as HomeIcon,
   GraduationCap,
+  MessageSquare,
   Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -19,6 +22,15 @@ import { DOCUMENT_CATALOG } from "@/lib/personalize";
 
 type ZoneState = "active" | "done";
 
+type ZoneAction =
+  | { kind: "ask"; prompt: string }
+  | { kind: "route"; to: string };
+
+type ZoneItem = {
+  label: string;
+  action: ZoneAction;
+};
+
 type Zone = {
   id: string;
   number: number;
@@ -26,7 +38,7 @@ type Zone = {
   subtitle: string;
   state: ZoneState;
   Icon: typeof FileText;
-  items: string[];
+  items: ZoneItem[];
 };
 
 const STABLE_HOUSING: Set<HousingOption> = new Set([
@@ -35,6 +47,9 @@ const STABLE_HOUSING: Set<HousingOption> = new Set([
   "Independent living program",
   "With a relative",
 ]);
+
+const ask = (prompt: string): ZoneAction => ({ kind: "ask", prompt });
+const route = (to: string): ZoneAction => ({ kind: "route", to });
 
 const buildZones = (profile: Profile): Zone[] => {
   const uploadedSet = new Set(profile.uploadedDocs);
@@ -63,9 +78,18 @@ const buildZones = (profile: Profile): Zone[] => {
       state: docsDone ? "done" : "active",
       Icon: FileText,
       items: [
-        "Request birth certificate",
-        "Social Security card replacement",
-        "Georgia state ID or permit",
+        {
+          label: "Request birth certificate",
+          action: ask("How do I get my birth certificate in Georgia?"),
+        },
+        {
+          label: "Social Security card replacement",
+          action: ask("How do I replace my Social Security card?"),
+        },
+        {
+          label: "Georgia state ID or permit",
+          action: ask("How do I get a Georgia state ID?"),
+        },
       ],
     },
     {
@@ -78,9 +102,20 @@ const buildZones = (profile: Profile): Zone[] => {
       state: healthDone ? "done" : "active",
       Icon: HeartPulse,
       items: [
-        "Confirm Former Foster Medicaid",
-        "Find a primary care doctor",
-        "Connect with a therapist",
+        {
+          label: "Confirm Former Foster Medicaid",
+          action: ask(
+            "How do I confirm I qualify for Former Foster Care Medicaid in Georgia?",
+          ),
+        },
+        {
+          label: "Find a primary care doctor",
+          action: ask("How do I find a primary care doctor that takes Medicaid?"),
+        },
+        {
+          label: "Connect with a therapist",
+          action: ask("How do I find a therapist that takes Medicaid?"),
+        },
       ],
     },
     {
@@ -93,9 +128,22 @@ const buildZones = (profile: Profile): Zone[] => {
       state: housingDone ? "done" : "active",
       Icon: HomeIcon,
       items: [
-        "Apply for HUD FYI voucher",
-        "Tour a transitional living program",
-        "Line up emergency shelter backup",
+        {
+          label: "Apply for HUD FYI voucher",
+          action: ask(
+            "How do I apply for the HUD Foster Youth to Independence (FYI) voucher?",
+          ),
+        },
+        {
+          label: "Tour a transitional living program",
+          action: ask(
+            "How do I tour a transitional living program near me in Georgia?",
+          ),
+        },
+        {
+          label: "Line up emergency shelter backup",
+          action: route("/emergency"),
+        },
       ],
     },
     {
@@ -112,9 +160,20 @@ const buildZones = (profile: Profile): Zone[] => {
       state: educationDone ? "done" : "active",
       Icon: GraduationCap,
       items: [
-        "Submit Chafee ETV application",
-        "Check Georgia Post-Secondary Tuition Waiver",
-        "Book KSU ASCEND intake call",
+        {
+          label: "Submit Chafee ETV application",
+          action: ask("How do I submit a Chafee-ETV application?"),
+        },
+        {
+          label: "Check Georgia Post-Secondary Tuition Waiver",
+          action: ask(
+            "Do I qualify for the Georgia Post-Secondary Tuition Waiver?",
+          ),
+        },
+        {
+          label: "Book KSU ASCEND intake call",
+          action: ask("How do I book a KSU ASCEND intake call?"),
+        },
       ],
     },
     {
@@ -125,9 +184,18 @@ const buildZones = (profile: Profile): Zone[] => {
       state: "active",
       Icon: Wallet,
       items: [
-        "Open a checking + savings account",
-        "Build a first monthly budget",
-        "Claim EYSS monthly stipend",
+        {
+          label: "Open a checking + savings account",
+          action: route("/money"),
+        },
+        {
+          label: "Build a first monthly budget",
+          action: route("/money"),
+        },
+        {
+          label: "Claim EYSS monthly stipend",
+          action: ask("How do I claim the EYSS monthly stipend in Georgia?"),
+        },
       ],
     },
   ];
@@ -148,9 +216,18 @@ const stateStyle: Record<ZoneState, { ring: string; icon: string; badge: string 
 
 const Path = () => {
   const prefersReducedMotion = useReducedMotion();
+  const navigate = useNavigate();
   const profile = useProfile();
   const zones = useMemo(() => buildZones(profile), [profile]);
   const doneCount = zones.filter((z) => z.state === "done").length;
+
+  const handleItem = (item: ZoneItem) => {
+    if (item.action.kind === "ask") {
+      navigate("/navigator", { state: { askPrompt: item.action.prompt } });
+    } else {
+      navigate(item.action.to);
+    }
+  };
 
   return (
     <div className="px-5 pt-5 pb-4">
@@ -224,21 +301,44 @@ const Path = () => {
                     {z.state === "done" ? "Done" : "In progress"}
                   </span>
                 </div>
-                <ul className="mt-4 space-y-2">
-                  {z.items.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-start gap-2 text-sm text-foreground"
-                    >
-                      <span
-                        className={cn(
-                          "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full",
-                          z.state === "done" ? "bg-nest-sage" : "bg-nest-amber",
-                        )}
-                      />
-                      {item}
-                    </li>
-                  ))}
+                <ul className="mt-4 space-y-1.5">
+                  {z.items.map((item) => {
+                    const isAsk = item.action.kind === "ask";
+                    const ActionIcon = isAsk ? MessageSquare : ArrowUpRight;
+                    const hint = isAsk
+                      ? "Ask Navigator"
+                      : item.action.kind === "route"
+                        ? item.action.to.startsWith("/")
+                          ? `Go to ${item.action.to.replace("/", "")}`
+                          : "Open"
+                        : "Open";
+                    return (
+                      <li key={item.label}>
+                        <button
+                          type="button"
+                          onClick={() => handleItem(item)}
+                          className="group flex w-full items-start gap-2 rounded-xl px-2 py-2 text-left text-sm text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          <span
+                            className={cn(
+                              "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full",
+                              z.state === "done" ? "bg-nest-sage" : "bg-nest-amber",
+                            )}
+                          />
+                          <span className="flex-1">
+                            {item.label}
+                            <span className="block text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 group-hover:text-muted-foreground">
+                              {hint}
+                            </span>
+                          </span>
+                          <ActionIcon
+                            aria-hidden
+                            className="mt-1 h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition group-hover:text-primary"
+                          />
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </motion.li>

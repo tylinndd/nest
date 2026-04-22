@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { FolderLock, Mic, Paperclip, Plus, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -116,6 +116,8 @@ const TypingDots = () => (
 
 const Navigator = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const askFiredRef = useRef(false);
   const profileName = useProfile((s) => s.name);
   const profileAge = useProfile((s) => s.age);
   const profileHousing = useProfile((s) => s.housing);
@@ -347,6 +349,19 @@ const Navigator = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (askFiredRef.current) return;
+    if (!hydrated) return;
+    if (messages.length === 0) return;
+    const s = location.state as { askPrompt?: string } | null;
+    if (!s?.askPrompt) return;
+    askFiredRef.current = true;
+    const prompt = s.askPrompt;
+    navigate(".", { replace: true, state: null });
+    void send(prompt);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated, messages.length, location.state]);
 
   return (
     <div className="flex h-[calc(100dvh-7rem)] flex-col">
