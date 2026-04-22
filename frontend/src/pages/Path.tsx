@@ -1,8 +1,10 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
+  CalendarClock,
   CheckCircle2,
   Circle,
   FileText,
@@ -247,17 +249,26 @@ const Path = () => {
             : `${doneCount} of ${zones.length} zones in a good place.`}
       </p>
 
-      <button
-        type="button"
-        onClick={handlePrint}
-        className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <Printer className="h-3.5 w-3.5" />
-        Print your path
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-          One page
-        </span>
-      </button>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Link
+          to="/deadlines"
+          className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <CalendarClock className="h-3.5 w-3.5" />
+          See your deadlines
+        </Link>
+        <button
+          type="button"
+          onClick={handlePrint}
+          className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Printer className="h-3.5 w-3.5" />
+          Print your path
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+            One page
+          </span>
+        </button>
+      </div>
 
       <ol className="relative mt-8 pl-4">
         <span

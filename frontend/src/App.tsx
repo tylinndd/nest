@@ -19,6 +19,7 @@ import { probeHealth } from "@/lib/health";
 
 const Home = lazy(() => import("./pages/Home"));
 const Path = lazy(() => import("./pages/Path"));
+const Deadlines = lazy(() => import("./pages/Deadlines"));
 const Benefits = lazy(() => import("./pages/Benefits"));
 const Navigator = lazy(() => import("./pages/Navigator"));
 const Emergency = lazy(() => import("./pages/Emergency"));
@@ -70,6 +71,7 @@ const StepReview = lazy(() =>
 const ROUTE_TITLES: Array<[string, string]> = [
   ["/onboarding", "Set up · Nest"],
   ["/path", "Your Path · Nest"],
+  ["/deadlines", "Deadlines · Nest"],
   ["/benefits", "Benefits · Nest"],
   ["/navigator", "Ask Navigator · Nest"],
   ["/vault", "Document Vault · Nest"],
@@ -164,6 +166,7 @@ const App = () => {
               <Route element={<AppShell />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/path" element={<Path />} />
+                <Route path="/deadlines" element={<Deadlines />} />
                 <Route path="/benefits" element={<Benefits />} />
                 <Route path="/navigator" element={<Navigator />} />
                 <Route path="/vault" element={<Vault />} />
