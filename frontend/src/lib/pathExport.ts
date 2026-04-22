@@ -393,5 +393,11 @@ export const printPath = (data: PathExportData): void => {
     runPrint();
   } else {
     iframe.onload = runPrint;
+    window.setTimeout(() => {
+      if (iframe.isConnected && doc.readyState !== "complete") {
+        toast.error("Couldn't open the print view", { id: "path-print" });
+        iframe.remove();
+      }
+    }, 5000);
   }
 };

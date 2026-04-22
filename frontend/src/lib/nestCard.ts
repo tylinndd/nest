@@ -219,5 +219,11 @@ export const printNestCard = (data: NestCardData): void => {
     runPrint();
   } else {
     iframe.onload = runPrint;
+    window.setTimeout(() => {
+      if (iframe.isConnected && doc.readyState !== "complete") {
+        toast.error("Couldn't open the print view", { id: "nest-card-print" });
+        iframe.remove();
+      }
+    }, 5000);
   }
 };
