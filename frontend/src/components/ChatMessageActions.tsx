@@ -227,9 +227,10 @@ export function ChatMessageActions({
             href={confirmHref}
             aria-label="Ask a caseworker or trusted adult to confirm"
             title="Ask a caseworker or trusted adult to confirm"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex h-7 items-center gap-1 rounded-full px-2 text-[11px] font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <UserCheck className="h-3.5 w-3.5" />
+            Ask a human
           </a>
           <button
             type="button"
