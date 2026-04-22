@@ -10,6 +10,7 @@ import {
   Lock,
   MapPin,
   Phone,
+  Printer,
   Trash2,
   User as UserIcon,
   UserPlus,
@@ -19,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useProfile, type EducationPlan } from "@/store/profile";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
+import { printNestCard, profileToCardData } from "@/lib/nestCard";
 import { cn } from "@/lib/utils";
 
 const EDUCATION_LABEL: Record<EducationPlan, string> = {
@@ -89,6 +91,10 @@ const Settings = () => {
     setTrustedName("");
     setTrustedPhone("");
     profile.setTrustedAdult(null);
+  };
+
+  const handlePrintCard = () => {
+    printNestCard(profileToCardData(profile));
   };
 
   return (
@@ -348,6 +354,36 @@ const Settings = () => {
           </Link>
           .
         </p>
+      </section>
+
+      <section className="space-y-3">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          Offline backup
+        </p>
+        <div className="nest-card p-4 space-y-3">
+          <div className="flex items-start gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Printer className="h-4 w-4" />
+            </span>
+            <div>
+              <p className="font-semibold text-foreground">Print a Nest Card</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                A wallet-sized card with your name, county, blank lines for
+                Medicaid + ID numbers, and the crisis numbers that matter when
+                your phone is dead.
+              </p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            onClick={handlePrintCard}
+            variant="outline"
+            className="w-full justify-center rounded-full min-h-[2.75rem]"
+          >
+            <Printer className="mr-2 h-4 w-4" />
+            Print my Nest Card
+          </Button>
+        </div>
       </section>
 
       <section className="space-y-3">
