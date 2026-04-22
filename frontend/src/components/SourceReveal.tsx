@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BadgeCheck, AlertCircle } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -12,6 +13,12 @@ import { Button } from "@/components/ui/button";
 import { useProfile, type EducationPlan } from "@/store/profile";
 
 type Props = { source: string; showProfile?: boolean };
+
+const countSources = (source: string) =>
+  source
+    .split(" · ")
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0).length;
 
 const EDUCATION_LABEL: Record<EducationPlan, string> = {
   college: "Heading to college",
@@ -34,17 +41,43 @@ export function SourceReveal({ source, showProfile = false }: Props) {
   if (housing) facts.push({ label: "Living now", value: housing });
 
   const renderProfileCard = showProfile && facts.length > 0;
+  const sourceCount = countSources(source);
+  const confidence =
+    !showProfile || sourceCount === 0
+      ? null
+      : sourceCount >= 3
+        ? {
+            label: `Strong · ${sourceCount} sources`,
+            tone: "bg-nest-sage/15 text-[#2E7D5B]",
+            Icon: BadgeCheck,
+          }
+        : {
+            label: `Partial · verify with caseworker`,
+            tone: "bg-nest-amber/15 text-nest-amber",
+            Icon: AlertCircle,
+          };
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-label={`View source: ${source}`}
-        className="mt-3 inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground transition hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-      >
-        Source · {source}
-      </button>
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        {confidence && (
+          <span
+            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest ${confidence.tone}`}
+            aria-label={`Answer confidence: ${confidence.label}`}
+          >
+            <confidence.Icon className="h-3 w-3" strokeWidth={2.5} />
+            {confidence.label}
+          </span>
+        )}
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label={`View source: ${source}`}
+          className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground transition hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+        >
+          Source · {source}
+        </button>
+      </div>
 
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerContent className="max-w-md mx-auto">
