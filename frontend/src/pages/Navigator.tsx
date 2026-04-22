@@ -15,6 +15,8 @@ import { buildChatSeed } from "@/data/placeholder";
 import { useProfile } from "@/store/profile";
 import { useChat, type ChatMsg } from "@/store/chat";
 import { useSaved } from "@/store/saved";
+import { useSpeech } from "@/store/speech";
+import { usePreferences } from "@/store/preferences";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { pickStarterChips } from "@/lib/starterChips";
 import { suggestFollowUps } from "@/lib/followUps";
@@ -147,6 +149,9 @@ const Navigator = () => {
   const addMessage = useChat((s) => s.addMessage);
   const clearChat = useChat((s) => s.clear);
   const savedCount = useSaved((s) => s.items.length);
+  const hasSeenListenHint = usePreferences((s) => s.hasSeenListenHint);
+  const markListenHintSeen = usePreferences((s) => s.markListenHintSeen);
+  const speechSupported = useSpeech((s) => s.supported);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [listening, setListening] = useState(false);
@@ -233,6 +238,25 @@ const Navigator = () => {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, typing]);
+
+  const realAssistantReplies = useMemo(
+    () => messages.filter((m) => m.role === "assistant").length - 1,
+    [messages],
+  );
+
+  useEffect(() => {
+    if (hasSeenListenHint) return;
+    if (!speechSupported) return;
+    if (realAssistantReplies < 1) return;
+    const t = window.setTimeout(() => {
+      toast("Tip: tap Listen on any answer", {
+        description: "Nest can read replies out loud.",
+        duration: 6000,
+      });
+      markListenHintSeen();
+    }, 900);
+    return () => window.clearTimeout(t);
+  }, [hasSeenListenHint, markListenHintSeen, realAssistantReplies, speechSupported]);
 
   useEffect(() => {
     return () => {
