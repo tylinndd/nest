@@ -438,6 +438,28 @@
     "last_verified": "2026-04-22"
   },
   {
+    "id": "ga-birth-certificate-001",
+    "name": "Getting a Georgia Birth Certificate",
+    "category": "documents",
+    "county": "statewide",
+    "audience": ["young adults", "youth in foster care", "former foster youth", "transition-age youth"],
+    "summary": "Georgia birth certificates are issued by the Georgia Department of Public Health (DPH) State Office of Vital Records. A certified copy typically costs $25, with additional copies ordered at the same time at $5 each — fees are set by DPH and can change, so check the Vital Records website for current pricing before you go. You can order the certificate if you are the person named on the record (once you are 18 or older), a parent listed on the record, a spouse, adult child, sibling, grandparent, or a legal guardian with proof of relationship. For youth in foster care, a DFCS case manager has the authority to request a birth certificate on your behalf, and they do this routinely as part of Independent Living Program transition services when youth need vital records for school, benefits, or ID applications — so yes, a caseworker can pull it for you. You can order in person at the State Office of Vital Records in Atlanta or at any Georgia county vital records office (usually fastest, often same-day), by mail using the DPH vital records application form (4 to 6 weeks), or online through the authorized vendor VitalChek (7 to 10 business days, with additional vendor fees). If you were born outside Georgia, Georgia cannot issue another state's birth certificate — you must contact the vital records office of the state where you were born. The CDC's National Center for Health Statistics publishes a directory of every state's vital records office, and a DFCS case manager can help you navigate that. To order, you need a valid photo ID (state ID, driver's license, or U.S. passport). If you do not have a photo ID yet, a DFCS case manager can submit the request on your behalf or help you get an ID first.",
+    "eligibility": "Person on the record (age 18+), immediate family with proof of relationship, legal guardian or custodian, or a DFCS case manager acting on behalf of a youth in care.",
+    "services": [
+      "certified birth certificate issuance",
+      "in-person and mail-in orders",
+      "VitalChek online orders",
+      "out-of-state birth record referrals",
+      "DFCS case manager assistance for youth in care",
+      "born-out-of-state guidance"
+    ],
+    "contact_phone": "",
+    "contact_url": "https://dph.georgia.gov/vital-records",
+    "address": "Georgia",
+    "source_name": "Georgia Department of Public Health Vital Records",
+    "last_verified": "2026-04-22"
+  },
+  {
     "id": "fdic-money-smart-001",
     "name": "FDIC Money Smart for Young People",
     "category": "financial",
