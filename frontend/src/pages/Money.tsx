@@ -203,17 +203,9 @@ const Money = () => {
           <BudgetTable title="Savings" rows={SAVINGS} tone="sage" />
           <BudgetTable title="Flexible" rows={FLEX} tone="amber" />
         </div>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          <AskChip
-            prompt="Can you build a monthly budget for me based on my income and Georgia stipends?"
-            label="Personalize this budget"
-          />
-          <AskChip
-            prompt="How do I balance a checking account and track my spending?"
-            label="How to track spending"
-          />
-        </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          Swap these numbers for your own. For tracking and budgeting step-by-step, the FDIC curriculum below walks through it.
+        </p>
       </motion.section>
 
       <motion.section
