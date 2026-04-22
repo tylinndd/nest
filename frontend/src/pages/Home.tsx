@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
+  CalendarPlus,
   FolderLock,
   MapPin,
   MessageCircle,
@@ -26,6 +27,7 @@ import {
 } from "lucide-react";
 import { type Task } from "@/data/placeholder";
 import { derivePersonalizedTasks, computeDaysUntilAgeOut } from "@/lib/personalize";
+import { tasksToIcs, downloadIcs } from "@/lib/ics";
 import { SuccessCard } from "@/components/ui/SuccessCard";
 import {
   Drawer,
@@ -397,6 +399,12 @@ const Home = () => {
   const overdue = useMemo(() => taskList.filter((t) => t.status === "overdue"), [taskList]);
   const week = useMemo(() => taskList.filter((t) => t.status === "week"), [taskList]);
   const done = useMemo(() => taskList.filter((t) => t.status === "done"), [taskList]);
+  const actionable = useMemo(() => [...overdue, ...week], [overdue, week]);
+
+  const handleExportCalendar = () => {
+    const ics = tasksToIcs(actionable, { profileName: profile.name });
+    downloadIcs(ics, "nest-deadlines.ics");
+  };
   const nextMove = useMemo<Task | null>(
     () => overdue[0] ?? week[0] ?? null,
     [overdue, week],
@@ -558,6 +566,31 @@ const Home = () => {
           </Section>
         )}
       </LayoutGroup>
+
+      {actionable.length > 0 && (
+        <section className="mt-5 px-5">
+          <button
+            type="button"
+            onClick={handleExportCalendar}
+            className="w-full nest-card p-4 flex items-center justify-between text-left transition hover:border-primary/40 active:scale-[0.995]"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <CalendarPlus className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="font-semibold text-foreground">
+                  Add my deadlines to calendar
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Download a .ics file for Apple, Google, or Outlook
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+          </button>
+        </section>
+      )}
 
       <section className="mt-8 px-5 grid grid-cols-2 gap-3">
         <Link
