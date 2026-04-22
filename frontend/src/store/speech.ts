@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { toast } from "sonner";
 
 /**
  * Exclusive text-to-speech controller.
@@ -44,8 +45,16 @@ export const useSpeech = create<SpeechState>((set, get) => ({
     utterance.onend = () => {
       if (get().speakingId === id) set({ speakingId: null });
     };
-    utterance.onerror = () => {
+    utterance.onerror = (event) => {
       if (get().speakingId === id) set({ speakingId: null });
+      // "interrupted" and "canceled" fire during our own s.cancel() calls —
+      // not real failures, don't bother the user.
+      const kind = (event as SpeechSynthesisErrorEvent).error;
+      if (kind === "interrupted" || kind === "canceled") return;
+      toast.error(
+        "Read-aloud didn't start. Your device might be muted or the voice isn't available.",
+        { id: "speech-error" },
+      );
     };
     set({ speakingId: id });
     s.speak(utterance);

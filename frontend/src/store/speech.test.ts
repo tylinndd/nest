@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { toast } from "sonner";
 import { useSpeech } from "./speech";
+
+vi.mock("sonner", () => ({
+  toast: { error: vi.fn() },
+}));
 
 type MockUtterance = {
   text: string;
@@ -7,7 +12,7 @@ type MockUtterance = {
   pitch: number;
   volume: number;
   onend: (() => void) | null;
-  onerror: (() => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
 };
 
 type MockSynth = {
@@ -23,7 +28,7 @@ const installMockUtterance = () => {
     pitch = 1;
     volume = 1;
     onend: (() => void) | null = null;
-    onerror: (() => void) | null = null;
+    onerror: ((event: { error: string }) => void) | null = null;
     constructor(text: string) {
       this.text = text;
     }
@@ -55,6 +60,7 @@ describe("useSpeech", () => {
     installMockUtterance();
     installMockSynth();
     resetSpeechStore();
+    vi.mocked(toast.error).mockClear();
   });
 
   it("starts speaking and sets speakingId", () => {
@@ -90,5 +96,21 @@ describe("useSpeech", () => {
     const u = (window.speechSynthesis as unknown as MockSynth).lastUtterance;
     u?.onend?.();
     expect(useSpeech.getState().speakingId).toBeNull();
+  });
+
+  it("does not toast when onerror fires with 'interrupted' (our own cancel)", () => {
+    useSpeech.getState().start("msg-1", "Hello there");
+    const u = (window.speechSynthesis as unknown as MockSynth).lastUtterance;
+    u?.onerror?.({ error: "interrupted" });
+    expect(useSpeech.getState().speakingId).toBeNull();
+    expect(toast.error).not.toHaveBeenCalled();
+  });
+
+  it("toasts when onerror fires with a real failure", () => {
+    useSpeech.getState().start("msg-1", "Hello there");
+    const u = (window.speechSynthesis as unknown as MockSynth).lastUtterance;
+    u?.onerror?.({ error: "synthesis-failed" });
+    expect(useSpeech.getState().speakingId).toBeNull();
+    expect(toast.error).toHaveBeenCalledTimes(1);
   });
 });
