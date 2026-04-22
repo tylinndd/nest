@@ -512,6 +512,8 @@ const Navigator = () => {
             <Plus className="h-5 w-5" />
           </button>
           <input
+            id="navigator-query"
+            name="query"
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}

@@ -249,6 +249,8 @@ const Vault = () => {
   return (
     <div className="px-5 pt-5 pb-6">
       <input
+        id="vault-camera-input"
+        name="vault-camera"
         ref={cameraInputRef}
         type="file"
         accept="image/*"
@@ -263,6 +265,8 @@ const Vault = () => {
         }}
       />
       <input
+        id="vault-file-input"
+        name="vault-file"
         ref={fileInputRef}
         type="file"
         accept="image/*,application/pdf"
@@ -320,7 +324,10 @@ const Vault = () => {
             <motion.button
               type="button"
               key={d.id}
-              onClick={() => handleRowClick(d)}
+              onClick={(e) => {
+                e.currentTarget.blur();
+                handleRowClick(d);
+              }}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.24, delay: i * 0.04 }}
@@ -360,7 +367,10 @@ const Vault = () => {
 
       <button
         type="button"
-        onClick={() => setTarget({ kind: "pickDoc" })}
+        onClick={(e) => {
+          e.currentTarget.blur();
+          setTarget({ kind: "pickDoc" });
+        }}
         className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border-2 border-dashed border-border bg-card py-4 text-sm font-semibold text-primary min-h-[3.5rem] transition hover:border-primary/40"
       >
         <Plus className="h-4 w-4" />

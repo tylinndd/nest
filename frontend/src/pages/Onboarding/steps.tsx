@@ -281,7 +281,12 @@ export const StepCounty = () => {
           align="start"
         >
           <Command>
-            <CommandInput placeholder="Search 159 counties…" className="h-12" />
+            <CommandInput
+              id="onboarding-county-search"
+              name="county-search"
+              placeholder="Search 159 counties…"
+              className="h-12"
+            />
             <CommandList className="max-h-72">
               <CommandEmpty>No county found.</CommandEmpty>
               <CommandGroup>

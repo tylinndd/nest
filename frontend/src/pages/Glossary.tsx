@@ -62,6 +62,8 @@ const Glossary = () => {
         <label className="nest-card flex items-center gap-2 px-4 py-3">
           <Search className="h-4 w-4 text-muted-foreground" />
           <input
+            id="glossary-search"
+            name="search"
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}

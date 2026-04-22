@@ -225,7 +225,10 @@ const NextMoveCard = ({
   return (
     <button
       type="button"
-      onClick={() => onOpen(task)}
+      onClick={(e) => {
+        e.currentTarget.blur();
+        onOpen(task);
+      }}
       className={cn(
         "group w-full nest-card p-5 text-left transition active:scale-[0.995]",
         isOverdue
