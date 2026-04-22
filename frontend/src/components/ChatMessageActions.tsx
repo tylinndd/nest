@@ -1,13 +1,26 @@
 import { useEffect, useState } from "react";
-import { Copy, Check, Volume2, Square, Mail, Printer, UserCheck } from "lucide-react";
+import {
+  Copy,
+  Check,
+  Volume2,
+  Square,
+  Mail,
+  Printer,
+  UserCheck,
+  Star,
+} from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useSaved } from "@/store/saved";
+import type { Passage } from "@/lib/api";
 
 type Props = {
   text: string;
   source?: string;
   share?: boolean;
   question?: string;
+  messageId?: string;
+  passages?: Passage[];
 };
 
 const supportsSpeech = () =>
@@ -136,10 +149,35 @@ export function ChatMessageActions({
   source,
   share = true,
   question,
+  messageId,
+  passages,
 }: Props) {
   const [copied, setCopied] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const canSpeak = supportsSpeech();
+  const saved = useSaved((s) =>
+    messageId ? s.items.some((x) => x.id === messageId) : false,
+  );
+  const addSaved = useSaved((s) => s.add);
+  const removeSaved = useSaved((s) => s.remove);
+
+  const handleSaveToggle = () => {
+    if (!messageId) return;
+    if (saved) {
+      removeSaved(messageId);
+      toast("Removed from saved", { id: "chat-save", duration: 1500 });
+      return;
+    }
+    addSaved({
+      id: messageId,
+      answer: text,
+      source,
+      question,
+      savedAt: Date.now(),
+      passages,
+    });
+    toast.success("Saved", { id: "chat-save", duration: 1500 });
+  };
 
   useEffect(() => {
     return () => {
@@ -212,6 +250,26 @@ export function ChatMessageActions({
           ) : (
             <Volume2 className="h-3.5 w-3.5" />
           )}
+        </button>
+      )}
+      {share && messageId && (
+        <button
+          type="button"
+          onClick={handleSaveToggle}
+          aria-label={saved ? "Remove from saved" : "Save this answer"}
+          aria-pressed={saved}
+          className={cn(
+            "inline-flex h-7 w-7 items-center justify-center rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            saved
+              ? "text-nest-amber hover:bg-nest-amber/10"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground",
+          )}
+        >
+          <Star
+            className="h-3.5 w-3.5"
+            fill={saved ? "currentColor" : "none"}
+            strokeWidth={2}
+          />
         </button>
       )}
       {share && (

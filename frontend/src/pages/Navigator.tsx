@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { FolderLock, Mic, Paperclip, Plus, Send } from "lucide-react";
+import { FolderLock, Mic, Paperclip, Plus, Send, Star } from "lucide-react";
 import { toast } from "sonner";
 import { buildChatSeed } from "@/data/placeholder";
 import { useProfile } from "@/store/profile";
 import { useChat, type ChatMsg } from "@/store/chat";
+import { useSaved } from "@/store/saved";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { pickStarterChips } from "@/lib/starterChips";
 import { suggestFollowUps } from "@/lib/followUps";
@@ -136,6 +137,7 @@ const Navigator = () => {
   const messages = useChat((s) => s.messages);
   const setMessages = useChat((s) => s.setMessages);
   const addMessage = useChat((s) => s.addMessage);
+  const savedCount = useSaved((s) => s.items.length);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [listening, setListening] = useState(false);
@@ -393,12 +395,24 @@ const Navigator = () => {
             <p className="text-sm text-muted-foreground">Always on · private</p>
             <h1 className="font-display text-3xl text-primary">Ask Navigator</h1>
           </div>
-          <Link
-            to="/how-it-works"
-            className="shrink-0 mt-1 rounded-full border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
-          >
-            How does Nest answer?
-          </Link>
+          <div className="flex shrink-0 flex-col items-end gap-1.5">
+            <Link
+              to="/how-it-works"
+              className="rounded-full border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+            >
+              How does Nest answer?
+            </Link>
+            {savedCount > 0 && (
+              <Link
+                to="/saved"
+                aria-label={`${savedCount} saved ${savedCount === 1 ? "answer" : "answers"}`}
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+              >
+                <Star className="h-3 w-3" fill="currentColor" strokeWidth={0} />
+                Saved · {savedCount}
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
@@ -462,6 +476,8 @@ const Navigator = () => {
                       source={m.source}
                       share={!m.fallback}
                       question={priorUser}
+                      messageId={m.id}
+                      passages={m.passages}
                     />
                   </div>
                 )}
