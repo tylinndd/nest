@@ -16,10 +16,12 @@ import {
   Clock,
   AlertCircle,
   FolderLock,
+  MapPin,
   MessageCircle,
   ArrowRight,
   LifeBuoy,
   Pencil,
+  Wallet,
 } from "lucide-react";
 import { type Task } from "@/data/placeholder";
 import { derivePersonalizedTasks, computeDaysUntilAgeOut } from "@/lib/personalize";
@@ -575,6 +577,26 @@ const Home = () => {
           <p className="mt-3 font-semibold">Ask Navigator</p>
           <p className="text-xs text-muted-foreground mt-1">
             Private Q&amp;A, 24/7
+          </p>
+        </Link>
+        <Link
+          to="/near-me"
+          className="nest-card p-5 transition hover:border-primary/40 min-h-[6.5rem]"
+        >
+          <MapPin className="h-6 w-6 text-primary" />
+          <p className="mt-3 font-semibold">Near you</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Local Georgia services
+          </p>
+        </Link>
+        <Link
+          to="/money"
+          className="nest-card p-5 transition hover:border-primary/40 min-h-[6.5rem]"
+        >
+          <Wallet className="h-6 w-6 text-primary" />
+          <p className="mt-3 font-semibold">Money</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Budget + stipends
           </p>
         </Link>
       </section>
