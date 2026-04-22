@@ -40,8 +40,11 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { useProfile } from "@/store/profile";
+import { usePreferences } from "@/store/preferences";
 import { safeStorage } from "@/lib/safeStorage";
 import { glossify } from "@/lib/linkify";
+import { getContextHint } from "@/lib/contextHint";
+import { ContextHintCard } from "@/components/home/ContextHintCard";
 import { cn } from "@/lib/utils";
 
 const FIRST_TASK_KEY = "nest.first-task-fired";
@@ -428,6 +431,13 @@ const Home = () => {
       : Math.round((done.length / taskList.length) * 100);
 
   const reduceMotion = useReducedMotion();
+  const dismissedHintDate = usePreferences((s) => s.dismissedHintDate);
+  const dismissHintForToday = usePreferences((s) => s.dismissHintForToday);
+  const contextHint = useMemo(() => {
+    const todayISO = new Date().toISOString().slice(0, 10);
+    if (dismissedHintDate === todayISO) return null;
+    return getContextHint();
+  }, [dismissedHintDate]);
   const daysTarget = daysUntilExit ?? 0;
   const daysCount = useMotionValue(reduceMotion ? daysTarget : 0);
   const daysRounded = useTransform(daysCount, (v) => Math.round(v));
@@ -510,6 +520,20 @@ const Home = () => {
           <UnknownAgeCard progress={progress} />
         )}
       </div>
+
+      <AnimatePresence initial={false}>
+        {contextHint && (
+          <motion.div
+            key={`hint-${contextHint.id}`}
+            className="px-5 mt-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <ContextHintCard hint={contextHint} onDismiss={dismissHintForToday} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence mode="wait" initial={false}>
         {nextMove ? (
