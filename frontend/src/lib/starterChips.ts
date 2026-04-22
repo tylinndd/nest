@@ -7,8 +7,11 @@ const hasMedicaidNow = (p: Profile) =>
   p.health.includes("I have Medicaid right now");
 
 const pickHousingChip = (p: Profile): string => {
+  const hasCounty = p.county.trim().length > 0;
   if (!p.housing || p.housing === "Unsure / something else") {
-    return "Where can I live when I age out?";
+    return hasCounty
+      ? `Where can I live in ${p.county} County when I age out?`
+      : "Where can I live when I age out?";
   }
   if (p.housing === "Group home" || p.housing === "Foster home") {
     return "What happens to my housing when I turn 18?";
@@ -19,7 +22,9 @@ const pickHousingChip = (p: Profile): string => {
   if (p.housing === "With a relative") {
     return "What if living with my relative stops working?";
   }
-  return "I might be couch-surfing this weekend";
+  return hasCounty
+    ? `Emergency shelter options in ${p.county} County tonight`
+    : "I might be couch-surfing this weekend";
 };
 
 const pickPracticalChip = (p: Profile): string => {
