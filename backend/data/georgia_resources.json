@@ -359,7 +359,7 @@
     "category": "financial",
     "county": "statewide",
     "audience": ["young adults", "former foster youth", "transition-age youth", "students"],
-    "summary": "To open a checking or savings account in Georgia you need a valid photo ID (Georgia state ID, driver's license, or US passport), your Social Security number or ITIN, and proof of current address such as a lease, utility bill, or mail from a government agency. Banks do not run a credit check to open a standard checking or savings account, so a limited or missing credit history does not block you. Credit unions such as Georgia's Own and Delta Community accept members with no credit history. Bank On certified accounts, available at many Georgia banks and credit unions, have no overdraft fees and a low minimum opening deposit (often $25 or less). If you do not have a current address on file, a DFCS case manager or transitional housing program can help you document a mailing address.",
+    "summary": "To open a checking or savings account in Georgia you need a valid photo ID (Georgia state ID, driver's license, or US passport), your Social Security number or ITIN, and proof of current address such as a lease, utility bill, or mail from a government agency. Banks do not run a credit check to open a standard checking or savings account, so a limited or missing credit history does not block you — which is why these accounts are a good fit for foster youth, former foster youth, and other transition-age young adults. Credit unions such as Georgia's Own and Delta Community routinely open accounts for young adults and former foster youth with no credit history. Bank On certified accounts, available at many Georgia banks and credit unions, are designed for people who have been unbanked or underbanked; they have no overdraft fees and a low minimum opening deposit (often $25 or less), which makes them especially useful for youth leaving foster care. If you do not have a current address on file, a DFCS case manager or transitional housing program can help you document a mailing address.",
     "eligibility": "Anyone 18 or older with valid ID and a Social Security number or ITIN. Minors may open joint accounts with a trusted adult.",
     "services": [
       "checking account setup guidance",
@@ -394,6 +394,47 @@
     "contact_url": "https://www.georgiasown.org/",
     "address": "Georgia",
     "source_name": "Georgia's Own Credit Union",
+    "last_verified": "2026-04-22"
+  },
+  {
+    "id": "ssa-card-replacement-001",
+    "name": "Replacing a Social Security Card in Georgia",
+    "category": "documents",
+    "county": "statewide",
+    "audience": ["young adults", "former foster youth", "transition-age youth"],
+    "summary": "To replace a lost or stolen Social Security card, apply through the Social Security Administration (SSA). Replacement cards are free. You need one primary proof of identity — a U.S. driver's license, state-issued ID card, or U.S. passport is preferred. If you don't have any of those, SSA may accept two secondary documents such as an employer ID, school ID, health insurance card (not Medicare), or military ID. You also need to show proof of U.S. citizenship or lawful immigration status if that isn't already on file with SSA; a certified U.S. birth certificate works for citizenship. If you already have a my Social Security online account and a U.S. mailing address, you can usually request the replacement at ssa.gov without visiting an office. Otherwise, apply in person at any Georgia SSA field office. SSA limits replacements to three per year and ten in a lifetime, though replacements tied to a legal name change don't count against those limits. A new card typically arrives in the mail within 10 to 14 business days. If you don't have a photo ID, ask your DFCS case manager — they can often help you get one or write a verification letter the SSA will accept in place of some ID documents.",
+    "eligibility": "Anyone with a Social Security number needing a replacement card. U.S. citizens and lawful residents.",
+    "services": [
+      "Social Security card replacement",
+      "lost or stolen card re-issuance",
+      "name-change card issuance",
+      "online and in-person applications"
+    ],
+    "contact_phone": "1-800-772-1213",
+    "contact_url": "https://www.ssa.gov/ssnumber/ss5doc.htm",
+    "address": "Georgia",
+    "source_name": "Social Security Administration",
+    "last_verified": "2026-04-22"
+  },
+  {
+    "id": "ga-dds-id-foster-youth-001",
+    "name": "Getting a Georgia State ID or Driver's License as a Foster Youth",
+    "category": "documents",
+    "county": "statewide",
+    "audience": ["youth in foster care", "former foster youth", "transition-age youth"],
+    "summary": "The Georgia Department of Driver Services (DDS) issues state ID cards and driver's licenses. Youth currently in foster care and former foster youth who meet DDS eligibility rules can qualify for a fee waiver, meaning the ID or license is issued at no cost. To apply, bring one primary proof of identity (certified U.S. birth certificate, U.S. passport, or permanent resident card), proof of your Social Security number (Social Security card, W-2, or 1099), and two proofs of Georgia residency (lease, utility bill, bank statement, school record, or a letter from a group home or placement provider). Foster youth applying for the fee waiver should also bring documentation of foster-care status — a verification letter from your DFCS case manager is the standard document, and DDS can confirm what they accept at your service center. Apply in person at any Georgia DDS Customer Service Center; most centers issue a temporary paper license the same day and mail the plastic card within 2 to 4 weeks. If you do not yet have a certified birth certificate, get one first — Georgia DPH Vital Records issues them, and a DFCS case manager can help request it on your behalf.",
+    "eligibility": "Georgia residents. Fee waiver: youth currently in foster care or former foster youth meeting DDS eligibility criteria. Ask your DFCS case manager for a verification letter.",
+    "services": [
+      "state ID card issuance",
+      "driver's license issuance",
+      "foster-youth fee waiver",
+      "document requirements for first-time applicants",
+      "same-day temporary license"
+    ],
+    "contact_phone": "678-413-8400",
+    "contact_url": "https://dds.georgia.gov/",
+    "address": "Georgia",
+    "source_name": "Georgia Department of Driver Services",
     "last_verified": "2026-04-22"
   },
   {
