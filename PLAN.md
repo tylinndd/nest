@@ -37,6 +37,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked
 | 2.4 | Rules engine for 6 benefit programs | `backend/rules/` | Tylin | ✅ | — | Verified 2026-04-20 — `/intake` returns eligibility[] + tasks[] for Maria persona |
 | 3.1 | Wire Navigator → `/chat` | `frontend/src/pages/Navigator.tsx` | Stephen | ✅ | 2.1 | Wired via `lib/api.ts` + `lib/profileMap.ts`; `route_to_emergency` navigates to `/emergency`; verified in browser 2026-04-20 |
 | 3.2 | Wire Benefits → `/intake` bestfit deep link | `frontend/src/store/intake.ts`, `frontend/src/pages/Benefits.tsx` | Stephen | ✅ | 2.4 | BestFit CTA card wired per D1 (link-out, not full screener). Static benefit copy retained — richer drawer guides than `/intake.eligibility` would return. Intake store: fetch/dedupe/abort + 8 tests. |
+| 3.3 | `GET /benefits` endpoint + frontend wiring | `backend/app/services/benefits.py`, `backend/app/main.py`, `frontend/src/lib/api.ts`, `frontend/src/store/benefits.ts`, `frontend/src/pages/Benefits.tsx` | Tylin (backend) / Stephen (frontend) | ✅ | 1.5, 2.1 | Closes the outstanding Shared Contracts row. Backend catalog mirrors `placeholder.ts`; frontend falls back to bundled copy if fetch fails. +3 backend tests, +7 frontend tests. |
 | 4.1 | Poster PDF | `/deliverables/poster.pdf` | Brenden | ⬜ | 1.* | 8-feature layout + demo persona Maria |
 | 4.2 | 30-sec flash video | `/deliverables/flash.mp4` | Brenden + Stephen | ⬜ | 1.* | Optional, targets C-Day loop |
 | 4.3 | CMT submission (cmt3.research.microsoft.com/CDAY2026) | — | Stephen | ⬜ | 4.1 | Title/abstract/authors confirmed; live demo URL https://nest-zeta-nine.vercel.app |
@@ -67,7 +68,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked
 | Contract | Owner | Consumers | Definition |
 |----------|-------|-----------|------------|
 | `POST /chat` | Tylin | Stephen | Request: `{ query: string, user_profile: UserProfile }`. Response: `{ answer: string, sources: string[], fallback: boolean, route_to_emergency: boolean }`. See `backend/app/schemas.py` — ground truth lives in Pydantic. |
-| `GET /benefits` | Tylin | Stephen | Response: `Benefit[]` where `Benefit = { id, title, eligibility, summary, source, status: "qualify" \| "action" \| "auto", cta? }`. Matches `frontend/src/data/placeholder.ts` Benefit type. _Not yet implemented._ |
+| `GET /benefits` | Tylin | Stephen | Response: `Benefit[]` where `Benefit = { id, title, eligibility, summary, source, status: "qualify" \| "action" \| "auto", cta?, href?, verified_on? }`. See `backend/app/schemas.py` — ground truth lives in Pydantic. Frontend mirror in `frontend/src/data/placeholder.ts` kept in sync as offline fallback. Verified end-to-end 2026-04-22. |
 | `UserProfile` envelope | Stephen | Tylin | `{ age?: number, county?: string, status?: string, months_in_care?: number, college_intent?: string, top_concerns: string[], enrolled_at_ksu?: boolean, aged_out_at_18?: boolean, in_foster_care_at_18?: boolean, documents: Record<string, boolean> }` — sent on `/chat`. Frontend store needs a mapper; current zustand store shape differs from backend `UserProfile` and will need reconciliation before wiring 3.1. |
 | Crisis routing | Tylin | Stephen | Backend flips `route_to_emergency: true` on crisis keywords (`suicide`, `kill myself`, `unsafe`, `homeless tonight`, etc.). Frontend must navigate to `/emergency` when flag is true instead of rendering the chat reply. |
 
@@ -113,4 +114,4 @@ Trauma-informed design — red destructive tone feels alarming. Full nest-green 
 
 ---
 
-_Last updated: 2026-04-20 by Stephen._
+_Last updated: 2026-04-22 by Stephen._
