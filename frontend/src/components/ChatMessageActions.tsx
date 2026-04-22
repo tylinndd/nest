@@ -6,6 +6,7 @@ import {
   Square,
   Mail,
   Printer,
+  ListChecks,
   UserCheck,
   Star,
 } from "lucide-react";
@@ -66,6 +67,64 @@ const escapeHtml = (s: string) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
+const splitIntoSteps = (text: string): string[] => {
+  const clean = text.trim();
+  if (!clean) return [];
+  const bySentence = clean
+    .split(/(?<=[.!?])\s+(?=[A-Z0-9])/)
+    .map((s) => s.trim())
+    .filter((s) => s.length >= 20);
+  if (bySentence.length >= 2) return bySentence.slice(0, 12);
+  const byPara = clean
+    .split(/\n{2,}/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return (byPara.length >= 2 ? byPara : [clean]).slice(0, 12);
+};
+
+const openPrintWindow = (html: string) => {
+  const iframe = document.createElement("iframe");
+  iframe.setAttribute("aria-hidden", "true");
+  iframe.style.position = "fixed";
+  iframe.style.right = "0";
+  iframe.style.bottom = "0";
+  iframe.style.width = "0";
+  iframe.style.height = "0";
+  iframe.style.border = "0";
+  document.body.appendChild(iframe);
+  const win = iframe.contentWindow;
+  const doc = iframe.contentDocument;
+  if (!win || !doc) {
+    iframe.remove();
+    toast.error("Couldn't open the print view", { id: "chat-print" });
+    return;
+  }
+  doc.open();
+  doc.write(html);
+  doc.close();
+
+  const cleanup = () => {
+    window.setTimeout(() => iframe.remove(), 200);
+  };
+  win.onafterprint = cleanup;
+  const runPrint = () => {
+    try {
+      win.focus();
+      win.print();
+    } catch {
+      toast.error("Couldn't open the print view", { id: "chat-print" });
+      iframe.remove();
+      return;
+    }
+    window.setTimeout(cleanup, 2000);
+  };
+  if (doc.readyState === "complete") {
+    runPrint();
+  } else {
+    iframe.onload = runPrint;
+  }
+};
+
 const printAnswer = (text: string, source: string | undefined) => {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const body = escapeHtml(text.trim()).replace(/\n/g, "<br />");
@@ -101,47 +160,71 @@ const printAnswer = (text: string, source: string | undefined) => {
 </body>
 </html>`;
 
-  const iframe = document.createElement("iframe");
-  iframe.setAttribute("aria-hidden", "true");
-  iframe.style.position = "fixed";
-  iframe.style.right = "0";
-  iframe.style.bottom = "0";
-  iframe.style.width = "0";
-  iframe.style.height = "0";
-  iframe.style.border = "0";
-  document.body.appendChild(iframe);
-  const win = iframe.contentWindow;
-  const doc = iframe.contentDocument;
-  if (!win || !doc) {
-    iframe.remove();
-    toast.error("Couldn't open the print view", { id: "chat-print" });
-    return;
-  }
-  doc.open();
-  doc.write(html);
-  doc.close();
+  openPrintWindow(html);
+};
 
-  const cleanup = () => {
-    window.setTimeout(() => iframe.remove(), 200);
-  };
-  win.onafterprint = cleanup;
-  const runPrint = () => {
-    try {
-      win.focus();
-      win.print();
-    } catch {
-      toast.error("Couldn't open the print view", { id: "chat-print" });
-      iframe.remove();
-      return;
-    }
-    // Safari / some browsers never fire onafterprint — hard fallback.
-    window.setTimeout(cleanup, 2000);
-  };
-  if (doc.readyState === "complete") {
-    runPrint();
-  } else {
-    iframe.onload = runPrint;
+const printAnswerAsChecklist = (
+  text: string,
+  source: string | undefined,
+  question: string | undefined,
+) => {
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const steps = splitIntoSteps(text);
+  const stepsHtml = steps
+    .map(
+      (step) =>
+        `<li><input type="checkbox" disabled /><span>${escapeHtml(step).replace(/\n/g, "<br />")}</span></li>`,
+    )
+    .join("");
+  const questionHtml =
+    question && question.trim()
+      ? `<p class="question"><strong>Asked:</strong> ${escapeHtml(question.trim())}</p>`
+      : "";
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Checklist from Nest</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+         color: #1a1a1a; margin: 0; padding: 48px; line-height: 1.55;
+         font-size: 14px; }
+  .wordmark { font-weight: 700; color: #2f5d3a; font-size: 18px;
+              letter-spacing: 0.02em; }
+  h1 { font-size: 22px; font-weight: 700; margin: 8px 0 20px; color: #2f5d3a; }
+  .question { margin: 0 0 20px; padding: 10px 14px; background: #f5efe2;
+              border-radius: 8px; font-size: 13px; color: #3a3a3a; }
+  .steps { list-style: none; padding: 0; margin: 0 0 24px; counter-reset: step; }
+  .steps li { display: flex; gap: 12px; padding: 12px 0;
+              border-bottom: 1px solid #eee; counter-increment: step; }
+  .steps li::before { content: counter(step) "."; font-weight: 700;
+                      color: #2f5d3a; flex-shrink: 0; min-width: 20px; }
+  .steps li span { flex: 1; }
+  input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px;
+                           flex-shrink: 0; accent-color: #2f5d3a; }
+  .source { display: inline-block; font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: #555; background: #eee; padding: 4px 10px; border-radius: 999px; }
+  footer { margin-top: 40px; font-size: 11px; color: #777; }
+  @media print {
+    body { padding: 24px; }
+    input[type="checkbox"] { border: 1.5px solid #2f5d3a; appearance: none;
+                             -webkit-appearance: none; border-radius: 3px; }
   }
+</style>
+</head>
+<body>
+  <div class="wordmark">Nest</div>
+  <h1>Your checklist from Nest</h1>
+  ${questionHtml}
+  <ol class="steps">${stepsHtml}</ol>
+  ${source ? `<span class="source">Source &middot; ${escapeHtml(source)}</span>` : ""}
+  <footer>Generated from Nest &middot; ${escapeHtml(origin)}</footer>
+</body>
+</html>`;
+
+  openPrintWindow(html);
 };
 
 export function ChatMessageActions({
@@ -294,9 +377,19 @@ export function ChatMessageActions({
             type="button"
             onClick={() => printAnswer(text, source)}
             aria-label="Print this answer"
+            title="Print this answer"
             className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Printer className="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => printAnswerAsChecklist(text, source, question)}
+            aria-label="Print as numbered checklist"
+            title="Print as numbered checklist"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ListChecks className="h-3.5 w-3.5" />
           </button>
         </>
       )}
