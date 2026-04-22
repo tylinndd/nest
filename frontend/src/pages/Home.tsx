@@ -41,6 +41,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useProfile } from "@/store/profile";
 import { safeStorage } from "@/lib/safeStorage";
+import { glossify } from "@/lib/linkify";
 import { cn } from "@/lib/utils";
 
 const FIRST_TASK_KEY = "nest.first-task-fired";
@@ -245,7 +246,7 @@ const NextMoveCard = ({
         Your next move
       </p>
       <p className="mt-2 font-display text-xl text-primary leading-tight">
-        {task.title}
+        {glossify(task.title, `nm-${task.id}`)}
       </p>
       <p className="mt-1 text-sm text-muted-foreground">{task.due}</p>
       <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
