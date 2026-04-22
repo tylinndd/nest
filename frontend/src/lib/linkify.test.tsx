@@ -72,4 +72,24 @@ describe("linkify", () => {
       "mailto:help@example.com",
     );
   });
+
+  it("wraps glossary acronyms as interactive buttons", () => {
+    const { container } = renderLinkify("Contact DFCS about your ILP case");
+    const buttons = container.querySelectorAll("button");
+    expect(buttons.length).toBeGreaterThanOrEqual(2);
+    const labels = Array.from(buttons).map((b) => b.getAttribute("aria-label"));
+    expect(labels.some((l) => l?.includes("DFCS"))).toBe(true);
+    expect(labels.some((l) => l?.includes("ILP"))).toBe(true);
+  });
+
+  it("ignores acronym-like text that is not in the glossary", () => {
+    const { container } = renderLinkify("Look at RANDOMACR for details");
+    expect(container.querySelectorAll("button")).toHaveLength(0);
+  });
+
+  it("keeps phone links and acronyms side by side", () => {
+    const { container } = renderLinkify("Call (470) 578-6777 about your DFCS case");
+    expect(container.querySelectorAll("a")).toHaveLength(1);
+    expect(container.querySelectorAll("button").length).toBeGreaterThanOrEqual(1);
+  });
 });
