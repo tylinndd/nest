@@ -34,6 +34,7 @@ const SOURCES = [
   "Chafee Foster Care Program rules",
   "Georgia Medicaid extension for former foster youth",
   "KSU ASCEND tuition waiver guidance",
+  "Embark Georgia statewide foster-youth network (Chafee ETV coordinator)",
 ];
 
 const TECH = [
