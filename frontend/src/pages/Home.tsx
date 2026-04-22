@@ -21,6 +21,7 @@ import {
   ArrowRight,
   LifeBuoy,
   Pencil,
+  Phone,
   Wallet,
 } from "lucide-react";
 import { type Task } from "@/data/placeholder";
@@ -600,6 +601,53 @@ const Home = () => {
           </p>
         </Link>
       </section>
+
+      {profile.trustedAdult ? (
+        <section className="mt-4 px-5">
+          <a
+            href={`tel:${profile.trustedAdult.phone.replace(/[^\d]/g, "")}`}
+            className="nest-card p-4 flex items-center justify-between border-primary/30 bg-primary/[0.04]"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Phone className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-primary/70">
+                  Trusted adult · one tap
+                </p>
+                <p className="font-semibold text-foreground">
+                  Call {profile.trustedAdult.name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {profile.trustedAdult.phone}
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+          </a>
+        </section>
+      ) : (
+        <section className="mt-4 px-5">
+          <Link
+            to="/settings"
+            className="nest-card p-4 flex items-center justify-between border-dashed"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                <Phone className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="font-semibold text-foreground">Add a trusted adult</p>
+                <p className="text-xs text-muted-foreground">
+                  One person, one tap, when things get hard
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+          </Link>
+        </section>
+      )}
 
       <section className="mt-4 px-5">
         <Link

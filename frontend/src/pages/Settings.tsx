@@ -9,8 +9,10 @@ import {
   Home as HomeIcon,
   Lock,
   MapPin,
+  Phone,
   Trash2,
   User as UserIcon,
+  UserPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +33,12 @@ const Settings = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [ageDraft, setAgeDraft] = useState<string>(
     profile.age !== null ? String(profile.age) : "",
+  );
+  const [trustedName, setTrustedName] = useState<string>(
+    profile.trustedAdult?.name ?? "",
+  );
+  const [trustedPhone, setTrustedPhone] = useState<string>(
+    profile.trustedAdult?.phone ?? "",
   );
 
   const docsSummary = useMemo(() => {
@@ -65,6 +73,22 @@ const Settings = () => {
   const handleWipe = () => {
     setConfirmOpen(false);
     navigate("/reset");
+  };
+
+  const saveTrustedAdult = () => {
+    const name = trustedName.trim();
+    const phone = trustedPhone.trim();
+    if (!name || !phone) {
+      profile.setTrustedAdult(null);
+      return;
+    }
+    profile.setTrustedAdult({ name, phone });
+  };
+
+  const clearTrustedAdult = () => {
+    setTrustedName("");
+    setTrustedPhone("");
+    profile.setTrustedAdult(null);
   };
 
   return (
@@ -150,6 +174,68 @@ const Settings = () => {
               className="mt-2"
             />
           </div>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          Trusted adult
+        </p>
+        <div className="nest-card p-4 space-y-4">
+          <div className="flex items-start gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <UserPlus className="h-4 w-4" />
+            </span>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              One person who picks up when you need them — caseworker, mentor,
+              aunt, coach. Nest pins their number on your Home so it's one tap
+              from anywhere.
+            </p>
+          </div>
+          <div>
+            <Label
+              htmlFor="settings-trusted-name"
+              className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground"
+            >
+              <UserIcon className="h-3.5 w-3.5" /> Name + role
+            </Label>
+            <Input
+              id="settings-trusted-name"
+              value={trustedName}
+              onChange={(e) => setTrustedName(e.target.value)}
+              onBlur={saveTrustedAdult}
+              placeholder="Ms. Carter · caseworker"
+              className="mt-2"
+            />
+          </div>
+          <div>
+            <Label
+              htmlFor="settings-trusted-phone"
+              className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground"
+            >
+              <Phone className="h-3.5 w-3.5" /> Phone
+            </Label>
+            <Input
+              id="settings-trusted-phone"
+              type="tel"
+              inputMode="tel"
+              value={trustedPhone}
+              onChange={(e) => setTrustedPhone(e.target.value)}
+              onBlur={saveTrustedAdult}
+              placeholder="(470) 555-0198"
+              className="mt-2"
+            />
+          </div>
+          {profile.trustedAdult && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={clearTrustedAdult}
+              className="w-full justify-center rounded-full min-h-[2.75rem]"
+            >
+              Remove contact
+            </Button>
+          )}
         </div>
       </section>
 

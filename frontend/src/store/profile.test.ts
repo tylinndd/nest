@@ -13,6 +13,7 @@ describe("migrateProfile", () => {
       housing: "",
       health: [],
       completedTaskIds: [],
+      trustedAdult: null,
     });
     expect(migrateProfile(undefined)).toEqual({
       name: "",
@@ -24,6 +25,7 @@ describe("migrateProfile", () => {
       housing: "",
       health: [],
       completedTaskIds: [],
+      trustedAdult: null,
     });
   });
 
@@ -92,7 +94,7 @@ describe("migrateProfile", () => {
     });
   });
 
-  it("preserves a v4 blob round-trip (including completedTaskIds)", () => {
+  it("migrates a v4 blob (no trustedAdult yet)", () => {
     const v4 = {
       name: "Maria",
       age: 18,
@@ -104,7 +106,37 @@ describe("migrateProfile", () => {
       health: ["None of these apply"],
       completedTaskIds: ["task-1", "task-2"],
     };
-    expect(migrateProfile(v4)).toEqual(v4);
+    expect(migrateProfile(v4)).toEqual({ ...v4, trustedAdult: null });
+  });
+
+  it("preserves a v5 blob round-trip (with trustedAdult)", () => {
+    const v5 = {
+      name: "Maria",
+      age: 18,
+      county: "Cobb",
+      documentsHave: ["birth"],
+      uploadedDocs: [],
+      education: "college",
+      housing: "Foster home",
+      health: [],
+      completedTaskIds: [],
+      trustedAdult: { name: "Ms. Carter", phone: "(470) 555-0198" },
+    };
+    expect(migrateProfile(v5)).toEqual(v5);
+  });
+
+  it("drops trustedAdult when shape is malformed", () => {
+    expect(migrateProfile({ trustedAdult: {} }).trustedAdult).toBeNull();
+    expect(
+      migrateProfile({ trustedAdult: { name: "", phone: "555" } })
+        .trustedAdult,
+    ).toBeNull();
+    expect(
+      migrateProfile({ trustedAdult: { name: "Ms. Carter", phone: "" } })
+        .trustedAdult,
+    ).toBeNull();
+    expect(migrateProfile({ trustedAdult: "not an object" }).trustedAdult)
+      .toBeNull();
   });
 
   it("drops unknown document ids", () => {

@@ -31,6 +31,8 @@ export const HEALTH_OPTIONS = [
 ] as const;
 export type HealthFlag = (typeof HEALTH_OPTIONS)[number];
 
+export type TrustedAdult = { name: string; phone: string };
+
 export type Profile = {
   name: string;
   age: number | null;
@@ -41,6 +43,7 @@ export type Profile = {
   housing: HousingOption | "";
   health: HealthFlag[];
   completedTaskIds: string[];
+  trustedAdult: TrustedAdult | null;
 };
 
 type ProfileActions = {
@@ -56,6 +59,7 @@ type ProfileActions = {
   setHealth: (items: HealthFlag[]) => void;
   toggleHealth: (option: HealthFlag) => void;
   markTaskDone: (id: string) => void;
+  setTrustedAdult: (value: TrustedAdult | null) => void;
   reset: () => void;
 };
 
@@ -69,6 +73,7 @@ const emptyProfile: Profile = {
   housing: "",
   health: [],
   completedTaskIds: [],
+  trustedAdult: null,
 };
 
 const DOCUMENT_ID_SET = new Set<string>(DOCUMENT_IDS);
@@ -97,6 +102,15 @@ const sanitizeHousing = (value: unknown): HousingOption | "" =>
 const sanitizeStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
 
+const sanitizeTrustedAdult = (value: unknown): TrustedAdult | null => {
+  if (!value || typeof value !== "object") return null;
+  const raw = value as Record<string, unknown>;
+  const name = typeof raw.name === "string" ? raw.name.trim() : "";
+  const phone = typeof raw.phone === "string" ? raw.phone.trim() : "";
+  if (!name || !phone) return null;
+  return { name, phone };
+};
+
 export const migrateProfile = (persisted: unknown): Profile => {
   const base = (persisted ?? {}) as Record<string, unknown>;
   return {
@@ -115,6 +129,7 @@ export const migrateProfile = (persisted: unknown): Profile => {
     housing: sanitizeHousing(base.housing),
     health: sanitizeHealth(base.health),
     completedTaskIds: sanitizeStringArray(base.completedTaskIds),
+    trustedAdult: sanitizeTrustedAdult(base.trustedAdult),
   };
 };
 
@@ -157,11 +172,13 @@ export const useProfile = create<Profile & ProfileActions>()(
             ? s
             : { completedTaskIds: [...s.completedTaskIds, id] },
         ),
+      setTrustedAdult: (value) =>
+        set({ trustedAdult: sanitizeTrustedAdult(value) }),
       reset: () => set({ ...emptyProfile }),
     }),
     {
       name: "nest.profile",
-      version: 4,
+      version: 5,
       storage: createJSONStorage(() => safeStorage),
       migrate: (persisted) => migrateProfile(persisted),
       onRehydrateStorage: () => (_state, error) => {

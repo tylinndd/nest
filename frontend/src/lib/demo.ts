@@ -25,6 +25,7 @@ export const marianProfile: Profile = {
   housing: "Group home",
   health: ["I have Medicaid right now"],
   completedTaskIds: [],
+  trustedAdult: { name: "Ms. Carter · caseworker", phone: "(470) 555-0198" },
 };
 
 export const marcusProfile: Profile = {
@@ -37,6 +38,7 @@ export const marcusProfile: Profile = {
   housing: "Foster home",
   health: ["I have Medicaid right now"],
   completedTaskIds: [],
+  trustedAdult: null,
 };
 
 export const jadeProfile: Profile = {
@@ -49,6 +51,7 @@ export const jadeProfile: Profile = {
   housing: "Independent living program",
   health: ["I have Medicaid right now", "I take prescriptions"],
   completedTaskIds: [],
+  trustedAdult: { name: "Dee · Embark mentor", phone: "(706) 555-0147" },
 };
 
 export const profileFor = (persona: DemoPersona): Profile => {
