@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* Nest palette — hex anchors
-       green #1B4332, amber #D97706, cream #FAF7F2,
+       green #1B4332, amber #B45309, cream #FAF7F2,
        sage  #52B788, coral #E07B6A, card  #FFFFFF */
     --background: 38 44% 97%;          /* cream #FAF7F2 */
     --foreground: 155 52% 10%;         /* deep ink */
@@ -31,7 +31,7 @@
     --destructive: 9 66% 65%;          /* nest coral #E07B6A */
     --destructive-foreground: 0 0% 100%;
 
-    --warning: 32 95% 44%;             /* nest amber #D97706 */
+    --warning: 28 89% 37%;             /* nest amber #B45309 */
     --warning-foreground: 0 0% 100%;
 
     --success: 152 49% 52%;            /* nest sage #52B788 */

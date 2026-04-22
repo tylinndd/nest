@@ -56,7 +56,7 @@ export default {
         },
         nest: {
           green: "#1B4332",
-          amber: "#D97706",
+          amber: "#B45309",
           cream: "#FAF7F2",
           sage: "#52B788",
           coral: "#E07B6A",

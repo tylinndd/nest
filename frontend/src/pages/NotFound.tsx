@@ -9,7 +9,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-6">
+    <main className="flex min-h-screen items-center justify-center bg-background px-6">
       <div className="max-w-sm text-center">
         <p aria-hidden className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           404
@@ -27,7 +27,7 @@ const NotFound = () => {
           Back to home
         </Link>
       </div>
-    </div>
+    </main>
   );
 };
 

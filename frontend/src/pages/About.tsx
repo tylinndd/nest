@@ -63,7 +63,7 @@ const TECH = [
 ];
 
 const About = () => (
-  <div className="min-h-full bg-background">
+  <main className="min-h-full bg-background">
     <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-6">
       <div className="flex items-center justify-between">
         <Link
@@ -257,7 +257,7 @@ const About = () => (
         </a>
       </section>
     </div>
-  </div>
+  </main>
 );
 
 export default About;
