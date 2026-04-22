@@ -317,6 +317,7 @@ const Navigator = () => {
         ...(res.sources.length > 0
           ? { source: res.sources.join(" · ") }
           : {}),
+        ...(res.passages.length > 0 ? { passages: res.passages } : {}),
       };
       addMessage(reply);
 
@@ -425,7 +426,11 @@ const Navigator = () => {
                 >
                   <p className="leading-relaxed">{linkify(m.text)}</p>
                   {m.source && (
-                    <SourceReveal source={m.source} showProfile={!m.fallback} />
+                    <SourceReveal
+                      source={m.source}
+                      showProfile={!m.fallback}
+                      passages={m.passages}
+                    />
                   )}
                 </div>
                 {!isUser && (

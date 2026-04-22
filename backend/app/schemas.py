@@ -46,11 +46,18 @@ class IntakeRequest(BaseModel):
     user_profile: UserProfile
 
 
+class Passage(BaseModel):
+    source_name: str
+    snippet: str
+    url: Optional[str] = None
+
+
 class ChatResponse(BaseModel):
     answer: str
     sources: List[str]
     fallback: bool
     route_to_emergency: bool = False
+    passages: List[Passage] = Field(default_factory=list)
 
 
 class IntakeResponse(BaseModel):

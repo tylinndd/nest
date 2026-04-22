@@ -55,6 +55,44 @@ def extract_sources(docs) -> list[str]:
     return seen
 
 
+_SNIPPET_MAX = 520
+
+
+def _shorten(text: str, limit: int = _SNIPPET_MAX) -> str:
+    clean = " ".join(text.split())
+    if len(clean) <= limit:
+        return clean
+    # prefer breaking at a sentence/clause boundary close to the limit
+    window = clean[:limit]
+    for sep in (". ", "; ", ", "):
+        idx = window.rfind(sep)
+        if idx >= int(limit * 0.6):
+            return window[: idx + 1].rstrip() + "…"
+    return window.rstrip() + "…"
+
+
+def extract_passages(docs) -> list[dict]:
+    """Build passage payloads (deduped by source) for the frontend drawer.
+
+    The frontend already shows a source name; passages let it also show
+    the exact text the RAG retriever fed the LLM so judges and users can
+    verify that answers are actually grounded.
+    """
+    seen: dict[str, dict] = {}
+    ordered: list[str] = []
+    for doc in docs:
+        name = doc.metadata.get("source_name")
+        if not name or name in seen:
+            continue
+        snippet = _shorten(doc.page_content or "")
+        if not snippet:
+            continue
+        url = doc.metadata.get("contact_url") or None
+        seen[name] = {"source_name": name, "snippet": snippet, "url": url or None}
+        ordered.append(name)
+    return [seen[n] for n in ordered]
+
+
 _llm = None
 
 
@@ -90,6 +128,7 @@ def answer_question(query: str, user_profile):
             "sources": ["988", "211 Georgia"],
             "fallback": True,
             "route_to_emergency": True,
+            "passages": [],
         }
 
     docs = retrieve_documents(query, k=4)
@@ -101,6 +140,7 @@ def answer_question(query: str, user_profile):
             "sources": ["211 Georgia"],
             "fallback": True,
             "route_to_emergency": False,
+            "passages": [],
         }
 
     context = format_context(docs)
@@ -142,6 +182,7 @@ Question:
             "sources": ["211 Georgia"],
             "fallback": True,
             "route_to_emergency": False,
+            "passages": [],
         }
 
     return {
@@ -149,6 +190,7 @@ Question:
         "sources": sources,
         "fallback": False,
         "route_to_emergency": False,
+        "passages": extract_passages(docs),
     }
 
 
@@ -159,6 +201,7 @@ __all__ = [
     "answer_question",
     "format_context",
     "extract_sources",
+    "extract_passages",
     "get_llm",
     "is_crisis",
     "retrieve_documents",

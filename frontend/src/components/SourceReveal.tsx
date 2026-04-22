@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BadgeCheck, AlertCircle } from "lucide-react";
+import { BadgeCheck, AlertCircle, ExternalLink, Quote } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -11,8 +11,13 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { useProfile, type EducationPlan } from "@/store/profile";
+import type { Passage } from "@/lib/api";
 
-type Props = { source: string; showProfile?: boolean };
+type Props = {
+  source: string;
+  showProfile?: boolean;
+  passages?: Passage[];
+};
 
 const countSources = (source: string) =>
   source
@@ -26,7 +31,11 @@ const EDUCATION_LABEL: Record<EducationPlan, string> = {
   working: "Heading to work, not school",
 };
 
-export function SourceReveal({ source, showProfile = false }: Props) {
+export function SourceReveal({
+  source,
+  showProfile = false,
+  passages = [],
+}: Props) {
   const [open, setOpen] = useState(false);
   const name = useProfile((s) => s.name);
   const age = useProfile((s) => s.age);
@@ -99,6 +108,46 @@ export function SourceReveal({ source, showProfile = false }: Props) {
                 {source}
               </p>
             </div>
+
+            {passages.length > 0 && (
+              <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 px-4 py-3">
+                <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-primary">
+                  <Quote className="h-3 w-3" />
+                  From the actual source{passages.length > 1 ? "s" : ""}
+                </p>
+                <ul className="mt-2 space-y-3">
+                  {passages.map((p, i) => (
+                    <li
+                      key={`${p.source_name}-${i}`}
+                      className="border-l-2 border-primary/40 pl-3"
+                    >
+                      <p className="text-[11px] font-semibold text-primary">
+                        {p.source_name}
+                      </p>
+                      <p className="mt-1 text-sm text-foreground leading-relaxed">
+                        {p.snippet}
+                      </p>
+                      {p.url && (
+                        <a
+                          href={p.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline"
+                        >
+                          Open document
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-3 text-[10px] text-muted-foreground leading-relaxed">
+                  This is the exact text Navigator's retriever pulled from the
+                  corpus before the answer was generated. If the answer goes
+                  beyond what this passage supports, that's a bug — not a feature.
+                </p>
+              </div>
+            )}
 
             {renderProfileCard && (
               <div className="rounded-2xl border-2 border-border bg-card px-4 py-3">

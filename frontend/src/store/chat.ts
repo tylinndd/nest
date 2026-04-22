@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { safeStorage } from "@/lib/safeStorage";
+import type { Passage } from "@/lib/api";
 
 export type ChatMsg = {
   id: string;
@@ -9,6 +10,7 @@ export type ChatMsg = {
   source?: string;
   followUps?: string[];
   fallback?: boolean;
+  passages?: Passage[];
 };
 
 export const CHAT_MESSAGE_CAP = 200;

@@ -17,11 +17,18 @@ export type BackendUserProfile = {
   documents: Record<string, boolean>;
 };
 
+export type Passage = {
+  source_name: string;
+  snippet: string;
+  url: string | null;
+};
+
 export type ChatResponse = {
   answer: string;
   sources: string[];
   fallback: boolean;
   route_to_emergency: boolean;
+  passages: Passage[];
 };
 
 export type EligibilityResult = {
@@ -113,15 +120,31 @@ const post = async <T>(
   return parsed;
 };
 
+const isPassage = (v: unknown): v is Passage => {
+  if (typeof v !== "object" || v === null) return false;
+  const r = v as Record<string, unknown>;
+  return (
+    typeof r.source_name === "string" &&
+    typeof r.snippet === "string" &&
+    (r.url === null || typeof r.url === "string" || r.url === undefined)
+  );
+};
+
 const isChatResponse = (v: unknown): v is ChatResponse => {
   if (typeof v !== "object" || v === null) return false;
   const r = v as Record<string, unknown>;
+  // `passages` is tolerated as missing so a newer frontend can still
+  // talk to an older backend without crashing validation.
+  const passagesOk =
+    r.passages === undefined ||
+    (Array.isArray(r.passages) && r.passages.every(isPassage));
   return (
     typeof r.answer === "string" &&
     Array.isArray(r.sources) &&
     r.sources.every((s) => typeof s === "string") &&
     typeof r.fallback === "boolean" &&
-    typeof r.route_to_emergency === "boolean"
+    typeof r.route_to_emergency === "boolean" &&
+    passagesOk
   );
 };
 
@@ -137,12 +160,16 @@ const isIntakeResponse = (v: unknown): v is IntakeResponse => {
   );
 };
 
-export const postChat = (
+export const postChat = async (
   query: string,
   user_profile: BackendUserProfile,
   signal?: AbortSignal,
-): Promise<ChatResponse> =>
-  post("/chat", { query, user_profile }, signal, isChatResponse);
+): Promise<ChatResponse> => {
+  const res = await post("/chat", { query, user_profile }, signal, isChatResponse);
+  // Normalize passages to an array so downstream code never branches on
+  // `passages === undefined`.
+  return { ...res, passages: res.passages ?? [] };
+};
 
 export const postIntake = (
   user_profile: BackendUserProfile,
