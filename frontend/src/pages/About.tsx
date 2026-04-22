@@ -121,6 +121,13 @@ const About = () => (
           >
             See the 4-step explainer
           </Link>
+          . New to the foster-care vocabulary?{" "}
+          <Link
+            to="/glossary"
+            className="font-semibold text-primary hover:underline"
+          >
+            Browse the glossary
+          </Link>
           .
         </p>
       </section>
