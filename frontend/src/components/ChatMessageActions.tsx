@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Copy, Check, Volume2, Square, Mail, Printer } from "lucide-react";
+import { Copy, Check, Volume2, Square, Mail, Printer, UserCheck } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -7,6 +7,7 @@ type Props = {
   text: string;
   source?: string;
   share?: boolean;
+  question?: string;
 };
 
 const supportsSpeech = () =>
@@ -19,6 +20,29 @@ const buildShareBody = (text: string, source: string | undefined) => {
   const lines = [text.trim()];
   if (source) lines.push("", `Source: ${source}`);
   lines.push("", `Shared from Nest · ${origin}`);
+  return lines.join("\n");
+};
+
+const buildConfirmBody = (
+  answer: string,
+  source: string | undefined,
+  question: string | undefined,
+) => {
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const lines: string[] = [
+    "Hi — I'm using Nest (a transition tool built for Georgia foster youth) and I want to make sure this is right before I act on it. Could you confirm?",
+    "",
+  ];
+  if (question && question.trim()) {
+    lines.push("My question:", question.trim(), "");
+  }
+  lines.push("What Nest told me:", answer.trim(), "");
+  if (source) lines.push(`Source cited by Nest: ${source}`, "");
+  lines.push(
+    "Is this still accurate for my situation? Anything I should do differently?",
+    "",
+    `Sent from Nest · ${origin}`,
+  );
   return lines.join("\n");
 };
 
@@ -107,7 +131,12 @@ const printAnswer = (text: string, source: string | undefined) => {
   }
 };
 
-export function ChatMessageActions({ text, source, share = true }: Props) {
+export function ChatMessageActions({
+  text,
+  source,
+  share = true,
+  question,
+}: Props) {
   const [copied, setCopied] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const canSpeak = supportsSpeech();
@@ -151,6 +180,10 @@ export function ChatMessageActions({ text, source, share = true }: Props) {
     "From Nest",
   )}&body=${encodeURIComponent(buildShareBody(text, source))}`;
 
+  const confirmHref = `mailto:?subject=${encodeURIComponent(
+    "Can you confirm this for me?",
+  )}&body=${encodeURIComponent(buildConfirmBody(text, source, question))}`;
+
   return (
     <div className="mt-1.5 flex items-center gap-1 pl-1">
       <button
@@ -189,6 +222,14 @@ export function ChatMessageActions({ text, source, share = true }: Props) {
             className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Mail className="h-3.5 w-3.5" />
+          </a>
+          <a
+            href={confirmHref}
+            aria-label="Ask a caseworker or trusted adult to confirm"
+            title="Ask a caseworker or trusted adult to confirm"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <UserCheck className="h-3.5 w-3.5" />
           </a>
           <button
             type="button"

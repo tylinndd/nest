@@ -389,8 +389,13 @@ const Navigator = () => {
         className="flex-1 overflow-y-auto px-5 py-4 space-y-3 no-scrollbar"
       >
         <AnimatePresence initial={false}>
-          {messages.map((m) => {
+          {messages.map((m, idx) => {
             const isUser = m.role === "user";
+            const priorUser = !isUser
+              ? [...messages.slice(0, idx)]
+                  .reverse()
+                  .find((p) => p.role === "user")?.text
+              : undefined;
             const showFollowUps =
               !isUser &&
               m.id === lastAssistantId &&
@@ -428,6 +433,7 @@ const Navigator = () => {
                     text={m.text}
                     source={m.source}
                     share={!m.fallback}
+                    question={priorUser}
                   />
                 )}
                 {showFollowUps && (
