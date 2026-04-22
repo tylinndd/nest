@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
+  Activity,
   ArrowLeft,
   Ban,
   Github,
@@ -9,6 +10,7 @@ import {
   Server,
   Trash2,
 } from "lucide-react";
+import { NetworkLog } from "@/components/NetworkLog";
 
 type LabelRow = { label: string; detail?: string };
 
@@ -187,6 +189,14 @@ const Privacy = () => (
           returned as an answer. We do not keep a copy tied to you — there is
           no account to tie it to.
         </p>
+      </LabelCard>
+
+      <LabelCard
+        icon={Activity}
+        title="Live network log"
+        tone="server"
+      >
+        <NetworkLog />
       </LabelCard>
 
       <LabelCard icon={Ban} title="Who else sees your data" tone="third">

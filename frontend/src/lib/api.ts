@@ -1,3 +1,5 @@
+import { useNetworkLog } from "@/store/networkLog";
+
 const API_BASE = (
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
   (import.meta.env.VITE_API_URL as string | undefined) ??
@@ -99,25 +101,38 @@ const post = async <T>(
   body: unknown,
   signal: AbortSignal | undefined,
   validate: (value: unknown) => value is T,
+  purpose: string,
 ): Promise<T> => {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-    signal,
-  });
-  if (!res.ok) {
-    throw new ApiError(
-      `POST ${path} failed (${res.status})`,
-      res.status,
-      await readError(res),
-    );
+  const log = useNetworkLog.getState();
+  const entryId = log.start({ method: "POST", path, purpose });
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal,
+    });
+    useNetworkLog.getState().finish(entryId, { status: res.status, ok: res.ok });
+    if (!res.ok) {
+      throw new ApiError(
+        `POST ${path} failed (${res.status})`,
+        res.status,
+        await readError(res),
+      );
+    }
+    const parsed: unknown = await res.json();
+    if (!validate(parsed)) {
+      throw new ApiError(`POST ${path} returned unexpected shape`, 502, parsed);
+    }
+    return parsed;
+  } catch (err) {
+    if (!(err instanceof ApiError)) {
+      useNetworkLog
+        .getState()
+        .finish(entryId, { status: "network-error", ok: false });
+    }
+    throw err;
   }
-  const parsed: unknown = await res.json();
-  if (!validate(parsed)) {
-    throw new ApiError(`POST ${path} returned unexpected shape`, 502, parsed);
-  }
-  return parsed;
 };
 
 const isPassage = (v: unknown): v is Passage => {
@@ -165,7 +180,13 @@ export const postChat = async (
   user_profile: BackendUserProfile,
   signal?: AbortSignal,
 ): Promise<ChatResponse> => {
-  const res = await post("/chat", { query, user_profile }, signal, isChatResponse);
+  const res = await post(
+    "/chat",
+    { query, user_profile },
+    signal,
+    isChatResponse,
+    "Navigator question",
+  );
   // Normalize passages to an array so downstream code never branches on
   // `passages === undefined`.
   return { ...res, passages: res.passages ?? [] };
@@ -175,7 +196,13 @@ export const postIntake = (
   user_profile: BackendUserProfile,
   signal?: AbortSignal,
 ): Promise<IntakeResponse> =>
-  post("/intake", { user_profile }, signal, isIntakeResponse);
+  post(
+    "/intake",
+    { user_profile },
+    signal,
+    isIntakeResponse,
+    "Intake eligibility check",
+  );
 
 const isHealthResponse = (v: unknown): v is HealthResponse => {
   if (typeof v !== "object" || v === null) return false;
@@ -189,17 +216,33 @@ const isHealthResponse = (v: unknown): v is HealthResponse => {
 };
 
 export const getHealth = async (signal?: AbortSignal): Promise<HealthResponse> => {
-  const res = await fetch(`${API_BASE}/health`, { signal });
-  if (!res.ok) {
-    throw new ApiError(
-      `GET /health failed (${res.status})`,
-      res.status,
-      await readError(res),
-    );
+  const log = useNetworkLog.getState();
+  const entryId = log.start({
+    method: "GET",
+    path: "/health",
+    purpose: "Backend health probe",
+  });
+  try {
+    const res = await fetch(`${API_BASE}/health`, { signal });
+    useNetworkLog.getState().finish(entryId, { status: res.status, ok: res.ok });
+    if (!res.ok) {
+      throw new ApiError(
+        `GET /health failed (${res.status})`,
+        res.status,
+        await readError(res),
+      );
+    }
+    const parsed: unknown = await res.json();
+    if (!isHealthResponse(parsed)) {
+      throw new ApiError("GET /health returned unexpected shape", 502, parsed);
+    }
+    return parsed;
+  } catch (err) {
+    if (!(err instanceof ApiError)) {
+      useNetworkLog
+        .getState()
+        .finish(entryId, { status: "network-error", ok: false });
+    }
+    throw err;
   }
-  const parsed: unknown = await res.json();
-  if (!isHealthResponse(parsed)) {
-    throw new ApiError("GET /health returned unexpected shape", 502, parsed);
-  }
-  return parsed;
 };
