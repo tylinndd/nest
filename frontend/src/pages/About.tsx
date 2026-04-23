@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   ArrowRight,
   BookOpen,
+  Briefcase,
   Code2,
   Database,
   Github,
@@ -245,6 +246,28 @@ const About = () => (
             </p>
             <p className="text-xs text-muted-foreground">
               WCAG 2.1 AA conformance, supported assistive tech, known gaps.
+            </p>
+          </div>
+        </Link>
+      </section>
+
+      <section className="space-y-3">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          For stakeholders
+        </p>
+        <Link
+          to="/caseworkers"
+          className="nest-card flex items-center gap-3 p-4 transition hover:border-primary/40"
+        >
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Briefcase className="h-4 w-4" />
+          </span>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-foreground">
+              For caseworkers
+            </p>
+            <p className="text-xs text-muted-foreground">
+              How Nest fits alongside DFCS staff, and the privacy promises that make it safe to share.
             </p>
           </div>
         </Link>
