@@ -117,6 +117,16 @@ def get_llm():
     return _llm
 
 
+def _wrap_user_query(query: str) -> str:
+    """Strip any pre-existing delimiter tags, then wrap in <user_query>.
+
+    Prevents a user from closing the tag early and emitting their own
+    "instructions" section that the model might treat as system text.
+    """
+    stripped = query.replace("<user_query>", "").replace("</user_query>", "")
+    return f"<user_query>{stripped}</user_query>"
+
+
 def answer_question(query: str, user_profile):
     if is_crisis(query):
         return {
@@ -163,7 +173,7 @@ Context:
 {context}
 
 Question:
-{query}
+{_wrap_user_query(query)}
 """.strip()
 
     response = get_llm().invoke(
