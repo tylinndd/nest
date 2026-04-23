@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useProfile, type EducationPlan } from "@/store/profile";
 import type { Passage } from "@/lib/api";
 import { formatVerifiedDate } from "@/lib/corpus";
+import { buildPassageHref } from "@/lib/textFragment";
 
 type Props = {
   source: string;
@@ -128,7 +129,8 @@ export function SourceReveal({
                 </p>
                 <ul className="mt-2 space-y-3">
                   {passages.map((p, i) => {
-                    const safeUrl = safeHttpUrl(p.url);
+                    const sanitized = safeHttpUrl(p.url);
+                    const safeUrl = buildPassageHref(sanitized, p.snippet);
                     return (
                       <li
                         key={`${p.source_name}-${i}`}
