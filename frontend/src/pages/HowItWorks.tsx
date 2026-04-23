@@ -9,6 +9,39 @@ import {
 } from "lucide-react";
 import { CORPUS_SIZE, formatVerifiedDate } from "@/lib/corpus";
 
+const COMPARISON: { label: string; nest: string; generic: string }[] = [
+  {
+    label: "Training source",
+    nest: "27 published Georgia DFCS / Chafee / ETV / Medicaid documents.",
+    generic: "The open web as of a cutoff date — mostly federal, mostly generic.",
+  },
+  {
+    label: "When it doesn't know",
+    nest: "Says so, points to a human.",
+    generic: "Often fills the gap plausibly. No citation.",
+  },
+  {
+    label: "Sources",
+    nest: "Every answer links to the exact passage it's based on.",
+    generic: "No citations by default.",
+  },
+  {
+    label: "Profile storage",
+    nest: "Stays on the device. No login, no account, no server record.",
+    generic: "Prompts are logged on vendor servers.",
+  },
+  {
+    label: "Georgia-specific",
+    nest: "County-level eligibility, Georgia forms, Georgia deadlines.",
+    generic: "Generalizes across states; frequently wrong on specifics.",
+  },
+  {
+    label: "Login required",
+    nest: "No.",
+    generic: "Usually yes — an email at minimum.",
+  },
+];
+
 const STEPS = [
   {
     icon: MessageSquare,
@@ -144,6 +177,49 @@ const HowItWorks = () => (
             <span className="font-semibold">· Store your answers for us.</span>{" "}
             Chat history and your profile live in this browser. You can wipe
             them any time from Settings.
+          </p>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          Why not a general chatbot?
+        </p>
+        <div className="nest-card p-4 space-y-3">
+          <p className="text-sm text-foreground leading-relaxed">
+            A general chatbot (ChatGPT, Gemini, Copilot) is trained on the
+            public internet — it can answer almost anything, which is exactly
+            why it's wrong for aging-out-of-care decisions. Nest is narrower
+            on purpose.
+          </p>
+          <dl className="space-y-3">
+            {COMPARISON.map(({ label, nest, generic }) => (
+              <div
+                key={label}
+                className="flex flex-col gap-2 border-t border-border/60 pt-3 first:border-t-0 first:pt-0 sm:grid sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1.2fr)] sm:gap-3"
+              >
+                <dt className="text-xs font-semibold text-muted-foreground leading-snug">
+                  {label}
+                </dt>
+                <dd className="text-xs leading-snug text-foreground">
+                  <span className="block text-[10px] font-semibold uppercase tracking-widest text-primary">
+                    Nest
+                  </span>
+                  {nest}
+                </dd>
+                <dd className="text-xs leading-snug text-muted-foreground">
+                  <span className="block text-[10px] font-semibold uppercase tracking-widest text-nest-amber">
+                    General chatbot
+                  </span>
+                  {generic}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="text-[11px] text-muted-foreground leading-relaxed border-t border-border/60 pt-3">
+            Nest isn't trying to beat ChatGPT at being ChatGPT. It's optimized
+            for one group of users asking one set of questions in one state —
+            and it shows its work.
           </p>
         </div>
       </section>
