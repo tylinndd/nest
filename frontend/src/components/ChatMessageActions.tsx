@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useSaved } from "@/store/saved";
+import { WhyAnswerPopover } from "@/components/WhyAnswerPopover";
 import type { Passage } from "@/lib/api";
 
 type Props = {
@@ -355,6 +356,7 @@ export function ChatMessageActions({
           />
         </button>
       )}
+      <WhyAnswerPopover />
       {share && (
         <>
           <a
