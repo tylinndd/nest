@@ -8,6 +8,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { CORPUS_SIZE, formatVerifiedDate } from "@/lib/corpus";
+import { KnownUnknownsCard } from "@/components/KnownUnknownsCard";
 
 const COMPARISON: { label: string; nest: string; generic: string }[] = [
   {
@@ -232,6 +233,8 @@ const HowItWorks = () => (
           </p>
         </div>
       </section>
+
+      <KnownUnknownsCard />
 
       <div className="flex flex-col gap-2 sm:flex-row">
         <Link
