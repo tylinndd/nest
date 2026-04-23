@@ -10,6 +10,7 @@ import {
 } from "@/data/georgiaResources";
 import { CORPUS_SIZE, formatVerifiedDate } from "@/lib/corpus";
 import { DeployFooter } from "@/components/DeployFooter";
+import { SkipToMain } from "@/components/layout/SkipToMain";
 
 const groupAll = (): Record<ResourceCategory, Resource[]> => {
   const out = {} as Record<ResourceCategory, Resource[]>;
@@ -76,7 +77,9 @@ const Sources = () => {
   const grouped = groupAll();
 
   return (
-    <main className="min-h-full bg-background">
+    <>
+    <SkipToMain />
+    <main id="main-content" className="min-h-full bg-background">
       <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-6">
         <div className="flex items-center justify-between">
           <Link
@@ -142,6 +145,7 @@ const Sources = () => {
         <DeployFooter />
       </div>
     </main>
+    </>
   );
 };
 

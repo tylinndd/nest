@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, BookOpen, Search } from "lucide-react";
 import { GLOSSARY, type GlossaryEntry } from "@/lib/glossary";
+import { SkipToMain } from "@/components/layout/SkipToMain";
 
 const ALL_ENTRIES: GlossaryEntry[] = Object.values(GLOSSARY).sort((a, b) =>
   a.term.localeCompare(b.term),
@@ -26,7 +27,9 @@ const Glossary = () => {
   );
 
   return (
-    <main className="min-h-full bg-background">
+    <>
+    <SkipToMain />
+    <main id="main-content" className="min-h-full bg-background">
       <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-5">
         <div className="flex items-center justify-between">
           <Link
@@ -123,6 +126,7 @@ const Glossary = () => {
         </div>
       </div>
     </main>
+    </>
   );
 };
 

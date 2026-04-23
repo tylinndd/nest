@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { DeployFooter } from "@/components/DeployFooter";
+import { SkipToMain } from "@/components/layout/SkipToMain";
 
 type Item = { label: string; detail?: string };
 
@@ -102,7 +103,9 @@ const Row = ({ row }: { row: Item }) => (
 );
 
 const Accessibility = () => (
-  <main className="min-h-full bg-background">
+  <>
+  <SkipToMain />
+  <main id="main-content" className="min-h-full bg-background">
     <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-6">
       <div className="flex items-center justify-between">
         <Link
@@ -247,6 +250,7 @@ const Accessibility = () => (
       <DeployFooter />
     </div>
   </main>
+  </>
 );
 
 export default Accessibility;

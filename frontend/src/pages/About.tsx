@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { TEAM } from "@/data/team";
 import { DeployFooter } from "@/components/DeployFooter";
+import { SkipToMain } from "@/components/layout/SkipToMain";
 
 const SOURCES = [
   "Georgia DFCS Division 5 policy manual",
@@ -66,7 +67,9 @@ const TECH = [
 ];
 
 const About = () => (
-  <main className="min-h-full bg-background">
+  <>
+  <SkipToMain />
+  <main id="main-content" className="min-h-full bg-background">
     <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-6">
       <div className="flex items-center justify-between">
         <Link
@@ -301,6 +304,7 @@ const About = () => (
       <DeployFooter />
     </div>
   </main>
+  </>
 );
 
 export default About;

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { CORPUS_SIZE, formatVerifiedDate } from "@/lib/corpus";
 import { KnownUnknownsCard } from "@/components/KnownUnknownsCard";
+import { SkipToMain } from "@/components/layout/SkipToMain";
 
 const COMPARISON: { label: string; nest: string; generic: string }[] = [
   {
@@ -71,7 +72,9 @@ const STEPS = [
 ];
 
 const HowItWorks = () => (
-  <main className="min-h-full bg-background">
+  <>
+  <SkipToMain />
+  <main id="main-content" className="min-h-full bg-background">
     <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-6">
       <div className="flex items-center justify-between">
         <Link
@@ -304,6 +307,7 @@ const HowItWorks = () => (
       </div>
     </div>
   </main>
+  </>
 );
 
 export default HowItWorks;

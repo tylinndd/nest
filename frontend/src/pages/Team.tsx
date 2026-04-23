@@ -2,9 +2,12 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Github, GraduationCap, Sparkles } from "lucide-react";
 import { TEAM } from "@/data/team";
+import { SkipToMain } from "@/components/layout/SkipToMain";
 
 const Team = () => (
-  <main className="min-h-full bg-background">
+  <>
+  <SkipToMain />
+  <main id="main-content" className="min-h-full bg-background">
     <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-6">
       <div className="flex items-center justify-between">
         <Link
@@ -128,6 +131,7 @@ const Team = () => (
       </a>
     </div>
   </main>
+  </>
 );
 
 export default Team;

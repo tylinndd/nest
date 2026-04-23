@@ -20,6 +20,7 @@ import {
 import { useTour, TOUR_TOTAL_MS } from "@/store/tour";
 import { QRPanel } from "@/components/QRPanel";
 import { warmBackend } from "@/lib/warmBackend";
+import { SkipToMain } from "@/components/layout/SkipToMain";
 
 type PersonaCard = {
   id: DemoPersona;
@@ -117,7 +118,9 @@ const Demo = () => {
   };
 
   return (
-  <main className="min-h-full bg-background">
+  <>
+  <SkipToMain />
+  <main id="main-content" className="min-h-full bg-background">
     <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-5">
       <div className="flex items-center justify-between">
         <Link
@@ -248,6 +251,7 @@ const Demo = () => {
       </p>
     </div>
   </main>
+  </>
   );
 };
 

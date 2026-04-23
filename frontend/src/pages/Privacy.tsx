@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { NetworkLog } from "@/components/NetworkLog";
 import { DeployFooter } from "@/components/DeployFooter";
+import { SkipToMain } from "@/components/layout/SkipToMain";
 
 type LabelRow = { label: string; detail?: string };
 
@@ -117,7 +118,9 @@ const LabelCard = ({
 );
 
 const Privacy = () => (
-  <main className="min-h-full bg-background">
+  <>
+  <SkipToMain />
+  <main id="main-content" className="min-h-full bg-background">
     <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-6">
       <div className="flex items-center justify-between">
         <Link
@@ -271,6 +274,7 @@ const Privacy = () => (
       <DeployFooter />
     </div>
   </main>
+  </>
 );
 
 export default Privacy;
