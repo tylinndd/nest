@@ -1,6 +1,7 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck, ShieldCheck, ExternalLink, Compass, MapPinned } from "lucide-react";
+import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck, ShieldCheck, ExternalLink, Compass, MapPinned, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { benefits, type Benefit, type BenefitStatus } from "@/data/placeholder";
 import { useProfile, hasProfile } from "@/store/profile";
@@ -114,6 +115,16 @@ const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
           </button>
         )}
       </div>
+      {b.askQuestion && (
+        <Link
+          to={`/navigator?ask=${encodeURIComponent(b.askQuestion)}`}
+          className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+          aria-label={`Ask Nest: ${b.askQuestion}`}
+        >
+          <MessageSquare className="h-3 w-3" aria-hidden="true" />
+          Ask Nest about this
+        </Link>
+      )}
     </motion.article>
   );
 };

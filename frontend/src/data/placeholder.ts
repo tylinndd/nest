@@ -26,6 +26,7 @@ export type Benefit = {
   cta?: string;
   href?: string;
   verifiedOn?: string;
+  askQuestion?: string;
 };
 
 // Offline fallback for GET /benefits — keep in sync with backend/app/services/benefits.py
@@ -40,6 +41,7 @@ export const benefits: Benefit[] = [
     cta: "Start application",
     href: "https://dfcs.georgia.gov/education-and-training",
     verifiedOn: "2026-04-19",
+    askQuestion: "Am I eligible for Chafee ETV?",
   },
   {
     id: "eyss",
@@ -51,6 +53,7 @@ export const benefits: Benefit[] = [
     cta: "Open Connected By 21",
     href: "https://dhs.georgia.gov/connected-21",
     verifiedOn: "2026-04-19",
+    askQuestion: "How do I enroll in Extended Youth Support Services?",
   },
   {
     id: "medicaid-ext",
@@ -62,6 +65,7 @@ export const benefits: Benefit[] = [
     cta: "Open Gateway",
     href: "https://gateway.ga.gov/access/",
     verifiedOn: "2026-04-19",
+    askQuestion: "How do I keep Medicaid after I turn 18?",
   },
   {
     id: "ksu-ascend",
@@ -73,6 +77,7 @@ export const benefits: Benefit[] = [
     cta: "Book intake call",
     href: "https://campus.kennesaw.edu/current-students/student-affairs/wellbeing/care-services/ascend-program.php",
     verifiedOn: "2026-04-19",
+    askQuestion: "What is KSU ASCEND and how do I apply?",
   },
   {
     id: "hud-fyi",
@@ -84,6 +89,7 @@ export const benefits: Benefit[] = [
     cta: "See how to apply",
     href: "https://www.hud.gov/hud-partners/public-indian-housing-fyi",
     verifiedOn: "2026-04-19",
+    askQuestion: "Am I eligible for a HUD FYI voucher?",
   },
   {
     id: "tuition-waiver",
@@ -95,6 +101,7 @@ export const benefits: Benefit[] = [
     cta: "Open application",
     href: "https://dfcs.georgia.gov/form/postsecondary-tuition-waiver-app",
     verifiedOn: "2026-04-19",
+    askQuestion: "How do I use the Georgia Tuition Waiver?",
   },
 ];
 
