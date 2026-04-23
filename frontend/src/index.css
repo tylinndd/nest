@@ -150,10 +150,6 @@
 }
 
 /* ---------- print ---------- */
-.no-print {
-  display: none !important;
-}
-
 @media print {
   :root {
     --background: 0 0% 100%;
