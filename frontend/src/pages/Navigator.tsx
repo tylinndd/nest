@@ -181,11 +181,12 @@ const Navigator = () => {
   const setMessages = useChat((s) => s.setMessages);
   const addMessage = useChat((s) => s.addMessage);
   const clearChat = useChat((s) => s.clear);
+  const input = useChat((s) => s.pendingInput);
+  const setInput = useChat((s) => s.setPendingInput);
   const savedCount = useSaved((s) => s.items.length);
   const hasSeenListenHint = usePreferences((s) => s.hasSeenListenHint);
   const markListenHintSeen = usePreferences((s) => s.markListenHintSeen);
   const speechSupported = useSpeech((s) => s.supported);
-  const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [listening, setListening] = useState(false);
   const [attachOpen, setAttachOpen] = useState(false);
