@@ -102,6 +102,16 @@ const HowItWorks = () => (
         </p>
       </motion.div>
 
+      <figure className="overflow-hidden rounded-3xl border border-border/60">
+        <img
+          src="/img/pipeline-diagram.webp"
+          alt="Illustration of Nest's four-stage answer pipeline flowing left to right: a question, the Georgia-documents retrieval step, the passages the model is grounded in, and the final sourced answer."
+          className="h-auto w-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
       <ol className="space-y-4">
         {STEPS.map(({ icon: Icon, title, body, accent }, i) => (
           <motion.li
