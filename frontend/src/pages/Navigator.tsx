@@ -5,7 +5,12 @@ import {
   useRef,
   useState,
 } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   FolderLock,
@@ -144,6 +149,7 @@ const TypingDots = () => (
 const Navigator = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const askFiredRef = useRef(false);
   const profileName = useProfile((s) => s.name);
   const profileAge = useProfile((s) => s.age);
@@ -440,6 +446,22 @@ const Navigator = () => {
     void send(prompt);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated, messages.length, location.state]);
+
+  useEffect(() => {
+    if (askFiredRef.current) return;
+    if (!hydrated) return;
+    if (messages.length === 0) return;
+    const raw = searchParams.get("ask");
+    if (!raw) return;
+    // eslint-disable-next-line no-control-regex
+    if (/[\x00-\x1f\x7f]/.test(raw)) return;
+    const prompt = raw.slice(0, 500).trim();
+    if (!prompt) return;
+    askFiredRef.current = true;
+    setSearchParams({}, { replace: true });
+    void send(prompt);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated, messages.length, searchParams]);
 
   useLayoutEffect(() => {
     const el = textareaRef.current;
