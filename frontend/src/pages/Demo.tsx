@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   ArrowRight,
@@ -17,6 +19,7 @@ import {
 } from "@/lib/demo";
 import { useTour, TOUR_TOTAL_MS } from "@/store/tour";
 import { QRPanel } from "@/components/QRPanel";
+import { warmBackend } from "@/lib/warmBackend";
 
 type PersonaCard = {
   id: DemoPersona;
@@ -70,6 +73,35 @@ const TOUR_SECONDS = Math.round(TOUR_TOTAL_MS / 1000);
 
 const Demo = () => {
   const startTour = useTour((s) => s.start);
+
+  useEffect(() => {
+    const onKey = async (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+      if (!(e.metaKey || e.ctrlKey) || !e.shiftKey) return;
+      if (e.key.toLowerCase() !== "w") return;
+      e.preventDefault();
+      toast.loading("Warming backend…", { id: "warm" });
+      const r = await warmBackend();
+      if (r.errors.length > 0) {
+        toast.error(`Warmup issues: ${r.errors.join("; ")}`, { id: "warm" });
+        return;
+      }
+      toast.success(
+        `Backend warm · ${r.healthMs}/${r.chatMs}/${r.intakeMs}ms`,
+        { id: "warm", duration: 4000 },
+      );
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const handleStartTour = async () => {
     try {

@@ -1,3 +1,5 @@
+// Offline-safe by design: no fetch, no api.ts imports, only static data
+// and tel:/sms: deep links. Must stay reachable with zero network.
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
