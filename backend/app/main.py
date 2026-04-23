@@ -10,7 +10,7 @@ from app.schemas import Benefit, ChatRequest, ChatResponse, IntakeRequest, Intak
 from app.services.benefits import get_benefits_catalog
 from app.services.intake import build_intake_response
 from rag.chain import answer_question
-from rag.retreiver import retrieve_documents
+from rag.retreiver import RetrievalInfrastructureError, retrieve_documents
 
 settings = get_settings()
 logger = logging.getLogger("uvicorn.error")
@@ -54,6 +54,10 @@ async def chat(request: ChatRequest):
         result = answer_question(request.query, request.user_profile)
     except ConfigError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except RetrievalInfrastructureError as exc:
+        raise HTTPException(
+            status_code=503, detail="retrieval_unavailable"
+        ) from exc
     return ChatResponse(**result)
 
 

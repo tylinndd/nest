@@ -8,7 +8,23 @@ when the vector store has not been ingested yet.
 
 from __future__ import annotations
 
+import logging
+
 from app.config import get_settings
+
+
+logger = logging.getLogger("uvicorn.error")
+
+
+class RetrievalInfrastructureError(RuntimeError):
+    """Raised when similarity_search fails for non-domain reasons.
+
+    The legitimate "no matching documents" case returns [] naturally from
+    Chroma. This exception is for infrastructure failures (missing
+    persistence dir, OOM, embedding model download failure, disk full)
+    that must NOT be silently flattened into the empty-result path —
+    doing so would hide every real outage behind a 211 fallback answer.
+    """
 
 
 _embeddings = None
@@ -40,11 +56,19 @@ def get_vectorstore():
 
 
 def retrieve_documents(query: str, k: int = 4):
-    """Run a similarity search; return ``[]`` if the store isn't ready."""
+    """Run a similarity search against the vector store.
+
+    Returns ``[]`` when the store exists but has no matches (the domain
+    no-match path). Raises :class:`RetrievalInfrastructureError` for any
+    underlying infra failure so callers can return a distinguishable 503
+    instead of conflating "we searched and found nothing" with "we
+    couldn't search at all".
+    """
     try:
         return get_vectorstore().similarity_search(query, k=k)
-    except Exception:
-        return []
+    except Exception as exc:
+        logger.exception("retrieval infra failure (query=%r, k=%d)", query, k)
+        raise RetrievalInfrastructureError(str(exc)) from exc
 
 
 def rerank_for_profile(docs, user_profile):
