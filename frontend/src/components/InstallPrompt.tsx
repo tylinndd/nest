@@ -81,7 +81,7 @@ export const InstallPrompt = () => {
       transition={{ duration: 0.22, ease: "easeOut" }}
       role="region"
       aria-label="Install Nest"
-      className="fixed bottom-20 left-1/2 z-40 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-2xl border border-border bg-background/95 p-4 shadow-lg backdrop-blur"
+      className="fixed bottom-20 inset-x-4 z-40 mx-auto max-w-md rounded-2xl border border-border bg-background/95 p-4 shadow-lg backdrop-blur"
     >
       <div className="flex items-start gap-3">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
