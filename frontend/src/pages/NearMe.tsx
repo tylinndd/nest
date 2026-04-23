@@ -26,6 +26,7 @@ import {
   selectResourcesForCounty,
 } from "@/data/georgiaResources";
 import { useProfile } from "@/store/profile";
+import { Statewide211Card } from "@/components/Statewide211Card";
 
 const CATEGORY_ICON: Record<ResourceCategory, typeof HomeIcon> = {
   crisis: AlertTriangle,
@@ -193,6 +194,8 @@ const NearMe = () => {
           );
         })}
       </div>
+
+      <Statewide211Card />
 
       <p className="mt-6 text-[11px] text-muted-foreground">
         Listings are hand-verified against each agency's own site. If something
