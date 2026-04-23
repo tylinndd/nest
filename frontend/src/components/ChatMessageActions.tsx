@@ -9,6 +9,7 @@ import {
   ListChecks,
   UserCheck,
   Star,
+  Link2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -233,6 +234,23 @@ export function ChatMessageActions({
     }
   };
 
+  const handleCopyLink = async () => {
+    if (!question) return;
+    const trimmed = question.slice(0, 500).trim();
+    if (!trimmed) return;
+    try {
+      const url = `${window.location.origin}/navigator?ask=${encodeURIComponent(trimmed)}`;
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied", {
+        id: "chat-share",
+        description: "Paste anywhere to re-run this question.",
+        duration: 2000,
+      });
+    } catch {
+      toast.error("Couldn't copy link", { id: "chat-share" });
+    }
+  };
+
   const handleSpeak = () => {
     if (!canSpeak) return;
     const synth = window.speechSynthesis;
@@ -267,6 +285,17 @@ export function ChatMessageActions({
       >
         {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
       </button>
+      {question && (
+        <button
+          type="button"
+          onClick={handleCopyLink}
+          aria-label="Copy a shareable link to this question"
+          title="Copy link to this question"
+          className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Link2 className="h-3.5 w-3.5" />
+        </button>
+      )}
       {canSpeak && (
         <button
           type="button"
