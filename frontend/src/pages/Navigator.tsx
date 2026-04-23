@@ -14,6 +14,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import {
   FolderLock,
+  Keyboard,
   Mic,
   Paperclip,
   Plus,
@@ -49,6 +50,7 @@ import { ChatMessageActions } from "@/components/ChatMessageActions";
 import { SpeakButton } from "@/components/SpeakButton";
 import { CorpusBadge } from "@/components/CorpusBadge";
 import { ChatExportButton } from "@/components/ChatExportButton";
+import { ShortcutCheatsheet } from "@/components/ShortcutCheatsheet";
 import { cn } from "@/lib/utils";
 
 type Msg = ChatMsg;
@@ -170,6 +172,7 @@ const Navigator = () => {
   const [typing, setTyping] = useState(false);
   const [listening, setListening] = useState(false);
   const [attachOpen, setAttachOpen] = useState(false);
+  const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
   const [hydrated, setHydrated] = useState(() => useChat.persist.hasHydrated());
 
   const attachableDocs = useMemo(
@@ -494,6 +497,18 @@ const Navigator = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "/") return;
+      if (!(e.metaKey || e.ctrlKey)) return;
+      if (e.altKey || e.shiftKey) return;
+      e.preventDefault();
+      setCheatsheetOpen((v) => !v);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
     <div className="flex h-[calc(100dvh-7rem)] flex-col">
       <div className="px-5 pt-5">
@@ -521,6 +536,15 @@ const Navigator = () => {
                   </button>
                 </>
               )}
+              <button
+                type="button"
+                onClick={() => setCheatsheetOpen(true)}
+                aria-label="Show keyboard shortcuts"
+                title="Keyboard shortcuts (Cmd+/)"
+                className="inline-flex h-[30px] w-[30px] items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Keyboard className="h-3.5 w-3.5" />
+              </button>
               <Link
                 to="/how-it-works"
                 className="rounded-full border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
@@ -779,6 +803,11 @@ const Navigator = () => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+
+      <ShortcutCheatsheet
+        open={cheatsheetOpen}
+        onOpenChange={setCheatsheetOpen}
+      />
     </div>
   );
 };
