@@ -25,10 +25,12 @@ import {
   Phone,
   Wallet,
 } from "lucide-react";
-import { type Task } from "@/data/placeholder";
+import { type Task, benefits as fallbackBenefits } from "@/data/placeholder";
 import { derivePersonalizedTasks, computeDaysUntilAgeOut, getTaskRationale } from "@/lib/personalize";
 import type { Profile } from "@/store/profile";
 import { WhyTaskPopover } from "@/components/home/WhyTaskPopover";
+import { SharePlanButton } from "@/components/home/SharePlanButton";
+import { useBenefitsCatalog } from "@/store/benefits";
 import { tasksToIcs, downloadIcs } from "@/lib/ics";
 import { SuccessCard } from "@/components/ui/SuccessCard";
 import {
@@ -387,6 +389,8 @@ const Home = () => {
   const profile = useProfile();
   const markTaskDone = useProfile((s) => s.markTaskDone);
   const taskList = useMemo(() => derivePersonalizedTasks(profile), [profile]);
+  const remoteBenefits = useBenefitsCatalog((s) => s.items);
+  const benefitList = remoteBenefits ?? fallbackBenefits;
   const [completedId, setCompletedId] = useState<string | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const completedTimerRef = useRef<number | null>(null);
@@ -516,6 +520,13 @@ const Home = () => {
           >
             <Pencil className="h-4 w-4" />
           </Link>
+        </div>
+        <div className="mt-3 flex justify-end">
+          <SharePlanButton
+            profile={profile}
+            tasks={taskList}
+            benefits={benefitList}
+          />
         </div>
       </div>
 
