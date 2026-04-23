@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck, ShieldCheck, ExternalLink, Compass, MapPinned, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, AlertCircle, BadgeCheck, ShieldCheck, ExternalLink, Compass, MapPinned } from "lucide-react";
 import { toast } from "sonner";
 import { benefits, type Benefit, type BenefitStatus } from "@/data/placeholder";
 import { useProfile, hasProfile } from "@/store/profile";
@@ -159,7 +159,8 @@ type PartnerCard = {
   title: string;
   summary: string;
   cta: string;
-  Icon: typeof Compass;
+  Icon?: typeof Compass;
+  iconSrc?: string;
 };
 
 const PARTNERS: PartnerCard[] = [
@@ -181,7 +182,7 @@ const PARTNERS: PartnerCard[] = [
     summary:
       "Housed at UGA's J.W. Fanning Institute — scholarships, state-wide contacts, and the statewide coordinator for Chafee ETV.",
     cta: "Open Embark",
-    Icon: Sparkles,
+    iconSrc: "/img/embark-badge.webp",
   },
 ];
 
@@ -197,8 +198,19 @@ const PartnerCardView = ({ p, index }: { p: PartnerCard; index: number }) => (
     className="nest-card block p-5 transition-shadow duration-200 hover:shadow-lg"
   >
     <div className="flex items-start gap-3">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
-        <p.Icon className="h-5 w-5" />
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-primary">
+        {p.iconSrc ? (
+          <img
+            src={p.iconSrc}
+            alt=""
+            aria-hidden="true"
+            className="h-10 w-10 object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : p.Icon ? (
+          <p.Icon className="h-5 w-5" />
+        ) : null}
       </span>
       <div className="flex-1">
         <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
