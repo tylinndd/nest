@@ -85,7 +85,7 @@ const Demo = () => {
   };
 
   return (
-  <div className="min-h-full bg-background">
+  <main className="min-h-full bg-background">
     <div className="mx-auto max-w-md min-h-screen flex flex-col px-5 pt-6 pb-10 space-y-5">
       <div className="flex items-center justify-between">
         <Link
@@ -215,7 +215,7 @@ const Demo = () => {
         ).
       </p>
     </div>
-  </div>
+  </main>
   );
 };
 
