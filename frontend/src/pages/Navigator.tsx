@@ -84,7 +84,7 @@ const CRISIS_REPLY = {
 
 const NETWORK_FALLBACK = {
   text:
-    "I'm having trouble reaching Navigator right now. For urgent help, call 211 Georgia: dial 2-1-1.",
+    "I can't reach Navigator right now. Try again in a moment — or for urgent help, call 211 Georgia (dial 2-1-1).",
   source: "211 Georgia",
 };
 
@@ -436,8 +436,8 @@ const Navigator = () => {
 
       const detail =
         err instanceof ApiError && err.status === 503
-          ? "The Navigator AI is not configured yet. Call 211 Georgia for urgent help."
-          : "Check your connection or call 211 Georgia: dial 2-1-1.";
+          ? "Navigator isn't answering right now. Try again in a moment, or call 211 Georgia for urgent help."
+          : "Nest couldn't reach the answer service. Try again in a moment, or call 211 Georgia: dial 2-1-1.";
 
       toast.error("Can't reach Navigator right now", {
         id: "navigator-api-error",
