@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useProfile, type EducationPlan } from "@/store/profile";
-import { usePreferences, TEXT_SIZES } from "@/store/preferences";
+import { usePreferences, TEXT_SIZES, FONT_FACES } from "@/store/preferences";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { printNestCard, profileToCardData } from "@/lib/nestCard";
 import { exportUserData } from "@/lib/dataExport";
@@ -38,6 +38,8 @@ const Settings = () => {
   const profile = useProfile();
   const textSize = usePreferences((s) => s.textSize);
   const setTextSize = usePreferences((s) => s.setTextSize);
+  const fontFace = usePreferences((s) => s.fontFace);
+  const setFontFace = usePreferences((s) => s.setFontFace);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [ageDraft, setAgeDraft] = useState<string>(
     profile.age !== null ? String(profile.age) : "",
@@ -402,6 +404,42 @@ const Settings = () => {
                   onClick={() => setTextSize(size)}
                   className={cn(
                     "nest-pill justify-center py-2 text-base font-semibold",
+                    selected
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-primary hover:bg-secondary/80",
+                  )}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <div className="nest-card p-4">
+          <p className="text-sm font-semibold text-foreground">
+            Easier-to-read font
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+            Swap to Lexend, a font tuned to reduce reading effort. Useful if
+            smaller or serif text feels dense.
+          </p>
+          <div
+            className="mt-3 grid grid-cols-2 gap-2"
+            role="radiogroup"
+            aria-label="Reading font"
+          >
+            {FONT_FACES.map((face) => {
+              const label = face === "default" ? "Default" : "Easier to read";
+              const selected = fontFace === face;
+              return (
+                <button
+                  key={face}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  onClick={() => setFontFace(face)}
+                  className={cn(
+                    "nest-pill justify-center py-2 text-sm font-semibold",
                     selected
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-primary hover:bg-secondary/80",
