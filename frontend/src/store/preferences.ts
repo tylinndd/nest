@@ -34,13 +34,17 @@ const applyFontFace = (face: FontFace) => {
   }
 };
 
+export const DEFAULT_PANIC_EXIT_URL = "https://weather.com";
+
 type PreferencesState = {
   textSize: TextSize;
   fontFace: FontFace;
+  panicExitUrl: string;
   hasSeenListenHint: boolean;
   dismissedHintDate: string | null;
   setTextSize: (size: TextSize) => void;
   setFontFace: (face: FontFace) => void;
+  setPanicExitUrl: (url: string) => void;
   markListenHintSeen: () => void;
   dismissHintForToday: () => void;
 };
@@ -50,6 +54,7 @@ export const usePreferences = create<PreferencesState>()(
     (set) => ({
       textSize: "md",
       fontFace: "default",
+      panicExitUrl: DEFAULT_PANIC_EXIT_URL,
       hasSeenListenHint: false,
       dismissedHintDate: null,
       setTextSize: (size) => {
@@ -60,26 +65,36 @@ export const usePreferences = create<PreferencesState>()(
         applyFontFace(face);
         set({ fontFace: face });
       },
+      setPanicExitUrl: (url) => {
+        const trimmed = url.trim();
+        const safe = /^https:\/\//i.test(trimmed) ? trimmed : DEFAULT_PANIC_EXIT_URL;
+        set({ panicExitUrl: safe });
+      },
       markListenHintSeen: () => set({ hasSeenListenHint: true }),
       dismissHintForToday: () =>
         set({ dismissedHintDate: new Date().toISOString().slice(0, 10) }),
     }),
     {
       name: "nest.preferences",
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => safeStorage),
       partialize: (s) => ({
         textSize: s.textSize,
         fontFace: s.fontFace,
+        panicExitUrl: s.panicExitUrl,
         hasSeenListenHint: s.hasSeenListenHint,
         dismissedHintDate: s.dismissedHintDate,
       }),
       migrate: (persisted, version) => {
         const p = (persisted as Partial<PreferencesState>) ?? {};
+        let next = p;
         if (version < 2) {
-          return { ...p, fontFace: "default" as FontFace };
+          next = { ...next, fontFace: "default" as FontFace };
         }
-        return p;
+        if (version < 3) {
+          next = { ...next, panicExitUrl: DEFAULT_PANIC_EXIT_URL };
+        }
+        return next;
       },
       onRehydrateStorage: () => (state, error) => {
         if (error) {

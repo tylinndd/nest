@@ -17,6 +17,8 @@ import { TourOverlay } from "@/components/TourOverlay";
 import { PresenterPill } from "@/components/PresenterPill";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { probeHealth } from "@/lib/health";
+import { usePanicExit } from "@/hooks/usePanicExit";
+import { usePreferences } from "@/store/preferences";
 import "@/store/preferences";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -136,6 +138,8 @@ const BackendOfflineDot = () => (
 
 const App = () => {
   const [backendOffline, setBackendOffline] = useState(false);
+  const panicExitUrl = usePreferences((s) => s.panicExitUrl);
+  usePanicExit(panicExitUrl);
 
   useEffect(() => {
     let cancelled = false;

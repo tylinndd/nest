@@ -9,6 +9,7 @@ import {
   Heart,
   Home as HomeIcon,
   Lock,
+  LogOut,
   MapPin,
   Phone,
   Printer,
@@ -21,7 +22,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useProfile, type EducationPlan } from "@/store/profile";
-import { usePreferences, TEXT_SIZES, FONT_FACES } from "@/store/preferences";
+import {
+  usePreferences,
+  TEXT_SIZES,
+  FONT_FACES,
+  DEFAULT_PANIC_EXIT_URL,
+} from "@/store/preferences";
 import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { printNestCard, profileToCardData } from "@/lib/nestCard";
 import { exportUserData } from "@/lib/dataExport";
@@ -40,6 +46,9 @@ const Settings = () => {
   const setTextSize = usePreferences((s) => s.setTextSize);
   const fontFace = usePreferences((s) => s.fontFace);
   const setFontFace = usePreferences((s) => s.setFontFace);
+  const panicExitUrl = usePreferences((s) => s.panicExitUrl);
+  const setPanicExitUrl = usePreferences((s) => s.setPanicExitUrl);
+  const [panicExitDraft, setPanicExitDraft] = useState<string>(panicExitUrl);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [ageDraft, setAgeDraft] = useState<string>(
     profile.age !== null ? String(profile.age) : "",
@@ -64,6 +73,21 @@ const Settings = () => {
           : ("missing" as const),
     }));
   }, [profile.documentsHave, profile.uploadedDocs]);
+
+  const handlePanicExitBlur = () => {
+    const trimmed = panicExitDraft.trim();
+    if (trimmed === "") {
+      setPanicExitUrl(DEFAULT_PANIC_EXIT_URL);
+      setPanicExitDraft(DEFAULT_PANIC_EXIT_URL);
+      return;
+    }
+    if (!/^https:\/\//i.test(trimmed)) {
+      setPanicExitDraft(panicExitUrl);
+      return;
+    }
+    setPanicExitUrl(trimmed);
+    setPanicExitDraft(trimmed);
+  };
 
   const handleAgeBlur = () => {
     const trimmed = ageDraft.trim();
@@ -449,6 +473,43 @@ const Settings = () => {
                 </button>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <div className="flex items-center gap-2">
+          <LogOut className="h-4 w-4 text-primary" />
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+            Privacy
+          </p>
+        </div>
+        <div className="nest-card p-4">
+          <p className="text-sm font-semibold text-foreground">Quick exit</p>
+          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+            Press Escape three times quickly and Nest will send you to
+            weather.com right away. No back button, no history. Set a different
+            landing page below if you prefer.
+          </p>
+          <div className="mt-3 space-y-2">
+            <Label htmlFor="panic-exit-url" className="sr-only">
+              Quick-exit URL
+            </Label>
+            <Input
+              id="panic-exit-url"
+              type="url"
+              inputMode="url"
+              autoComplete="off"
+              spellCheck={false}
+              value={panicExitDraft}
+              onChange={(event) => setPanicExitDraft(event.target.value)}
+              onBlur={handlePanicExitBlur}
+              placeholder={DEFAULT_PANIC_EXIT_URL}
+              className="min-h-[2.75rem]"
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Must start with https://. Leave blank to reset to weather.com.
+            </p>
           </div>
         </div>
       </section>
