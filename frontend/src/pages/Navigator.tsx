@@ -21,6 +21,7 @@ import {
   Send,
   SquarePen,
   Star,
+  WifiOff,
 } from "lucide-react";
 import { toast } from "sonner";
 import { buildChatSeed } from "@/data/placeholder";
@@ -33,6 +34,7 @@ import { DOCUMENT_CATALOG } from "@/lib/personalize";
 import { pickStarterChips } from "@/lib/starterChips";
 import { suggestFollowUps } from "@/lib/followUps";
 import { linkify } from "@/lib/linkify";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { postChat, ApiError } from "@/lib/api";
 import { toBackendProfile } from "@/lib/profileMap";
 import {
@@ -189,6 +191,7 @@ const Navigator = () => {
   const [attachOpen, setAttachOpen] = useState(false);
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
   const [hydrated, setHydrated] = useState(() => useChat.persist.hasHydrated());
+  const isOnline = useOnlineStatus();
 
   const attachableDocs = useMemo(
     () =>
@@ -584,6 +587,23 @@ const Navigator = () => {
         </div>
       </div>
 
+      {!isOnline && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="mx-5 mt-3 flex items-start gap-2 rounded-2xl border border-nest-amber/30 bg-nest-amber/10 px-4 py-3 text-sm text-foreground"
+        >
+          <WifiOff
+            className="mt-0.5 h-4 w-4 shrink-0 text-nest-amber"
+            aria-hidden="true"
+          />
+          <span className="leading-snug">
+            <span className="font-semibold">You're offline.</span>{" "}
+            You can still read saved answers. Reconnect to ask new questions.
+          </span>
+        </div>
+      )}
+
       <div
         ref={scrollRef}
         role="log"
@@ -760,7 +780,12 @@ const Navigator = () => {
             type="button"
             onClick={() => send()}
             aria-label="Send"
-            disabled={!input.trim()}
+            disabled={!input.trim() || !isOnline}
+            title={
+              !isOnline
+                ? "You're offline — reconnect to ask a new question"
+                : undefined
+            }
             className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground disabled:opacity-40"
           >
             <Send className="h-4 w-4" />
