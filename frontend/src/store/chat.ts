@@ -11,6 +11,7 @@ export type ChatMsg = {
   followUps?: string[];
   fallback?: boolean;
   passages?: Passage[];
+  elapsedMs?: number;
 };
 
 export const CHAT_MESSAGE_CAP = 200;

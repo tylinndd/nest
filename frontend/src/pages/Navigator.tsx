@@ -56,6 +56,21 @@ import { cn } from "@/lib/utils";
 type Msg = ChatMsg;
 
 
+const formatReceipt = (
+  elapsedMs: number | undefined,
+  passages: { source_name: string }[] | undefined,
+): string | null => {
+  if (elapsedMs === undefined || !passages || passages.length === 0) {
+    return null;
+  }
+  const seconds = (elapsedMs / 1000).toFixed(1);
+  const passageCount = passages.length;
+  const sourceCount = new Set(passages.map((p) => p.source_name)).size;
+  const passageWord = passageCount === 1 ? "passage" : "passages";
+  const sourceWord = sourceCount === 1 ? "source" : "sources";
+  return `Answered in ${seconds}s from ${passageCount} ${passageWord} across ${sourceCount} ${sourceWord}.`;
+};
+
 const CLIENT_CRISIS_RE =
   /(suicide|kill myself|hurt myself|self harm|\bunsafe\b|\babuse\b|homeless tonight|need help right now|i am not safe)/i;
 
@@ -392,13 +407,16 @@ const Navigator = () => {
 
     try {
       const backendProfile = toBackendProfile(useProfile.getState());
+      const t0 = performance.now();
       const res = await postChat(text, backendProfile, controller.signal);
+      const elapsedMs = performance.now() - t0;
 
       const followUps = suggestFollowUps(text, res.answer);
       const reply: Msg = {
         id: safeId(),
         role: "assistant",
         text: res.answer,
+        elapsedMs,
         ...(res.sources.length > 0
           ? { source: res.sources.join(" · ") }
           : {}),
@@ -631,6 +649,14 @@ const Navigator = () => {
                     />
                   </div>
                 )}
+                {!isUser && (() => {
+                  const receipt = formatReceipt(m.elapsedMs, m.passages);
+                  return receipt ? (
+                    <p className="px-1 text-[10px] text-muted-foreground">
+                      {receipt}
+                    </p>
+                  ) : null;
+                })()}
                 {showFollowUps && (
                   <div className="flex max-w-[85%] gap-2 overflow-x-auto no-scrollbar">
                     {(m.followUps ?? []).map((f) => (
