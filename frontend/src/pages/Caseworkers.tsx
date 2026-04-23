@@ -11,6 +11,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { QRPanel } from "@/components/QRPanel";
+import { DeployFooter } from "@/components/DeployFooter";
 
 type Item = { label: string; detail?: string };
 
@@ -227,6 +228,8 @@ const Caseworkers = () => (
           </div>
         </a>
       </section>
+
+      <DeployFooter />
     </div>
   </main>
 );

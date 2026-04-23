@@ -10,6 +10,7 @@ import {
   Mail,
   Sparkles,
 } from "lucide-react";
+import { DeployFooter } from "@/components/DeployFooter";
 
 type Item = { label: string; detail?: string };
 
@@ -242,6 +243,8 @@ const Accessibility = () => (
           </div>
         </a>
       </section>
+
+      <DeployFooter />
     </div>
   </main>
 );

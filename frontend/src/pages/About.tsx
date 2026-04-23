@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { TEAM } from "@/data/team";
+import { DeployFooter } from "@/components/DeployFooter";
 
 const SOURCES = [
   "Georgia DFCS Division 5 policy manual",
@@ -296,6 +297,8 @@ const About = () => (
           </div>
         </a>
       </section>
+
+      <DeployFooter />
     </div>
   </main>
 );

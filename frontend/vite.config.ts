@@ -2,11 +2,28 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { VitePWA } from "vite-plugin-pwa";
 import { visualizer } from "rollup-plugin-visualizer";
+import { execFileSync } from "node:child_process";
 import path from "path";
 
 const ANALYZE = process.env.ANALYZE === "1";
 
+const COMMIT_SHA = (() => {
+  try {
+    return execFileSync("git", ["rev-parse", "--short", "HEAD"])
+      .toString()
+      .trim();
+  } catch {
+    return "dev";
+  }
+})();
+
+const BUILD_TIME = new Date().toISOString();
+
 export default defineConfig(() => ({
+  define: {
+    __COMMIT_SHA__: JSON.stringify(COMMIT_SHA),
+    __BUILD_TIME__: JSON.stringify(BUILD_TIME),
+  },
   server: {
     host: "::",
     port: 8080,

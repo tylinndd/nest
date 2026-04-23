@@ -11,6 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { NetworkLog } from "@/components/NetworkLog";
+import { DeployFooter } from "@/components/DeployFooter";
 
 type LabelRow = { label: string; detail?: string };
 
@@ -266,6 +267,8 @@ const Privacy = () => (
           </div>
         </Link>
       </section>
+
+      <DeployFooter />
     </div>
   </main>
 );
