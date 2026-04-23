@@ -241,7 +241,7 @@ const HowItWorks = () => (
           </dl>
           <p className="text-[11px] text-muted-foreground leading-relaxed border-t border-border/60 pt-3">
             Nest isn't trying to beat ChatGPT at being ChatGPT. It's optimized
-            for one group of users asking one set of questions in one state —
+            for one group of people asking one set of questions in one state —
             and it shows its work.
           </p>
         </div>

@@ -288,7 +288,7 @@ const Benefits = () => {
         Statewide resources
       </h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Trusted directories beyond this app — bookmark both.
+        Trusted directories beyond Nest — bookmark both.
       </p>
       <div className="mt-4 space-y-3">
         {PARTNERS.map((p, i) => (

@@ -60,7 +60,7 @@ const IMPACT: Stat[] = [
 ];
 
 const TECH = [
-  { label: "React 19 · Vite · TypeScript", icon: Code2 },
+  { label: "React 18 · Vite · TypeScript", icon: Code2 },
   { label: "FastAPI · LangChain · ChromaDB", icon: Database },
   { label: "Retrieval-augmented answers with cited passages", icon: BookOpen },
   { label: "Profile stays on your device, not on a server", icon: Lock },
