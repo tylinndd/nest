@@ -154,9 +154,9 @@ export const groupByCategory = (
 writeFileSync(DEST, banner + header + body + footer, "utf8");
 
 console.log(`[sync-corpus] wrote ${cleaned.length} resources → ${DEST}`);
-if (cleaned.length !== 27) {
+if (cleaned.length !== 52) {
   console.warn(
-    `[sync-corpus] WARNING: count is ${cleaned.length}, badge claims 27. ` +
+    `[sync-corpus] WARNING: count is ${cleaned.length}, badge claims 52. ` +
       `Update CORPUS_SIZE in src/lib/corpus.ts or check the backend JSON.`,
   );
 }

@@ -1,5 +1,5 @@
-export const CORPUS_SIZE = 27;
-export const CORPUS_LAST_VERIFIED = "2026-04-22";
+export const CORPUS_SIZE = 52;
+export const CORPUS_LAST_VERIFIED = "2026-04-23";
 
 export const formatVerifiedDate = (iso: string = CORPUS_LAST_VERIFIED): string => {
   const [y, m, d] = iso.split("-").map(Number);

@@ -571,6 +571,516 @@ export const GEORGIA_RESOURCES: Resource[] = [
     "address": "United States",
     "source_name": "FDIC",
     "last_verified": "2026-04-22"
+  },
+  {
+    "id": "fulton-covenant-house-georgia",
+    "name": "Covenant House Georgia",
+    "category": "housing",
+    "county": "Fulton",
+    "summary": "24/7 crisis shelter and transitional housing for youth experiencing homelessness or escaping trafficking.",
+    "eligibility": "Youth ages 18-24; no cost; open 24/7; walk-ins accepted.",
+    "services": [
+      "crisis shelter",
+      "Rights of Passage transitional housing",
+      "Gift of Hope apartments",
+      "street outreach",
+      "pregnant/parenting youth support"
+    ],
+    "contact_phone": "404-589-0163",
+    "contact_url": "https://covenanthousega.org/",
+    "address": "1559 Johnson Rd NW, Atlanta, GA 30318",
+    "source_name": "Covenant House Georgia",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "fulton-lost-n-found-youth",
+    "name": "Lost-n-Found Youth",
+    "category": "crisis",
+    "county": "Fulton",
+    "summary": "LGBTQ+-focused shelter, transitional housing, and 24/7 youth support for young adults facing homelessness.",
+    "eligibility": "LGBTQ+ youth ages 18-25; metro Atlanta; 24/7 hotline.",
+    "services": [
+      "24/7 youth support line",
+      "emergency shelter",
+      "transitional housing",
+      "drop-in youth center",
+      "street outreach"
+    ],
+    "contact_phone": "678-856-7824",
+    "contact_url": "https://www.lnfy.org/",
+    "address": "2585 Chantilly Dr NE, Atlanta, GA 30324",
+    "source_name": "Lost-n-Found Youth",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "fulton-chris-180-the-spot",
+    "name": "CHRIS 180 — The SPOT Drop-In Center",
+    "category": "education",
+    "county": "Fulton",
+    "summary": "Stigma-free drop-in center where transition-age youth build life skills, get tutoring, GED prep, and counseling.",
+    "eligibility": "Youth ages 16-26; walk-in; no cost; Mon-Fri 9am-5pm.",
+    "services": [
+      "GED prep",
+      "college readiness and tutoring",
+      "driver's education",
+      "employment planning",
+      "individual counseling",
+      "meals"
+    ],
+    "contact_phone": "404-564-5201",
+    "contact_url": "https://chris180.org/the-spot/",
+    "address": "1030 Fayetteville Rd SE, Atlanta, GA 30316",
+    "source_name": "CHRIS 180",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "fulton-worksource-atlanta-youth-rise",
+    "name": "WorkSource Atlanta — Youth R.I.S.E.",
+    "category": "employment",
+    "county": "Fulton",
+    "summary": "WIOA-funded youth workforce program offering paid work experience, GED support, and career coaching at no cost.",
+    "eligibility": "Ages 16-24; City of Atlanta residents; foster-care status is a qualifying WIOA barrier.",
+    "services": [
+      "paid work experience and internships",
+      "GED and high-school support",
+      "short-term occupational training",
+      "career coaching",
+      "transportation and childcare supports"
+    ],
+    "contact_phone": "404-546-3000",
+    "contact_url": "https://www.worksourceatlanta.org/job-seekers/youth-services/",
+    "address": "818 Pollard Blvd SW, Atlanta, GA 30315",
+    "source_name": "WorkSource Atlanta",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "fulton-atlanta-legal-aid",
+    "name": "Atlanta Legal Aid Society — Fulton Office",
+    "category": "legal",
+    "county": "Fulton",
+    "summary": "Free civil legal help for low-income residents, including foster-youth advocacy, housing, benefits, and ID issues.",
+    "eligibility": "Low-income Fulton residents; civil matters only; includes current and former foster youth.",
+    "services": [
+      "foster-youth disability advocacy",
+      "housing and eviction defense",
+      "public benefits appeals",
+      "family law",
+      "medical-legal partnership at Grady"
+    ],
+    "contact_phone": "404-524-5811",
+    "contact_url": "https://atlantalegalaid.org/home/",
+    "address": "54 Ellis St NE, Atlanta, GA 30303",
+    "source_name": "Atlanta Legal Aid Society",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "gwinnett-laa-outreach",
+    "name": "Latin American Association — Gwinnett Outreach Center",
+    "category": "housing",
+    "county": "Gwinnett",
+    "summary": "Lead agency for Gwinnett's Coordinated Entry System, connecting youth and families to emergency shelter, transitional housing, and rapid rehousing.",
+    "eligibility": "Any Gwinnett resident in housing crisis; dedicated line for parenting youth ages 18-24; immigrant-friendly; English and Spanish.",
+    "services": [
+      "Coordinated Entry intake",
+      "emergency shelter referrals",
+      "rental and utility assistance",
+      "SNAP benefits help",
+      "immigration and asylum support",
+      "parenting youth 18-24 line"
+    ],
+    "contact_phone": "470-778-4673",
+    "contact_url": "https://thelaa.org/gwinnett/",
+    "address": "5320 Jimmy Carter Blvd, Norcross, GA 30093",
+    "source_name": "Latin American Association",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "gwinnett-good-samaritan-health",
+    "name": "Good Samaritan Health Center of Gwinnett",
+    "category": "healthcare",
+    "county": "Gwinnett",
+    "summary": "Low-cost primary medical and dental care for uninsured Gwinnett residents, with Spanish-language support.",
+    "eligibility": "Uninsured or under-insured Gwinnett residents of any age; teens welcome; bilingual staff available.",
+    "services": [
+      "primary medical care",
+      "dental care",
+      "prescription medications",
+      "behavioral counseling",
+      "Spanish-language visits"
+    ],
+    "contact_phone": "678-280-6630",
+    "contact_url": "https://goodsamgwinnett.org/who-we-serve/",
+    "address": "5949 Buford Hwy, Norcross, GA 30071",
+    "source_name": "Good Samaritan Health Center of Gwinnett",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "gwinnett-viewpoint-health",
+    "name": "View Point Health — Gwinnett",
+    "category": "crisis",
+    "county": "Gwinnett",
+    "summary": "Gwinnett's community behavioral health center offering therapy, psychiatric care, and adolescent crisis stabilization.",
+    "eligibility": "Open to Gwinnett, Rockdale, and Newton residents including adolescents; Medicaid, private insurance, and sliding-scale.",
+    "services": [
+      "individual therapy",
+      "psychiatry and medication",
+      "adolescent crisis stabilization",
+      "substance-use treatment",
+      "autism services"
+    ],
+    "contact_phone": "678-209-2411",
+    "contact_url": "https://www.myviewpointhealth.org/locations/",
+    "address": "175 Gwinnett Drive, Lawrenceville, GA 30046",
+    "source_name": "View Point Health",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "gwinnett-casa",
+    "name": "Gwinnett County CASA",
+    "category": "legal",
+    "county": "Gwinnett",
+    "summary": "Court-appointed volunteer advocates for abused and neglected children in Gwinnett Juvenile Court dependency cases.",
+    "eligibility": "Children and youth in Gwinnett foster care or juvenile court dependency; no cost.",
+    "services": [
+      "court advocacy",
+      "case monitoring",
+      "permanency planning support",
+      "connection to services",
+      "voice in court hearings"
+    ],
+    "contact_phone": "770-619-6015",
+    "contact_url": "https://www.gwinnettcasa.org/",
+    "address": "115 Stone Mountain Street, Lawrenceville, GA 30046",
+    "source_name": "Gwinnett County CASA",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "gwinnett-wioa-career-resource",
+    "name": "Gwinnett County WIOA One-Stop Career Resource Center",
+    "category": "employment",
+    "county": "Gwinnett",
+    "summary": "Free job training, career advising, and WIOA-funded skills programs for Gwinnett youth and adults.",
+    "eligibility": "Income-eligible older youth ages 18-24, laid-off workers, and adults seeking skills; Gwinnett residency.",
+    "services": [
+      "WIOA youth program",
+      "career advising",
+      "no-cost skills training",
+      "job placement",
+      "resume and interview help"
+    ],
+    "contact_phone": "678-268-6610",
+    "contact_url": "https://atlworks.org/counties/gwinnett-county/",
+    "address": "3805 Crestwood Pkwy NW Suite 300, Duluth, GA 30096",
+    "source_name": "WorkSource Atlanta Regional",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "clayton-casa",
+    "name": "Clayton County CASA",
+    "category": "legal",
+    "county": "Clayton",
+    "summary": "Court-appointed volunteer advocates representing the best interests of abused and neglected children in Clayton Juvenile Court.",
+    "eligibility": "Children and youth 0-21 with an active dependency case in Clayton Juvenile Court; court referral.",
+    "services": [
+      "court advocacy",
+      "case monitoring",
+      "educational advocacy",
+      "service referrals",
+      "permanency planning support"
+    ],
+    "contact_phone": "770-477-3270",
+    "contact_url": "https://www.gacasa.org/programs/clayton-county-casa/",
+    "address": "9163 Tara Boulevard, Jonesboro, GA 30236",
+    "source_name": "Georgia CASA",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "clayton-center-child-youth",
+    "name": "Clayton Center — Child & Young Adult Services",
+    "category": "crisis",
+    "county": "Clayton",
+    "summary": "County behavioral-health authority providing mental-health care and 24/7 crisis support for children, teens, and young adults.",
+    "eligibility": "Ages 4-21 (if still in high school); foster parents and guardians welcome; Medicaid, PeachCare, sliding-scale.",
+    "services": [
+      "psychiatric assessment",
+      "medication management",
+      "individual and family therapy",
+      "in-home and school-based support",
+      "24/7 crisis line"
+    ],
+    "contact_phone": "770-473-2640",
+    "contact_url": "https://www.claytoncenter.org/children-young-adults-and-families.cms",
+    "address": "1396 Southlake Plaza Drive, Morrow, GA 30260",
+    "source_name": "Clayton Center CSB",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "clayton-dorm-transitional",
+    "name": "The D.O.R.M. (Development of Responsible Men)",
+    "category": "housing",
+    "county": "Clayton",
+    "summary": "Transitional housing in Riverdale for young men aging out of foster care, offering up to 24 months of supported independent living.",
+    "eligibility": "Males ages 18-24 who aged out of foster care, exited juvenile detention, or are in housing crisis.",
+    "services": [
+      "transitional housing",
+      "employment readiness",
+      "life skills classes",
+      "GED assistance",
+      "document and ID help",
+      "group therapy"
+    ],
+    "contact_phone": "770-997-4511",
+    "contact_url": "https://www.heartstonourishhope.org/dorm",
+    "address": "640 GA-138 SW, Riverdale, GA 30274",
+    "source_name": "Hearts to Nourish Hope",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "clayton-nextgen-workforce",
+    "name": "WorkSource Atlanta Regional NextGen Youth — Clayton",
+    "category": "employment",
+    "county": "Clayton",
+    "summary": "WIOA-funded year-round workforce program offering paid work experience and occupational training for Clayton youth.",
+    "eligibility": "Ages 16-24, Clayton County resident, meet low-income or barrier criteria (foster care qualifies automatically).",
+    "services": [
+      "paid work experience",
+      "career assessment",
+      "occupational skills training",
+      "GED support",
+      "job placement",
+      "mentoring"
+    ],
+    "contact_phone": "678-271-3554",
+    "contact_url": "https://atlantaregional.org/what-we-do/workforce-solutions/",
+    "address": "3000 Corporate Center Dr Suite 350, Morrow, GA 30260",
+    "source_name": "Atlanta Regional Commission",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "clayton-mckinney-vento",
+    "name": "Clayton County Public Schools — Children in Transition",
+    "category": "education",
+    "county": "Clayton",
+    "summary": "District McKinney-Vento program ensuring homeless and foster-placed students stay enrolled with wraparound school support.",
+    "eligibility": "Clayton students (PK-12) who are homeless, in transition, or awaiting foster placement per McKinney-Vento definitions.",
+    "services": [
+      "immediate enrollment without records",
+      "school-of-origin transportation",
+      "uniform and supply assistance",
+      "tutoring referrals",
+      "dispute resolution"
+    ],
+    "contact_phone": "770-473-3250",
+    "contact_url": "https://www.clayton.k12.ga.us/departments/federal-programs/homeless-education-cit",
+    "address": "2260 Old Rex Morrow Rd, Ellenwood, GA 30294",
+    "source_name": "Clayton County Public Schools",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "chatham-park-place-outreach",
+    "name": "Park Place Outreach Youth Emergency Shelter",
+    "category": "housing",
+    "county": "Chatham",
+    "summary": "12-bed emergency shelter and transitional living program for runaway, homeless, and at-risk youth in Savannah.",
+    "eligibility": "Youth ages 11-17 for emergency shelter; transitional living program serves older adolescent males at risk of homelessness.",
+    "services": [
+      "emergency shelter up to 21 days",
+      "transitional living program",
+      "street outreach",
+      "family reunification counseling",
+      "day center",
+      "rural homeless diversion (YHDP)"
+    ],
+    "contact_phone": "912-234-4048",
+    "contact_url": "https://parkplaceyes.org/contact-us/",
+    "address": "514 E Henry Street, Savannah, GA 31401",
+    "source_name": "Park Place Outreach",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "chatham-jc-lewis-pediatrics",
+    "name": "J.C. Lewis Primary Health Care Center — Pediatric Center",
+    "category": "healthcare",
+    "county": "Chatham",
+    "summary": "Federally Qualified Health Center pediatric site offering primary care, immunizations, and behavioral health on a sliding fee scale.",
+    "eligibility": "Pediatric through adolescent patients; sliding-scale fees, Medicaid and uninsured accepted; no residency requirement.",
+    "services": [
+      "well-child visits",
+      "immunizations",
+      "acute and sick visits",
+      "behavioral health",
+      "family planning",
+      "dental referral",
+      "pharmacy"
+    ],
+    "contact_phone": "912-352-3845",
+    "contact_url": "https://jclewishealth.org/locations/",
+    "address": "3802 Waters Avenue, Savannah, GA 31404",
+    "source_name": "J.C. Lewis Primary Health Care",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "chatham-savannah-casa",
+    "name": "Savannah CASA (Brightside Child & Family Advocacy)",
+    "category": "legal",
+    "county": "Chatham",
+    "summary": "Court-appointed volunteer advocates for Chatham County foster youth, plus Brighter Futures mentoring for youth aging out.",
+    "eligibility": "Children and youth birth through 21 in Chatham juvenile court dependency cases; Brighter Futures serves older foster youth.",
+    "services": [
+      "CASA volunteer advocacy",
+      "Brighter Futures transition mentoring",
+      "resource navigation",
+      "educational advocacy"
+    ],
+    "contact_phone": "912-447-8908",
+    "contact_url": "https://www.brightsideadvocacy.org/savannahcasa.html",
+    "address": "761 Wheaton Street 5th Floor, Savannah, GA 31401",
+    "source_name": "Brightside Child & Family Advocacy",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "chatham-worksource-coastal-youth",
+    "name": "WorkSource Coastal Georgia — WIOA Youth Program",
+    "category": "employment",
+    "county": "Chatham",
+    "summary": "Federally funded workforce program offering paid work experience, training, and education support for low-income youth in the coastal region.",
+    "eligibility": "Youth ages 16-24, in-school or out-of-school, low-income or facing barriers (foster-care status qualifies); Chatham + 9 other coastal counties.",
+    "services": [
+      "paid work experience",
+      "occupational skills training",
+      "tutoring and GED prep",
+      "alternative secondary school services",
+      "summer employment",
+      "supportive services"
+    ],
+    "contact_phone": "912-351-6379",
+    "contact_url": "https://worksourcecoastal.org/services/",
+    "address": "1000 Business Center Drive Suite 100, Savannah, GA 31405",
+    "source_name": "WorkSource Coastal Georgia",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "chatham-goodwill-opportunity-center",
+    "name": "Goodwill Southeast Georgia — Savannah Opportunity Center",
+    "category": "education",
+    "county": "Chatham",
+    "summary": "Free career center offering digital skills training, tuition-free certifications, and job placement support.",
+    "eligibility": "Open to anyone seeking career services; mentorship track for at-risk youth; walk-ins welcome.",
+    "services": [
+      "career coaching",
+      "digital skills training",
+      "tuition-free certifications",
+      "resume and interview prep",
+      "job placement",
+      "transportation support"
+    ],
+    "contact_phone": "912-446-1605",
+    "contact_url": "https://goodwillsega.org/opportunity-center/",
+    "address": "7220 Sallie Mood Dr, Savannah, GA 31406",
+    "source_name": "Goodwill Southeast Georgia",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "cherokee-goshen-new-beginnings",
+    "name": "Goshen New Beginnings",
+    "category": "housing",
+    "county": "Cherokee",
+    "summary": "Independent living program providing housing, life coaching, and career support for youth aging out of foster care.",
+    "eligibility": "Foster youth ages 17-21.",
+    "services": [
+      "transitional housing",
+      "life skills coaching",
+      "employment mentoring",
+      "education planning",
+      "driver's education",
+      "financial literacy"
+    ],
+    "contact_phone": "770-345-9535",
+    "contact_url": "https://goshenvalley.org/programs/goshen-new-beginnings/",
+    "address": "225 Reformation Pkwy Suite 118, Canton, GA 30114",
+    "source_name": "Goshen New Beginnings",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "cherokee-must-ministries-canton",
+    "name": "MUST Ministries — Cherokee Client Services",
+    "category": "housing",
+    "county": "Cherokee",
+    "summary": "Wraparound assistance for Cherokee residents in crisis, including food, clothing, housing help, and workforce development.",
+    "eligibility": "Cherokee County residents in need; no age minimum and no religious requirement.",
+    "services": [
+      "food pantry",
+      "clothing closet",
+      "rent/utility/hotel assistance",
+      "workforce development coaching",
+      "employment classes"
+    ],
+    "contact_phone": "770-479-5397",
+    "contact_url": "https://www.mustministries.org/canton",
+    "address": "111 Brown Industrial Pkwy, Canton, GA 30114",
+    "source_name": "MUST Ministries",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "cherokee-casa",
+    "name": "CASA of Cherokee County (The Children's Haven)",
+    "category": "legal",
+    "county": "Cherokee",
+    "summary": "Court-appointed volunteer advocates speaking for children in foster care throughout dependency cases.",
+    "eligibility": "Children and youth in Cherokee County Juvenile Court dependency cases.",
+    "services": [
+      "court advocacy",
+      "case monitoring",
+      "educational advocacy",
+      "coordination with caseworkers",
+      "voice in permanency planning"
+    ],
+    "contact_phone": "770-345-3274",
+    "contact_url": "https://cherokeechildrenshaven.org/",
+    "address": "1083 Marietta Hwy, Canton, GA 30114",
+    "source_name": "The Children's Haven of Cherokee County",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "cherokee-ghms-canton",
+    "name": "Georgia Highlands Medical Services — Canton Family Health Center",
+    "category": "healthcare",
+    "county": "Cherokee",
+    "summary": "Federally Qualified Health Center offering primary care on a sliding-fee scale regardless of insurance status.",
+    "eligibility": "Open to all ages including uninsured; sliding fee based on income.",
+    "services": [
+      "primary care",
+      "family medicine",
+      "preventive care",
+      "chronic disease management",
+      "well visits"
+    ],
+    "contact_phone": "678-807-1050",
+    "contact_url": "https://www.ghms-inc.org/location/canton-family-health-center/",
+    "address": "220 Oakside Ln, Canton, GA 30114",
+    "source_name": "Georgia Highlands Medical Services",
+    "last_verified": "2026-04-23"
+  },
+  {
+    "id": "cherokee-cfvc",
+    "name": "Cherokee Family Violence Center",
+    "category": "crisis",
+    "county": "Cherokee",
+    "summary": "24/7 domestic violence crisis response with emergency shelter, counseling, and legal advocacy for Cherokee County.",
+    "eligibility": "Survivors of domestic violence including teens and young adults; dedicated teen program.",
+    "services": [
+      "24/7 crisis hotline",
+      "emergency shelter",
+      "transitional housing",
+      "teen dating violence counseling",
+      "legal advocacy",
+      "safety planning"
+    ],
+    "contact_phone": "770-479-1703",
+    "contact_url": "https://www.cfvc.org/",
+    "address": "P.O. Box 489, Canton, GA 30169",
+    "source_name": "Cherokee Family Violence Center",
+    "last_verified": "2026-04-23"
   }
 ];
 
