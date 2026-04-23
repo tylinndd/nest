@@ -49,8 +49,19 @@ const Team = () => (
             className="nest-card p-5"
           >
             <div className="flex items-start gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <GraduationCap className="h-5 w-5" />
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
+                {m.avatarSrc ? (
+                  <img
+                    src={m.avatarSrc}
+                    alt=""
+                    aria-hidden="true"
+                    className="h-11 w-11 object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <GraduationCap className="h-5 w-5" />
+                )}
               </span>
               <div className="flex-1 min-w-0">
                 <h2 className="font-display text-xl text-foreground leading-tight">

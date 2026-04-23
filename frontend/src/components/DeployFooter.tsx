@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { GitCommitVertical } from "lucide-react";
 
 const formatBuildTime = (iso: string): string => {
@@ -26,6 +27,13 @@ export const DeployFooter = () => (
       </a>
       {" · "}
       <time dateTime={__BUILD_TIME__}>{formatBuildTime(__BUILD_TIME__)}</time>
+      {" · "}
+      <Link
+        to="/team"
+        className="font-semibold text-muted-foreground hover:text-primary transition-colors"
+      >
+        The team
+      </Link>
     </p>
   </footer>
 );
