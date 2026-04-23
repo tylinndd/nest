@@ -1,10 +1,23 @@
 import { useNetworkLog } from "@/store/networkLog";
 
-const API_BASE = (
+const RAW_API_BASE =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
   (import.meta.env.VITE_API_URL as string | undefined) ??
-  "http://localhost:8000"
-).replace(/\/+$/, "");
+  null;
+
+export const API_BASE_UNSET = RAW_API_BASE === null;
+
+if (API_BASE_UNSET && import.meta.env.PROD) {
+  // Loud once-per-load signal so a misconfigured Vercel deploy is visible in
+  // DevTools even before the user tries to call Navigator. Without this the
+  // app silently points at localhost:8000 and every request quietly fails.
+  console.warn(
+    "[nest] VITE_API_BASE_URL is not set in production build — " +
+      "API calls will fail against localhost:8000. Set it in Vercel env.",
+  );
+}
+
+const API_BASE = (RAW_API_BASE ?? "http://localhost:8000").replace(/\/+$/, "");
 
 export type BackendUserProfile = {
   age: number | null;
