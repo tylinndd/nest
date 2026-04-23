@@ -193,7 +193,7 @@ const Settings = () => {
         </div>
       </section>
 
-      <section className="space-y-3">
+      <section id="trusted-adult" className="space-y-3 scroll-mt-6">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
           Trusted adult
         </p>

@@ -49,6 +49,7 @@ import { safeStorage } from "@/lib/safeStorage";
 import { glossify } from "@/lib/linkify";
 import { getContextHint } from "@/lib/contextHint";
 import { ContextHintCard } from "@/components/home/ContextHintCard";
+import { NestDoesntKnowCard } from "@/components/home/NestDoesntKnowCard";
 import { cn } from "@/lib/utils";
 
 const FIRST_TASK_KEY = "nest.first-task-fired";
@@ -588,6 +589,10 @@ const Home = () => {
           title="Logged"
           {...(completedTask ? { detail: completedTask.title } : {})}
         />
+      </div>
+
+      <div className="px-5 mt-4">
+        <NestDoesntKnowCard />
       </div>
 
       <LayoutGroup>
