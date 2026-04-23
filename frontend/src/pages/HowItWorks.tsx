@@ -155,6 +155,15 @@ const HowItWorks = () => (
             it refuses rather than guesses — and points you to 211 Georgia, a
             human-staffed 24/7 help line.
           </p>
+          <p className="pt-1">
+            <Link
+              to="/sources"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+            >
+              See all {CORPUS_SIZE} sources
+              <span aria-hidden>→</span>
+            </Link>
+          </p>
         </div>
       </section>
 
