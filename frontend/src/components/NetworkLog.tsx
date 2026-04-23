@@ -14,7 +14,7 @@ const formatStatus = (status: NetworkStatus): string => {
 
 const statusToneClass = (entry: NetworkEntry): string => {
   if (entry.status === "pending") return "bg-muted text-muted-foreground";
-  if (entry.ok) return "bg-nest-sage/15 text-[#2E7D5B]";
+  if (entry.ok) return "bg-nest-sage/15 text-[#0F5132]";
   return "bg-nest-coral/15 text-[#9B3528]";
 };
 

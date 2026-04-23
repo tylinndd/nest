@@ -2,6 +2,7 @@ import { useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { TopBar } from "./TopBar";
 import { BottomNav } from "./BottomNav";
+import { InstallPrompt } from "@/components/InstallPrompt";
 
 export const AppShell = () => {
   const location = useLocation();
@@ -34,6 +35,7 @@ export const AppShell = () => {
           </AnimatePresence>
         </main>
         {!isEmergency && <BottomNav />}
+        {!isEmergency && <InstallPrompt />}
       </div>
     </div>
   );
