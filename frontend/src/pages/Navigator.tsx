@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -195,6 +201,8 @@ const Navigator = () => {
   const abortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const crisisRedirectRef = useRef<number | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const isComposingRef = useRef(false);
   const voiceSupported = useMemo(() => getSpeechRecognition() !== null, []);
 
   // Crisis route handoff. Delay ~1.8s so the CRISIS_REPLY message lands on
@@ -433,6 +441,37 @@ const Navigator = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated, messages.length, location.state]);
 
+  useLayoutEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+  }, [input]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "/") return;
+      if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+      if (e.repeat) return;
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable ||
+          target.getAttribute("role") === "textbox")
+      ) {
+        return;
+      }
+      const ta = textareaRef.current;
+      if (!ta) return;
+      e.preventDefault();
+      ta.focus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
     <div className="flex h-[calc(100dvh-7rem)] flex-col">
       <div className="px-5 pt-5">
@@ -592,20 +631,42 @@ const Navigator = () => {
           >
             <Plus className="h-5 w-5" />
           </button>
-          <input
+          <textarea
+            ref={textareaRef}
             id="navigator-query"
             name="query"
-            type="text"
+            rows={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && send()}
+            onCompositionStart={() => {
+              isComposingRef.current = true;
+            }}
+            onCompositionEnd={() => {
+              isComposingRef.current = false;
+            }}
+            onKeyDown={(e) => {
+              const composing =
+                isComposingRef.current ||
+                e.nativeEvent.isComposing ||
+                e.keyCode === 229;
+              if (composing) return;
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                void send();
+                return;
+              }
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                void send();
+              }
+            }}
             aria-label="Ask Nest anything"
             placeholder={listening ? "Listening…" : "Ask Nest anything…"}
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
             enterKeyHint="send"
-            className="flex-1 bg-transparent outline-none text-base placeholder:text-muted-foreground"
+            className="flex-1 resize-none bg-transparent outline-none text-base placeholder:text-muted-foreground leading-[1.45] max-h-[120px] overflow-y-auto"
           />
           {voiceSupported && (
             <button
