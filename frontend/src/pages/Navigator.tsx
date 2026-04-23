@@ -36,6 +36,7 @@ import { Button } from "@/components/ui/button";
 import { SourceReveal } from "@/components/SourceReveal";
 import { ChatMessageActions } from "@/components/ChatMessageActions";
 import { SpeakButton } from "@/components/SpeakButton";
+import { CorpusBadge } from "@/components/CorpusBadge";
 import { cn } from "@/lib/utils";
 
 type Msg = ChatMsg;
@@ -438,6 +439,9 @@ const Navigator = () => {
           <div>
             <p className="text-sm text-muted-foreground">Always on · private</p>
             <h1 className="font-display text-3xl text-primary">Ask Navigator</h1>
+            <div className="mt-1.5">
+              <CorpusBadge />
+            </div>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1.5">
             <div className="flex items-center gap-1.5">
