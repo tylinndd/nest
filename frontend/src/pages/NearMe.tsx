@@ -5,7 +5,9 @@ import {
   AlertTriangle,
   ArrowRight,
   Briefcase,
+  DollarSign,
   ExternalLink,
+  FileText,
   GraduationCap,
   HandCoins,
   HeartPulse,
@@ -31,6 +33,8 @@ const CATEGORY_ICON: Record<ResourceCategory, typeof HomeIcon> = {
   healthcare: HeartPulse,
   education: GraduationCap,
   employment: Briefcase,
+  financial: DollarSign,
+  documents: FileText,
   legal: Scale,
   benefits: HandCoins,
 };

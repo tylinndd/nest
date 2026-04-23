@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "og:render": "node scripts/render-og.mjs",
-    "icons:render": "node scripts/render-icons.mjs"
+    "icons:render": "node scripts/render-icons.mjs",
+    "sync-corpus": "node scripts/sync-corpus.mjs"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
