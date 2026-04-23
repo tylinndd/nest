@@ -60,22 +60,18 @@ const ResourceCard = ({ r, index }: { r: Resource; index: number }) => (
     transition={{ duration: 0.22, delay: index * 0.03, ease: "easeOut" }}
     className="nest-card p-4"
   >
-    <div className="flex items-start justify-between gap-3">
-      <div className="flex-1">
-        <h3 className="font-display text-base text-foreground leading-tight">
-          {r.name}
-        </h3>
-        <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          {r.county === "statewide" ? "Statewide" : `${r.county} County`}
-        </p>
-      </div>
-      <span className="nest-chip bg-muted text-muted-foreground shrink-0">
-        <ShieldCheck className="mr-1 h-3 w-3" strokeWidth={2.5} />
-        {r.source_name}
-      </span>
-    </div>
+    <h3 className="font-display text-base text-foreground leading-tight">
+      {r.name}
+    </h3>
+    <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+      {r.county === "statewide" ? "Statewide" : `${r.county} County`}
+    </p>
+    <span className="mt-2 inline-flex max-w-full items-start gap-1 rounded-2xl bg-muted px-2.5 py-1 text-[11px] font-semibold leading-snug text-muted-foreground">
+      <ShieldCheck className="mt-0.5 h-3 w-3 shrink-0" strokeWidth={2.5} />
+      <span className="min-w-0">{r.source_name}</span>
+    </span>
 
-    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+    <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
       {r.summary}
     </p>
 
