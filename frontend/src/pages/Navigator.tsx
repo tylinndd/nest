@@ -37,6 +37,7 @@ import { SourceReveal } from "@/components/SourceReveal";
 import { ChatMessageActions } from "@/components/ChatMessageActions";
 import { SpeakButton } from "@/components/SpeakButton";
 import { CorpusBadge } from "@/components/CorpusBadge";
+import { ChatExportButton } from "@/components/ChatExportButton";
 import { cn } from "@/lib/utils";
 
 type Msg = ChatMsg;
@@ -446,15 +447,18 @@ const Navigator = () => {
           <div className="flex shrink-0 flex-col items-end gap-1.5">
             <div className="flex items-center gap-1.5">
               {messages.length > 0 && (
-                <button
-                  type="button"
-                  onClick={handleNewChat}
-                  aria-label="Start a new chat"
-                  title="Start a new chat"
-                  className="inline-flex h-[30px] w-[30px] items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <SquarePen className="h-3.5 w-3.5" />
-                </button>
+                <>
+                  <ChatExportButton />
+                  <button
+                    type="button"
+                    onClick={handleNewChat}
+                    aria-label="Start a new chat"
+                    title="Start a new chat"
+                    className="inline-flex h-[30px] w-[30px] items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <SquarePen className="h-3.5 w-3.5" />
+                  </button>
+                </>
               )}
               <Link
                 to="/how-it-works"
