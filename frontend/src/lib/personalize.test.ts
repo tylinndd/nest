@@ -5,6 +5,7 @@ import {
   derivePersonalizedTasks,
   derivePersonalizedVault,
   describeVaultDoc,
+  getTaskRationale,
 } from "./personalize";
 
 const makeProfile = (overrides: Partial<Profile> = {}): Profile => ({
@@ -17,6 +18,7 @@ const makeProfile = (overrides: Partial<Profile> = {}): Profile => ({
   housing: "",
   health: [],
   completedTaskIds: [],
+  trustedAdult: null,
   ...overrides,
 });
 
@@ -126,6 +128,48 @@ describe("derivePersonalizedTasks", () => {
     expect(birth?.tone).toBe("sage");
     expect(birth?.due).toBe("Completed");
     expect(birth?.help).toBeUndefined();
+  });
+});
+
+describe("getTaskRationale", () => {
+  it("returns the birth-certificate rationale for doc-birth", () => {
+    expect(getTaskRationale("doc-birth", makeProfile())).toMatch(
+      /birth certificate/i,
+    );
+  });
+
+  it("mentions the user's age in the medicaid-extended rationale when 18+", () => {
+    const r = getTaskRationale("medicaid-extended", makeProfile({ age: 18 }));
+    expect(r).toMatch(/18/);
+    expect(r).toMatch(/26/);
+  });
+
+  it("references college for chafee-etv when education is college", () => {
+    expect(
+      getTaskRationale("chafee-etv", makeProfile({ education: "college" })),
+    ).toMatch(/college/i);
+  });
+
+  it("names the housing situation in hud-fyi rationale when applicable", () => {
+    expect(
+      getTaskRationale(
+        "hud-fyi",
+        makeProfile({ age: 18, housing: "Group home" }),
+      ),
+    ).toMatch(/group home/i);
+  });
+
+  it("returns a generic hud-fyi rationale when housing is not foster/group", () => {
+    expect(
+      getTaskRationale(
+        "hud-fyi",
+        makeProfile({ age: 18, housing: "With a relative" }),
+      ),
+    ).toMatch(/180 days/);
+  });
+
+  it("returns null for an unknown task id", () => {
+    expect(getTaskRationale("some-random-id", makeProfile())).toBeNull();
   });
 });
 

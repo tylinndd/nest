@@ -287,3 +287,44 @@ export const computeDaysUntilAgeOut = (age: number | null): number | null => {
   if (age >= 18) return (21 - age) * 365;
   return (18 - age) * 365;
 };
+
+export const getTaskRationale = (
+  taskId: string,
+  profile: Profile,
+): string | null => {
+  const age = profile.age ?? 0;
+  const housing = profile.housing;
+
+  switch (taskId) {
+    case "doc-birth":
+      return "You told us you don't have your birth certificate yet.";
+    case "doc-ssc":
+      return "You told us you don't have your Social Security card yet.";
+    case "doc-id":
+      return "You told us you don't have your Georgia state ID yet.";
+    case "doc-transcript":
+      return "You told us you haven't pulled your high school transcript yet.";
+    case "doc-medicaid":
+      return "You told us you don't have your Medicaid card on hand yet.";
+    case "medicaid-extended":
+      return age >= 18
+        ? `You're ${age} and you said you don't have Medicaid — former-foster Medicaid covers you until 26.`
+        : "Extended Medicaid has to be filed before you age out, so Nest surfaces it early.";
+    case "chafee-etv":
+      return "You said college is on your plan — Chafee ETV pays up to $5,000 per year.";
+    case "ksu-ascend":
+      return "You said college is on your plan — ASCEND is KSU's care team for foster youth.";
+    case "tuition-waiver":
+      return "You said trade school is on your plan — Georgia waives fees at TCSG colleges.";
+    case "hud-fyi":
+      return age >= 18 && (housing === "Foster home" || housing === "Group home")
+        ? `You're ${age} and living in a ${housing.toLowerCase()} — FYI vouchers take 180 days to start.`
+        : "FYI vouchers take 180 days to start, so Nest surfaces this early.";
+    case "transitional-housing":
+      return "You said housing after aging out is unsettled — a TLP tour is a free option worth seeing.";
+    case "find-pcp":
+      return "You said you need a primary care doctor.";
+    default:
+      return null;
+  }
+};

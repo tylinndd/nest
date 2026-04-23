@@ -26,7 +26,9 @@ import {
   Wallet,
 } from "lucide-react";
 import { type Task } from "@/data/placeholder";
-import { derivePersonalizedTasks, computeDaysUntilAgeOut } from "@/lib/personalize";
+import { derivePersonalizedTasks, computeDaysUntilAgeOut, getTaskRationale } from "@/lib/personalize";
+import type { Profile } from "@/store/profile";
+import { WhyTaskPopover } from "@/components/home/WhyTaskPopover";
 import { tasksToIcs, downloadIcs } from "@/lib/ics";
 import { SuccessCard } from "@/components/ui/SuccessCard";
 import {
@@ -220,12 +222,15 @@ const AllCaughtUpCard = () => (
 
 const NextMoveCard = ({
   task,
+  profile,
   onOpen,
 }: {
   task: Task;
+  profile: Profile;
   onOpen: (t: Task) => void;
 }) => {
   const isOverdue = task.status === "overdue";
+  const rationale = getTaskRationale(task.id, profile);
   return (
     <button
       type="button"
@@ -252,6 +257,11 @@ const NextMoveCard = ({
         {glossify(task.title, `nm-${task.id}`)}
       </p>
       <p className="mt-1 text-sm text-muted-foreground">{task.due}</p>
+      {rationale && (
+        <div className="mt-2">
+          <WhyTaskPopover rationale={rationale} />
+        </div>
+      )}
       <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
         Start now
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -545,7 +555,7 @@ const Home = () => {
             transition={{ duration: 0.22, ease: "easeOut" }}
             className="px-5 mt-4"
           >
-            <NextMoveCard task={nextMove} onOpen={openTask} />
+            <NextMoveCard task={nextMove} profile={profile} onOpen={openTask} />
           </motion.div>
         ) : done.length > 0 ? (
           <motion.div
