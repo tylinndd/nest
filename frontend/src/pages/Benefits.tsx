@@ -8,6 +8,7 @@ import { useProfile, hasProfile } from "@/store/profile";
 import { useIntake } from "@/store/intake";
 import { useBenefitsCatalog } from "@/store/benefits";
 import { cn } from "@/lib/utils";
+import { safeHttpUrl } from "@/lib/url";
 
 const formatVerified = (iso: string) => {
   const parts = iso.split("-").map(Number);
@@ -129,9 +130,12 @@ const BenefitCard = ({ b, index }: { b: Benefit; index: number }) => {
   );
 };
 
-const BestFitCard = ({ url }: { url: string }) => (
+const BestFitCard = ({ url }: { url: string }) => {
+  const safe = safeHttpUrl(url);
+  if (!safe) return null;
+  return (
   <motion.a
-    href={url}
+    href={safe}
     target="_blank"
     rel="noopener noreferrer"
     initial={{ opacity: 0, y: 10 }}
@@ -161,7 +165,8 @@ const BestFitCard = ({ url }: { url: string }) => (
       </div>
     </div>
   </motion.a>
-);
+  );
+};
 
 type PartnerCard = {
   id: string;

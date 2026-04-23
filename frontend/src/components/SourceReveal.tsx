@@ -14,28 +14,12 @@ import { useProfile, type EducationPlan } from "@/store/profile";
 import type { Passage } from "@/lib/api";
 import { formatVerifiedDate } from "@/lib/corpus";
 import { buildPassageHref } from "@/lib/textFragment";
+import { safeHttpUrl } from "@/lib/url";
 
 type Props = {
   source: string;
   showProfile?: boolean;
   passages?: Passage[];
-};
-
-/**
- * Backend-supplied URLs flow from the RAG corpus into an <a href>. Block any
- * scheme except http(s) so a poisoned corpus or compromised backend can't
- * return `javascript:…` and land XSS on click.
- */
-const safeHttpUrl = (url: string | null): string | null => {
-  if (!url) return null;
-  try {
-    const parsed = new URL(url, window.location.href);
-    return parsed.protocol === "http:" || parsed.protocol === "https:"
-      ? parsed.toString()
-      : null;
-  } catch {
-    return null;
-  }
 };
 
 const EDUCATION_LABEL: Record<EducationPlan, string> = {
