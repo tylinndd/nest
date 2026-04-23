@@ -21,7 +21,7 @@ const pillSpring = { type: "spring" as const, stiffness: 380, damping: 32 };
 
 export const BottomNav = () => (
   <nav
-    className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-background/95 backdrop-blur"
+    className="no-print fixed bottom-0 inset-x-0 z-40 border-t border-border bg-background/95 backdrop-blur"
     aria-label="Primary"
   >
     <div className="mx-auto max-w-md px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">

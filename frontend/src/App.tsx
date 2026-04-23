@@ -132,7 +132,7 @@ const BackendOfflineDot = () => (
   <span
     aria-label="Backend offline"
     role="status"
-    className="fixed bottom-2 left-2 z-50 h-2 w-2 rounded-full bg-nest-coral"
+    className="no-print fixed bottom-2 left-2 z-50 h-2 w-2 rounded-full bg-nest-coral"
   />
 );
 

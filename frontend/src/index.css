@@ -148,3 +148,72 @@
   55%  { background-position: 250% 0; }
   100% { background-position: 250% 0; }
 }
+
+/* ---------- print ---------- */
+.no-print {
+  display: none !important;
+}
+
+@media print {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 30%;
+    --border: 0 0% 80%;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  [data-sonner-toaster],
+  .no-print {
+    display: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    background-image: none !important;
+  }
+
+  .fixed,
+  [style*="position: fixed"],
+  [style*="position:fixed"] {
+    position: static !important;
+  }
+
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline;
+  }
+
+  h1,
+  h2,
+  h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .nest-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}

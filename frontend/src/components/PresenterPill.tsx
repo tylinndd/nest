@@ -88,7 +88,7 @@ export function PresenterPill() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.22 }}
-      className="fixed bottom-4 right-4 z-40 flex items-center gap-1.5 rounded-full border border-primary/40 bg-background/95 px-2 py-1.5 shadow-lg backdrop-blur"
+      className="no-print fixed bottom-4 right-4 z-40 flex items-center gap-1.5 rounded-full border border-primary/40 bg-background/95 px-2 py-1.5 shadow-lg backdrop-blur"
       role="region"
       aria-label="Presenter controls"
     >

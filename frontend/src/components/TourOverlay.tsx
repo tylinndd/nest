@@ -174,7 +174,7 @@ export function TourOverlay() {
         animate={{ opacity: 1, y: 0 }}
         exit={reduced ? { opacity: 0 } : { opacity: 0, y: 16 }}
         transition={{ duration: 0.22 }}
-        className="fixed bottom-4 left-1/2 z-50 w-[min(94vw,32rem)] -translate-x-1/2 rounded-2xl border border-border bg-background/95 px-3 py-2 shadow-lg backdrop-blur"
+        className="no-print fixed bottom-4 left-1/2 z-50 w-[min(94vw,32rem)] -translate-x-1/2 rounded-2xl border border-border bg-background/95 px-3 py-2 shadow-lg backdrop-blur"
         role="region"
         aria-label="Demo tour controls"
       >

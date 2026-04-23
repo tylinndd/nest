@@ -13,7 +13,7 @@ const formatBuildTime = (iso: string): string => {
 };
 
 export const DeployFooter = () => (
-  <footer className="mt-6 pt-4 border-t border-border/60">
+  <footer className="no-print mt-6 pt-4 border-t border-border/60">
     <p className="text-[10px] uppercase tracking-widest text-muted-foreground/80 text-center">
       Built from{" "}
       <a

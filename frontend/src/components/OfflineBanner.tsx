@@ -19,7 +19,7 @@ export const OfflineBanner = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -30, opacity: 0 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
-          className="fixed inset-x-0 top-0 z-40 flex justify-center px-3 pt-2"
+          className="no-print fixed inset-x-0 top-0 z-40 flex justify-center px-3 pt-2"
         >
           <div className="flex items-center gap-2 rounded-full bg-nest-coral px-3 py-1.5 text-[11px] font-semibold text-white shadow-lg">
             <WifiOff className="h-3.5 w-3.5" />

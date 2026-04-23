@@ -276,7 +276,7 @@ export function ChatMessageActions({
   )}&body=${encodeURIComponent(buildConfirmBody(text, source, question))}`;
 
   return (
-    <div className="mt-1.5 flex items-center gap-1 pl-1">
+    <div className="no-print mt-1.5 flex items-center gap-1 pl-1">
       <button
         type="button"
         onClick={handleCopy}

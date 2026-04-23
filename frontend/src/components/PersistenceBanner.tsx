@@ -8,7 +8,7 @@ export const PersistenceBanner = () => {
     <div
       role="status"
       aria-live="polite"
-      className="flex items-start gap-3 bg-nest-coral/15 px-5 py-3 text-sm text-nest-coral border-b border-nest-coral/30"
+      className="no-print flex items-start gap-3 bg-nest-coral/15 px-5 py-3 text-sm text-nest-coral border-b border-nest-coral/30"
     >
       <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
       <p className="leading-snug">
