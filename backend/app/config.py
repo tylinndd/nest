@@ -19,6 +19,7 @@ Design notes
 
 from __future__ import annotations
 
+import logging
 import os
 from functools import lru_cache
 from pathlib import Path
@@ -26,8 +27,16 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
+logger = logging.getLogger("uvicorn.error")
+
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 ROOT_DIR = BACKEND_DIR.parent
+
+# Known-good origins used when CORS_ORIGINS is unset in production. If you
+# stand up a new frontend host, add it here rather than falling back to "*".
+PRODUCTION_ALLOWLIST: list[str] = [
+    "https://nest-zeta-nine.vercel.app",
+]
 
 # Load both dotenv locations:
 # 1) backend/.env (preferred for backend-only deployment)
@@ -46,7 +55,9 @@ class Settings:
     def __init__(self) -> None:
         self.environment: str = os.getenv("ENVIRONMENT", "development")
         self.model_name: str = os.getenv("MODEL_NAME", "llama-3.3-70b-versatile")
-        self.cors_origins: list[str] = self._parse_cors(os.getenv("CORS_ORIGINS", "*"))
+        self.cors_origins: list[str] = self._parse_cors(
+            os.getenv("CORS_ORIGINS", "*"), self.environment
+        )
         self.chroma_dir: Path = self._resolve_path(os.getenv("CHROMA_DIR", "vectorstore"))
         self.resource_db_path: Path = self._resolve_path(
             os.getenv("RESOURCE_DB_PATH", "data/georgia_resources.json")
@@ -75,9 +86,17 @@ class Settings:
         return self._groq_api_key is not None
 
     @staticmethod
-    def _parse_cors(raw: str) -> list[str]:
+    def _parse_cors(raw: str, environment: str) -> list[str]:
         cleaned = raw.strip()
         if cleaned in {"", "*"}:
+            if environment == "production":
+                logger.error(
+                    "CORS_ORIGINS is unset or '*' in production; falling back "
+                    "to PRODUCTION_ALLOWLIST (%s). Set CORS_ORIGINS explicitly "
+                    "in the Render environment to override.",
+                    PRODUCTION_ALLOWLIST,
+                )
+                return list(PRODUCTION_ALLOWLIST)
             return ["*"]
         return [origin.strip() for origin in cleaned.split(",") if origin.strip()]
 
