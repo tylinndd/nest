@@ -98,7 +98,11 @@ const Deadlines = () => {
   const scrollToDeadline = (d: Deadline) => {
     const el = cardRefs.current[d.id];
     if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "center",
+    });
+    if (prefersReducedMotion) return;
     try {
       el.animate(
         [
